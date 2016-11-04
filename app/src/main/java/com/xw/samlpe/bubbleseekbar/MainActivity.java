@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int progress = new Random().nextInt(100);
                 mBubbleSeekBar0.setProgress(progress);
-                Snackbar.make(view, "set random progress = " + progress, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, "set random progress = " + progress, Snackbar.LENGTH_SHORT).show();
             }
         });
     }
