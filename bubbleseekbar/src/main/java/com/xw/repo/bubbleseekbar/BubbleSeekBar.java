@@ -26,7 +26,7 @@ import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 
 /**
- * BubbleSeekBar
+ * 气泡形式可视化的自定义SeekBar
  * <p/>
  * Created by woxingxiao on 2016-10-27.
  */
@@ -35,32 +35,32 @@ public class BubbleSeekBar extends View {
     private int mMin;
     private int mMax;
     private int mProgress;
-    private int mTrackSize;
-    private int mSecondTrackSize;
-    private int mThumbRadius;
-    private int mThumbRadiusOnDragging;
-    private int mSectionCount;
-    private int mThumbColor;
-    private int mTrackColor;
-    private int mSecondTrackColor;
-    private int mBubbleRadius;
-    private int mBubbleColor;
-    private int mBubbleTextSize;
-    private int mBubbleTextColor;
-    private boolean isShowSectionMark;
-    private boolean isAutoAdjustSectionMark;
+    private int mTrackSize; // 下层track的高度
+    private int mSecondTrackSize; // 上层track的高度
+    private int mThumbRadius; // thumb的半径
+    private int mThumbRadiusOnDragging; // 当thumb被拖拽时的半径
+    private int mSectionCount; // min到max均分的份数
+    private int mThumbColor; // thumb的颜色
+    private int mTrackColor; // 下层track的颜色
+    private int mSecondTrackColor; // 上层track的颜色
+    private int mBubbleRadius; // 气泡半径
+    private int mBubbleColor;// 气泡颜色
+    private int mBubbleTextSize; // 气泡文字大小
+    private int mBubbleTextColor; // 气泡文字颜色
+    private boolean isShowSectionMark; // 是否显示份数
+    private boolean isAutoAdjustSectionMark; // 是否自动滑到最近的整份数
 
     private int mDelta;
     private float mThumbCenterX;
     private float mLineWidth;
     private float mSectionOffset;
     private boolean isThumbOnDragging;
-    private OnProgressChangedListener mOnProgressChangedListener;
+    private OnProgressChangedListener mOnProgressChangedListener; // progress变化监听
 
     private Paint mPaint;
     private WindowManager mWindowManager;
 
-    private BubbleView mBubbleView;
+    private BubbleView mBubbleView; // 自定义气泡View
     private int mBubbleCenterRawSolidX;
     private int mBubbleCenterRawSolidY;
     private int mBubbleCenterRawX;
@@ -165,6 +165,7 @@ public class BubbleSeekBar extends View {
         }
 
         if (isShowSectionMark) {
+            // 画分段标识点
             mPaint.setStrokeWidth(mThumbRadiusOnDragging - dp2px(2));
             for (int i = 0; i <= mSectionCount; i++) {
                 if (x1 + i * mSectionOffset <= mLineWidth / mDelta * mProgress + mThumbRadiusOnDragging) {
@@ -176,14 +177,17 @@ public class BubbleSeekBar extends View {
             }
         }
 
+        // 画下层track
         mPaint.setColor(mSecondTrackColor);
         mPaint.setStrokeWidth(mSecondTrackSize);
         canvas.drawLine(x1, y, mThumbCenterX, y, mPaint);
 
+        // 画上层track
         mPaint.setColor(mTrackColor);
         mPaint.setStrokeWidth(mTrackSize);
         canvas.drawLine(mThumbCenterX, y, x2, y, mPaint);
 
+        // 画thumb
         mPaint.setColor(mThumbColor);
         canvas.drawCircle(mThumbCenterX, y, isThumbOnDragging ? mThumbRadiusOnDragging : mThumbRadius, mPaint);
     }
@@ -233,9 +237,10 @@ public class BubbleSeekBar extends View {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            mBubbleView.setVisibility(GONE);
+                            mBubbleView.setVisibility(GONE); // 防闪烁
                             mWindowManager.removeView(mBubbleView);
                             isThumbOnDragging = false;
+
                             invalidate();
                         }
                     }).start();
@@ -251,6 +256,9 @@ public class BubbleSeekBar extends View {
         return isThumbOnDragging || super.onTouchEvent(event);
     }
 
+    /**
+     * 识别thumb是否被有效点击
+     */
     private boolean isThumbTouched(MotionEvent event) {
         float x = mLineWidth / mDelta * (mProgress - mMin) + mThumbRadiusOnDragging;
         float y = getHeight() / 2f;
@@ -258,6 +266,10 @@ public class BubbleSeekBar extends View {
                 <= (mThumbRadiusOnDragging + dp2px(4)) * (mThumbRadiusOnDragging + dp2px(4));
     }
 
+    /**
+     * 显示气泡
+     * 原理是利用WindowManager动态添加一个与Toast相同类型的BubbleView，消失时再移除
+     */
     private void showBubble() {
         if (mLayoutParams == null) {
             mLayoutParams = new WindowManager.LayoutParams();
@@ -284,6 +296,9 @@ public class BubbleSeekBar extends View {
         }).start();
     }
 
+    /**
+     * 自动滚向最近的分段处
+     */
     private void autoAdjustSection() {
         int i;
         float x = 0;
@@ -324,7 +339,7 @@ public class BubbleSeekBar extends View {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                mBubbleView.setVisibility(GONE);
+                mBubbleView.setVisibility(GONE); // 防闪烁
                 mWindowManager.removeView(mBubbleView);
 
                 mProgress = (int) ((mThumbCenterX - mThumbRadiusOnDragging) * mDelta / mLineWidth) + mMin;
@@ -556,14 +571,15 @@ public class BubbleSeekBar extends View {
         mOnProgressChangedListener = onProgressChangedListener;
     }
 
+    /**
+     * progress改变监听器
+     */
     public interface OnProgressChangedListener {
 
         void onProgressChanged(int progress);
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    ///////////// BubbleView
-    //////////////////////////////////////////////////////////////////////////
+    /***********************************自定义气泡View***********************************/
     public class BubbleView extends View {
 
         private Paint mBubblePaint;
