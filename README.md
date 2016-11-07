@@ -1,6 +1,22 @@
+[![](https://jitpack.io/v/woxingxiao/BubbleSeekBar.svg)](https://jitpack.io/#woxingxiao/BubbleSeekBar)
 ##Screenshot
 ![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/demo.gif)
-
+##Download
+root project:`build.gradle`
+```groovy
+  allprojects {
+	 repositories {
+		...
+		maven { url "https://jitpack.io" }
+	 }
+  }
+```
+app:`build.gradle`
+```groovy
+  dependencies {
+     compile 'com.github.woxingxiao:BubbleSeekBar:v1.0'
+  }
+```
 ##Useage
 ```xml
 <com.xw.repo.bubbleseekbar.BubbleSeekBar
