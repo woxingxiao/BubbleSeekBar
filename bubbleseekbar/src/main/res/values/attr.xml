@@ -9,13 +9,13 @@
         <attr name="bsb_thumb_radius" format="dimension|reference"/>
         <attr name="bsb_thumb_radius_on_dragging" format="dimension|reference"/>
         <attr name="bsb_section_count" format="integer|reference"/>
-        <attr name="bsb_thumb_color" format="integer|reference"/>
-        <attr name="bsb_track_color" format="integer|reference"/>
-        <attr name="bsb_second_track_color" format="integer|reference"/>
+        <attr name="bsb_thumb_color" format="color|reference"/>
+        <attr name="bsb_track_color" format="color|reference"/>
+        <attr name="bsb_second_track_color" format="color|reference"/>
         <attr name="bsb_bubble_radius" format="dimension|reference"/>
-        <attr name="bsb_bubble_color" format="integer|reference"/>
+        <attr name="bsb_bubble_color" format="color|reference"/>
         <attr name="bsb_bubble_text_size" format="dimension|reference"/>
-        <attr name="bsb_bubble_text_color" format="integer|reference"/>
+        <attr name="bsb_bubble_text_color" format="color|reference"/>
         <attr name="bsb_show_section_mark" format="boolean|reference"/>
         <attr name="bsb_auto_adjust_section_mark" format="boolean|reference"/>
     </declare-styleable>
