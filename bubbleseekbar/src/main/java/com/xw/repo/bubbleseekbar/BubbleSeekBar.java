@@ -15,6 +15,7 @@ import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.IntDef;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -25,12 +26,24 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+import static com.xw.repo.bubbleseekbar.BubbleSeekBar.TextPosition.BOTTOM;
+import static com.xw.repo.bubbleseekbar.BubbleSeekBar.TextPosition.SIDES;
+
 /**
  * 气泡形式可视化的自定义SeekBar
  * <p/>
  * Created by woxingxiao on 2016-10-27.
  */
 public class BubbleSeekBar extends View {
+
+    @IntDef({SIDES, BOTTOM})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface TextPosition {
+        int SIDES = 0, BOTTOM = 1;
+    }
 
     private int mMin;
     private int mMax;
@@ -43,6 +56,14 @@ public class BubbleSeekBar extends View {
     private int mThumbColor; // thumb的颜色
     private int mTrackColor; // 下层track的颜色
     private int mSecondTrackColor; // 上层track的颜色
+    private boolean isShowText; // 是否显示起始结束值文字
+    private int mTextSize; // 起始结束值文字大小
+    private int mTextColor; // 起始结束值文字颜色
+    @TextPosition
+    private int mTextPosition; // 起始结束值文字位置
+    private boolean isShowThumbText; // 是否显示实时值文字
+    private int mThumbTextSize; // 实时值文字大小
+    private int mThumbTextColor; // 实时值文字颜色
     private int mBubbleRadius; // 气泡半径
     private int mBubbleColor;// 气泡颜色
     private int mBubbleTextSize; // 气泡文字大小
@@ -55,9 +76,11 @@ public class BubbleSeekBar extends View {
     private float mLineWidth;
     private float mSectionOffset;
     private boolean isThumbOnDragging;
+    private int mTextSpace;
     private OnProgressChangedListener mOnProgressChangedListener; // progress变化监听
 
     private Paint mPaint;
+    private Rect mRectText;
     private WindowManager mWindowManager;
 
     private BubbleView mBubbleView; // 自定义气泡View
@@ -94,6 +117,18 @@ public class BubbleSeekBar extends View {
         mSecondTrackColor = a.getColor(R.styleable.BubbleSeekBar_bsb_second_track_color,
                 ContextCompat.getColor(context, R.color.colorAccent));
         mThumbColor = a.getColor(R.styleable.BubbleSeekBar_bsb_thumb_color, mSecondTrackColor);
+        isShowText = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_text, false);
+        mTextSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_text_size, sp2px(14));
+        mTextColor = a.getColor(R.styleable.BubbleSeekBar_bsb_text_color, mTrackColor);
+        int pos = a.getInteger(R.styleable.BubbleSeekBar_bsb_text_position, 0);
+        if (pos == 0) {
+            mTextPosition = SIDES;
+        } else if (pos == 1) {
+            mTextPosition = BOTTOM;
+        }
+        isShowThumbText = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_thumb_text, false);
+        mThumbTextSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_thumb_text_size, sp2px(14));
+        mThumbTextColor = a.getColor(R.styleable.BubbleSeekBar_bsb_thumb_text_color, mSecondTrackColor);
         mBubbleRadius = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_bubble_radius, dp2px(13));
         mBubbleColor = a.getColor(R.styleable.BubbleSeekBar_bsb_bubble_color, mSecondTrackColor);
         mBubbleTextSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_bubble_text_size, sp2px(14));
@@ -127,7 +162,10 @@ public class BubbleSeekBar extends View {
         mPaint.setAntiAlias(true);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
 
+        mRectText = new Rect();
+
         mDelta = mMax - mMin;
+        mTextSpace = dp2px(4);
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mBubbleView = new BubbleView(context);
         mBubbleView.setProgressText(String.valueOf(getProgress()));
@@ -137,10 +175,27 @@ public class BubbleSeekBar extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        setMeasuredDimension(resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec),
-                mThumbRadiusOnDragging * 2);
+        int height = mThumbRadiusOnDragging * 2;
+        if (isShowThumbText) {
+            mPaint.setTextSize(mThumbTextSize);
+            mPaint.getTextBounds("0", 0, 1, mRectText);
+            height += mRectText.height() + mTextSpace;
+        }
+        if (isShowText && mTextPosition == TextPosition.BOTTOM) {
+            mPaint.setTextSize(mTextSize);
+            mPaint.getTextBounds("0", 0, 1, mRectText);
+            height = Math.max(height, mThumbRadiusOnDragging * 2 + mRectText.height() + mTextSpace);
+        }
+        setMeasuredDimension(resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec), height);
 
         mLineWidth = getWidth() - mThumbRadiusOnDragging * 2f;
+        if (isShowText && mTextPosition == TextPosition.SIDES) {
+            mPaint.setTextSize(mTextSize);
+            mPaint.getTextBounds(String.valueOf(mMin), 0, String.valueOf(mMin).length(), mRectText);
+            mLineWidth -= (mRectText.width() + mTextSpace);
+            mPaint.getTextBounds(String.valueOf(mMax), 0, String.valueOf(mMax).length(), mRectText);
+            mLineWidth -= (mRectText.width() + mTextSpace);
+        }
         mSectionOffset = mLineWidth * 1f / mSectionCount;
 
         mBubbleView.measure(widthMeasureSpec, heightMeasureSpec);
@@ -156,14 +211,45 @@ public class BubbleSeekBar extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        float x1 = mThumbRadiusOnDragging;
-        float x2 = getWidth() - mThumbRadiusOnDragging;
-        float y = getHeight() / 2f;
+        float x1 = getPaddingLeft();
+        float x2 = getWidth() - getPaddingRight();
+        float y = getPaddingTop() + mThumbRadiusOnDragging;
+
+        if (isShowText) {
+            mPaint.setTextAlign(Paint.Align.CENTER);
+            mPaint.setTextSize(mTextSize);
+            mPaint.setColor(mTextColor);
+
+            if (mTextPosition == TextPosition.SIDES) {
+                mPaint.getTextBounds(String.valueOf(mMin), 0, String.valueOf(mMin).length(), mRectText);
+                canvas.drawText(String.valueOf(mMin), x1 + mRectText.width() / 2f, y, mPaint);
+                x1 += mRectText.width() + mTextSpace;
+                mPaint.getTextBounds(String.valueOf(mMax), 0, String.valueOf(mMax).length(), mRectText);
+                canvas.drawText(String.valueOf(mMax), x2 - mRectText.width() / 2f, y, mPaint);
+                x2 -= (mRectText.width() + mTextSpace);
+            } else if (mTextPosition == TextPosition.BOTTOM) {
+                mPaint.getTextBounds(String.valueOf(mMin), 0, String.valueOf(mMin).length(), mRectText);
+                canvas.drawText(String.valueOf(mMin), x1 + mRectText.width() / 2f, y + mTextSpace, mPaint);
+                mPaint.getTextBounds(String.valueOf(mMax), 0, String.valueOf(mMax).length(), mRectText);
+                canvas.drawText(String.valueOf(mMax), x2 - mRectText.width() / 2f, y + mTextSpace, mPaint);
+            }
+        }
 
         if (!isThumbOnDragging) {
             mThumbCenterX = mLineWidth / mDelta * (mProgress - mMin) + mThumbRadiusOnDragging;
         }
 
+        if (isShowThumbText && !isThumbOnDragging) {
+            mPaint.setTextAlign(Paint.Align.CENTER);
+            mPaint.setTextSize(mThumbTextSize);
+            mPaint.setColor(mThumbTextColor);
+
+            mPaint.getTextBounds(String.valueOf(mProgress), 0, String.valueOf(mProgress).length(), mRectText);
+            canvas.drawText(String.valueOf(mProgress), mThumbCenterX, y + mTextSpace, mPaint);
+        }
+
+        x1 += mThumbRadiusOnDragging;
+        x2 -= mThumbRadiusOnDragging;
         if (isShowSectionMark) {
             // 画分段标识点
             mPaint.setStrokeWidth(mThumbRadiusOnDragging - dp2px(2));
@@ -579,7 +665,9 @@ public class BubbleSeekBar extends View {
         void onProgressChanged(int progress);
     }
 
-    /***********************************自定义气泡View***********************************/
+    /***********************************
+     * 自定义气泡View
+     ***********************************/
     public class BubbleView extends View {
 
         private Paint mBubblePaint;

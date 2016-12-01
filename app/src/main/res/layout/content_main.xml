@@ -19,7 +19,9 @@
         android:id="@+id/bubble_seek_bar_0"
         android:layout_width="match_parent"
         android:layout_height="16dp"
-        android:layout_marginTop="48dp"/>
+        android:layout_marginTop="48dp"
+        app:bsb_show_text="true"
+        app:bsb_show_thumb_text="true"/>
 
     <com.xw.repo.bubbleseekbar.BubbleSeekBar
         android:layout_width="match_parent"
@@ -27,8 +29,8 @@
         android:layout_marginTop="32dp"
         android:padding="@dimen/activity_horizontal_margin"
         app:bsb_max="500"
-        app:bsb_progress="200"
         app:bsb_min="100"
+        app:bsb_progress="200"
         app:bsb_second_track_color="@color/color_green"
         app:bsb_track_color="@color/color_gray"
         app:bsb_track_size="4dp"/>
