@@ -19,9 +19,8 @@
         android:id="@+id/bubble_seek_bar_0"
         android:layout_width="match_parent"
         android:layout_height="16dp"
-        android:layout_marginTop="48dp"
-        app:bsb_show_text="true"
-        app:bsb_show_thumb_text="true"/>
+        android:layout_marginTop="48dp"/>
+
 
     <com.xw.repo.bubbleseekbar.BubbleSeekBar
         android:layout_width="match_parent"
@@ -45,14 +44,26 @@
 
     <com.xw.repo.bubbleseekbar.BubbleSeekBar
         android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:layout_marginTop="48dp"
+        app:bsb_show_section_mark="true"
+        app:bsb_show_text="true"
+        app:bsb_show_thumb_text="true"/>
+
+    <com.xw.repo.bubbleseekbar.BubbleSeekBar
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         app:bsb_auto_adjust_section_mark="true"
-        app:bsb_bubble_color="@color/colorAccent"
-        app:bsb_bubble_radius="20dp"
+        app:bsb_bubble_color="@color/color_red_light"
         app:bsb_bubble_text_color="@color/color_green"
         app:bsb_bubble_text_size="18sp"
+        app:bsb_max="50"
+        app:bsb_min="-50"
         app:bsb_second_track_color="@color/color_red"
         app:bsb_show_section_mark="true"
+        app:bsb_show_text="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_text_position="bottom"
         app:bsb_track_color="@color/color_red_light"/>
 </LinearLayout>

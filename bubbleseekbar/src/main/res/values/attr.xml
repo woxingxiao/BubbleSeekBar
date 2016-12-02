@@ -22,11 +22,11 @@
         <attr name="bsb_show_thumb_text" format="boolean"/>
         <attr name="bsb_thumb_text_size" format="dimension|reference"/>
         <attr name="bsb_thumb_text_color" format="color|reference"/>
-        <attr name="bsb_bubble_radius" format="dimension|reference"/>
         <attr name="bsb_bubble_color" format="color|reference"/>
         <attr name="bsb_bubble_text_size" format="dimension|reference"/>
         <attr name="bsb_bubble_text_color" format="color|reference"/>
         <attr name="bsb_show_section_mark" format="boolean"/>
         <attr name="bsb_auto_adjust_section_mark" format="boolean"/>
+        <attr name="bsb_show_progress_in_float" format="boolean"/>
     </declare-styleable>
 </resources>
