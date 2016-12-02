@@ -21,6 +21,14 @@
         android:layout_height="16dp"
         android:layout_marginTop="48dp"/>
 
+    <com.xw.repo.bubbleseekbar.BubbleSeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:bsb_progress="50"
+        app:bsb_second_track_color="@color/color_green"
+        app:bsb_show_section_mark="true"
+        app:bsb_track_color="@color/color_gray"/>
 
     <com.xw.repo.bubbleseekbar.BubbleSeekBar
         android:layout_width="match_parent"
@@ -35,17 +43,9 @@
 
     <com.xw.repo.bubbleseekbar.BubbleSeekBar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:bsb_progress="50"
-        app:bsb_second_track_color="@color/color_green"
-        app:bsb_show_section_mark="true"
-        app:bsb_track_color="@color/color_gray"/>
-
-    <com.xw.repo.bubbleseekbar.BubbleSeekBar
-        android:layout_width="match_parent"
         android:layout_height="16dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
+        app:bsb_show_progress_in_float="true"
         app:bsb_show_section_mark="true"
         app:bsb_show_text="true"
         app:bsb_show_thumb_text="true"/>
@@ -57,7 +57,7 @@
         app:bsb_auto_adjust_section_mark="true"
         app:bsb_bubble_color="@color/color_red_light"
         app:bsb_bubble_text_color="@color/color_green"
-        app:bsb_bubble_text_size="18sp"
+        app:bsb_bubble_text_size="10sp"
         app:bsb_max="50"
         app:bsb_min="-50"
         app:bsb_second_track_color="@color/color_red"
@@ -66,4 +66,18 @@
         app:bsb_show_thumb_text="true"
         app:bsb_text_position="bottom"
         app:bsb_track_color="@color/color_red_light"/>
+
+    <com.xw.repo.bubbleseekbar.BubbleSeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        app:bsb_auto_adjust_section_mark="true"
+        app:bsb_second_track_color="@color/color_blue"
+        app:bsb_show_progress_in_float="true"
+        app:bsb_show_section_mark="true"
+        app:bsb_show_text="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_text_position="bottom"
+        app:bsb_thumb_text_color="@color/colorPrimary"
+        app:bsb_thumb_text_size="18sp"/>
 </LinearLayout>

@@ -165,6 +165,7 @@ public class BubbleSeekBar extends View {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setTextAlign(Paint.Align.CENTER);
 
         mRectText = new Rect();
 
@@ -173,7 +174,8 @@ public class BubbleSeekBar extends View {
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 
         mBubbleView = new BubbleView(context);
-        mBubbleView.setProgressText(String.valueOf(isShowProgressInFloat ? getProgressInFloat() : getProgress()));
+        mBubbleView.setProgressText(isShowProgressInFloat ?
+                String.valueOf(getProgressInFloat()) : String.valueOf(getProgress()));
 
         mPaint.setTextSize(mBubbleTextSize);
         mPaint.getTextBounds(String.valueOf(mMin), 0, String.valueOf(mMin).length(), mRectText);
@@ -203,12 +205,12 @@ public class BubbleSeekBar extends View {
         int height = mThumbRadiusOnDragging * 2;
         if (isShowThumbText) {
             mPaint.setTextSize(mThumbTextSize);
-            mPaint.getTextBounds("0", 0, 1, mRectText);
+            mPaint.getTextBounds("j", 0, 1, mRectText);
             height += mRectText.height() + mTextSpace;
         }
         if (isShowText && mTextPosition == TextPosition.BOTTOM) {
             mPaint.setTextSize(mTextSize);
-            mPaint.getTextBounds("0", 0, 1, mRectText);
+            mPaint.getTextBounds("j", 0, 1, mRectText);
             height = Math.max(height, mThumbRadiusOnDragging * 2 + mRectText.height() + mTextSpace);
         }
         setMeasuredDimension(resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec),
@@ -299,20 +301,23 @@ public class BubbleSeekBar extends View {
         }
 
         if (isShowThumbText && !isThumbOnDragging) {
-            mPaint.setTextAlign(Paint.Align.CENTER);
-            mPaint.setTextSize(mThumbTextSize);
-            mPaint.setColor(mThumbTextColor);
+            if (mTextPosition == TextPosition.SIDES || !isShowProgressInFloat ||
+                    ((int) mProgress != mMin && (int) mProgress != mMax)) {
 
-            if (isShowProgressInFloat) {
-                mPaint.getTextBounds(String.valueOf(getProgressInFloat()), 0,
-                        String.valueOf(getProgressInFloat()).length(), mRectText);
-                float y_ = y + mRectText.height() + mThumbRadiusOnDragging + mTextSpace;
-                canvas.drawText(String.valueOf(getProgressInFloat()), mThumbCenterX, y_, mPaint);
-            } else {
-                mPaint.getTextBounds(String.valueOf(getProgress()), 0,
-                        String.valueOf(getProgress()).length(), mRectText);
-                float y_ = y + mRectText.height() + mThumbRadiusOnDragging + mTextSpace;
-                canvas.drawText(String.valueOf(getProgress()), mThumbCenterX, y_, mPaint);
+                mPaint.setTextSize(mThumbTextSize);
+                mPaint.setColor(mThumbTextColor);
+
+                if (isShowProgressInFloat) {
+                    mPaint.getTextBounds(String.valueOf(getProgressInFloat()), 0,
+                            String.valueOf(getProgressInFloat()).length(), mRectText);
+                    float y_ = y + mRectText.height() + mThumbRadiusOnDragging + mTextSpace;
+                    canvas.drawText(String.valueOf(getProgressInFloat()), mThumbCenterX, y_, mPaint);
+                } else {
+                    mPaint.getTextBounds(String.valueOf(getProgress()), 0,
+                            String.valueOf(getProgress()).length(), mRectText);
+                    float y_ = y + mRectText.height() + mThumbRadiusOnDragging + mTextSpace;
+                    canvas.drawText(String.valueOf(getProgress()), mThumbCenterX, y_, mPaint);
+                }
             }
         }
 
@@ -372,8 +377,8 @@ public class BubbleSeekBar extends View {
                     mBubbleCenterRawX = mBubbleCenterRawSolidX + (mProgress - mMin) * 1f / mDelta * mTrackLength;
                     mLayoutParams.x = (int) mBubbleCenterRawX;
                     mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
-                    mBubbleView.setProgressText(String.valueOf(isShowProgressInFloat ?
-                            getProgressInFloat() : getProgress()));
+                    mBubbleView.setProgressText(isShowProgressInFloat ?
+                            String.valueOf(getProgressInFloat()) : String.valueOf(getProgress()));
 
                     invalidate();
 
@@ -482,8 +487,8 @@ public class BubbleSeekBar extends View {
                 mBubbleCenterRawX = mBubbleCenterRawSolidX + mThumbCenterX - mLeft;
                 mLayoutParams.x = (int) mBubbleCenterRawX;
                 mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
-                mBubbleView.setProgressText(String.valueOf(isShowProgressInFloat ?
-                        getProgressInFloat() : getProgress()));
+                mBubbleView.setProgressText(isShowProgressInFloat ?
+                        String.valueOf(getProgressInFloat()) : String.valueOf(getProgress()));
 
                 invalidate();
             }
@@ -594,6 +599,8 @@ public class BubbleSeekBar extends View {
             }
             if (mThumbRadiusOnDragging <= mSecondTrackSize) {
                 mThumbRadiusOnDragging = mSecondTrackSize * 2;
+                requestLayout();
+                return;
             }
 
             postInvalidate();
@@ -612,6 +619,8 @@ public class BubbleSeekBar extends View {
             }
             if (mThumbRadiusOnDragging <= mSecondTrackSize) {
                 mThumbRadiusOnDragging = mSecondTrackSize * 2;
+                requestLayout();
+                return;
             }
 
             postInvalidate();
@@ -666,6 +675,94 @@ public class BubbleSeekBar extends View {
     public void setSecondTrackColor(int secondTrackColor) {
         if (mSecondTrackColor != secondTrackColor) {
             mSecondTrackColor = secondTrackColor;
+            postInvalidate();
+        }
+    }
+
+    public boolean isShowText() {
+        return isShowText;
+    }
+
+    public void setShowText(boolean showText) {
+        if (isShowText != showText) {
+            isShowText = showText;
+            requestLayout();
+        }
+    }
+
+    public int getTextSize() {
+        return mTextSize;
+    }
+
+    public void setTextSize(int textSize) {
+        if (mTextSize != textSize) {
+            mTextSize = textSize;
+            requestLayout();
+        }
+    }
+
+    public int getTextColor() {
+        return mTextColor;
+    }
+
+    public void setTextColor(int textColor) {
+        if (mTextColor != textColor) {
+            mTextColor = textColor;
+            postInvalidate();
+        }
+    }
+
+    public int getTextPosition() {
+        return mTextPosition;
+    }
+
+    public void setTextPosition(@TextPosition int textPosition) {
+        if (mTextPosition != textPosition) {
+            mTextPosition = textPosition;
+            requestLayout();
+        }
+    }
+
+    public boolean isShowThumbText() {
+        return isShowThumbText;
+    }
+
+    public void setShowThumbText(boolean showThumbText) {
+        if (isShowThumbText != showThumbText) {
+            isShowThumbText = showThumbText;
+            requestLayout();
+        }
+    }
+
+    public int getThumbTextSize() {
+        return mThumbTextSize;
+    }
+
+    public void setThumbTextSize(int thumbTextSize) {
+        if (mThumbTextSize != thumbTextSize) {
+            mThumbTextSize = thumbTextSize;
+            requestLayout();
+        }
+    }
+
+    public int getThumbTextColor() {
+        return mThumbTextColor;
+    }
+
+    public void setThumbTextColor(int thumbTextColor) {
+        if (mThumbTextColor != thumbTextColor) {
+            mThumbTextColor = thumbTextColor;
+            postInvalidate();
+        }
+    }
+
+    public boolean isShowProgressInFloat() {
+        return isShowProgressInFloat;
+    }
+
+    public void setShowProgressInFloat(boolean showProgressInFloat) {
+        if (isShowProgressInFloat != showProgressInFloat) {
+            isShowProgressInFloat = showProgressInFloat;
             postInvalidate();
         }
     }
