@@ -15,13 +15,14 @@
     tools:context="com.xw.samlpe.bubbleseekbar.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <com.xw.repo.bubbleseekbar.BubbleSeekBar
+    <com.xw.repo.BubbleSeekBar
         android:id="@+id/bubble_seek_bar_0"
         android:layout_width="match_parent"
         android:layout_height="16dp"
-        android:layout_marginTop="48dp"/>
+        android:layout_marginTop="32dp"/>
 
-    <com.xw.repo.bubbleseekbar.BubbleSeekBar
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/bubble_seek_bar_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -30,7 +31,8 @@
         app:bsb_show_section_mark="true"
         app:bsb_track_color="@color/color_gray"/>
 
-    <com.xw.repo.bubbleseekbar.BubbleSeekBar
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/bubble_seek_bar_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
@@ -41,7 +43,8 @@
         app:bsb_track_color="@color/color_gray"
         app:bsb_track_size="4dp"/>
 
-    <com.xw.repo.bubbleseekbar.BubbleSeekBar
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/bubble_seek_bar_3"
         android:layout_width="match_parent"
         android:layout_height="16dp"
         android:layout_marginTop="32dp"
@@ -50,13 +53,14 @@
         app:bsb_show_text="true"
         app:bsb_show_thumb_text="true"/>
 
-    <com.xw.repo.bubbleseekbar.BubbleSeekBar
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/bubble_seek_bar_4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         app:bsb_auto_adjust_section_mark="true"
         app:bsb_bubble_color="@color/color_red_light"
-        app:bsb_bubble_text_color="@color/color_green"
+        app:bsb_bubble_text_color="@color/colorPrimaryDark"
         app:bsb_bubble_text_size="10sp"
         app:bsb_max="50"
         app:bsb_min="-50"
@@ -67,12 +71,14 @@
         app:bsb_text_position="bottom"
         app:bsb_track_color="@color/color_red_light"/>
 
-    <com.xw.repo.bubbleseekbar.BubbleSeekBar
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/bubble_seek_bar_5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         app:bsb_auto_adjust_section_mark="true"
         app:bsb_second_track_color="@color/color_blue"
+        app:bsb_section_count="5"
         app:bsb_show_progress_in_float="true"
         app:bsb_show_section_mark="true"
         app:bsb_show_text="true"
