@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -30,12 +31,15 @@ import android.view.animation.LinearInterpolator;
 
 import com.xw.repo.bubbleseekbar.R;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.math.BigDecimal;
 
-import static com.xw.repo.BubbleSeekBar.TextPosition.SIDES;
 import static com.xw.repo.BubbleSeekBar.TextPosition.BOTTOM;
+import static com.xw.repo.BubbleSeekBar.TextPosition.SIDES;
 
 /**
  * 气泡形式可视化的自定义SeekBar
@@ -272,7 +276,10 @@ public class BubbleSeekBar extends View {
          */
         mBubbleCenterRawSolidX = points[0] + mLeft - mBubbleView.getMeasuredWidth() / 2f;
         mBubbleCenterRawX = mBubbleCenterRawSolidX + mTrackLength * (mProgress - mMin) / mDelta;
-        mBubbleCenterRawSolidY = points[1] - mBubbleView.getMeasuredHeight() - dp2px(24);
+        mBubbleCenterRawSolidY = points[1] - mBubbleView.getMeasuredHeight();
+        if (!isFxxkingMIUI()) {
+            mBubbleCenterRawSolidY -= dp2px(24);
+        }
     }
 
     @Override
@@ -469,7 +476,11 @@ public class BubbleSeekBar extends View {
             mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                     | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
-            mLayoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
+            if (isFxxkingMIUI()) { // MIUI禁止了开发者使用TYPE_TOAST
+                mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL;
+            } else {
+                mLayoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
+            }
         }
         mLayoutParams.x = (int) mBubbleCenterRawX;
         mLayoutParams.y = (int) mBubbleCenterRawSolidY;
@@ -484,6 +495,32 @@ public class BubbleSeekBar extends View {
                         mWindowManager.addView(mBubbleView, mLayoutParams);
                     }
                 }).start();
+    }
+
+    /**
+     * 判断是否MIUI
+     */
+    private boolean isFxxkingMIUI() {
+        String line;
+        BufferedReader input = null;
+        try {
+            Process p = Runtime.getRuntime().exec("getprop " + "ro.miui.ui.version.name");
+            input = new BufferedReader(new InputStreamReader(p.getInputStream()), 1024);
+            line = input.readLine();
+            input.close();
+        } catch (IOException ex) {
+            return false;
+        } finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return !TextUtils.isEmpty(line);
     }
 
     /**
