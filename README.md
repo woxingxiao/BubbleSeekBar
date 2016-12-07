@@ -1,4 +1,7 @@
-[![](https://jitpack.io/v/woxingxiao/BubbleSeekBar.svg)](https://jitpack.io/#woxingxiao/BubbleSeekBar)
+[![](https://jitpack.io/v/woxingxiao/BubbleSeekBar.svg)](https://jitpack.io/#woxingxiao/BubbleSeekBar)  
+  
+**自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**  
+****
 ##Screenshot
 ![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/demo.gif)  
 
