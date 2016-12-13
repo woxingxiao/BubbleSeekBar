@@ -87,6 +87,7 @@ public class BubbleSeekBar extends View {
     private boolean isThumbOnDragging; // thumb是否在被拖动
     private int mTextSpace; // 文字与其他的间距
     private OnProgressChangedListener mOnProgressChangedListener; // progress变化监听
+    private boolean isBubbleShowing;
 
     private float mLeft; // 便于理解，假设显示SectionMark，该值为首个SectionMark圆心距自己左边的距离
     private float mRight; // 同上假设，该值为最后一个SectionMark圆心距自己左边的距离
@@ -229,8 +230,7 @@ public class BubbleSeekBar extends View {
             mPaint.getTextBounds("j", 0, 1, mRectText);
             height = Math.max(height, mThumbRadiusOnDragging * 2 + mRectText.height() + mTextSpace);
         }
-        setMeasuredDimension(resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec),
-                height + getPaddingTop() + getPaddingBottom());
+        setMeasuredDimension(resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec), height);
 
         mLeft = getPaddingLeft() + mThumbRadiusOnDragging;
         mRight = getWidth() - getPaddingRight() - mThumbRadiusOnDragging;
@@ -433,10 +433,9 @@ public class BubbleSeekBar extends View {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
                                     super.onAnimationEnd(animation);
-                                    mBubbleView.setVisibility(GONE); // 防闪烁
-                                    mWindowManager.removeView(mBubbleView);
-                                    isThumbOnDragging = false;
 
+                                    hideBubble();
+                                    isThumbOnDragging = false;
                                     invalidate();
                                 }
                             }).start();
@@ -467,6 +466,10 @@ public class BubbleSeekBar extends View {
      * 原理是利用WindowManager动态添加一个与Toast相同类型的BubbleView，消失时再移除
      */
     private void showBubble() {
+        if (isBubbleShowing) {
+            return;
+        }
+
         if (mLayoutParams == null) {
             mLayoutParams = new WindowManager.LayoutParams();
             mLayoutParams.gravity = Gravity.START | Gravity.TOP;
@@ -493,6 +496,7 @@ public class BubbleSeekBar extends View {
                     public void onAnimationStart(Animator animation) {
                         super.onAnimationStart(animation);
                         mWindowManager.addView(mBubbleView, mLayoutParams);
+                        isBubbleShowing = true;
                     }
                 }).start();
     }
@@ -550,11 +554,13 @@ public class BubbleSeekBar extends View {
             public void onAnimationUpdate(ValueAnimator animation) {
                 mThumbCenterX = (float) animation.getAnimatedValue();
 
-                mBubbleCenterRawX = mBubbleCenterRawSolidX + mThumbCenterX - mLeft;
-                mLayoutParams.x = (int) mBubbleCenterRawX;
-                mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
-                mBubbleView.setProgressText(isShowProgressInFloat ?
-                        String.valueOf(getProgressInFloat()) : String.valueOf(getProgress()));
+                if (isBubbleShowing) {
+                    mBubbleCenterRawX = mBubbleCenterRawSolidX + mThumbCenterX - mLeft;
+                    mLayoutParams.x = (int) mBubbleCenterRawX;
+                    mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
+                    mBubbleView.setProgressText(isShowProgressInFloat ?
+                            String.valueOf(getProgressInFloat()) : String.valueOf(getProgress()));
+                }
 
                 invalidate();
             }
@@ -567,14 +573,24 @@ public class BubbleSeekBar extends View {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                mBubbleView.setVisibility(GONE); // 防闪烁
-                mWindowManager.removeView(mBubbleView);
+                hideBubble();
 
                 mProgress = (mThumbCenterX - mLeft) * mDelta / mTrackLength + mMin;
                 isThumbOnDragging = false;
             }
         });
         animatorSet.start();
+    }
+
+    /**
+     * 隐藏气泡
+     */
+    private void hideBubble() {
+        if (isBubbleShowing) {
+            mBubbleView.setVisibility(GONE); // 防闪烁
+            mWindowManager.removeView(mBubbleView);
+            isBubbleShowing = false;
+        }
     }
 
     @Override
