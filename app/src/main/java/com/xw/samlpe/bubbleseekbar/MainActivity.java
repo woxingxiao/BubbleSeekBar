@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.xw.repo.BubbleSeekBar;
 
@@ -15,17 +16,28 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BubbleSeekBar mBubbleSeekBar0;
+    BubbleSeekBar mBubbleSeekBar0;
+    BubbleSeekBar mBubbleSeekBar5;
+    BubbleSeekBar mBubbleSeekBar6;
+    TextView mProgressText;
+    ObservableScrollView mObsScrollView;
+
+    StringBuilder mStringBuilder = new StringBuilder();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         mBubbleSeekBar0 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_0);
+        mBubbleSeekBar5 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_5);
+        mBubbleSeekBar6 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_6);
+        mProgressText = (TextView) findViewById(R.id.progress_text);
+        mObsScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
+
+        setSupportActionBar(toolbar);
 
         assert fab != null;
         fab.setOnClickListener(new View.OnClickListener() {
@@ -36,6 +48,31 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.make(view, "set random progress = " + progress, Snackbar.LENGTH_SHORT).show();
             }
         });
+
+        mBubbleSeekBar5.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
+            @Override
+            public void onProgressChanged(int progress) {
+                mStringBuilder.delete(0, mStringBuilder.length());
+
+                mStringBuilder.append("(listener) int:").append(progress);
+            }
+
+            @Override
+            public void onProgressChanged(float progress) {
+                mStringBuilder.append(", float:").append(progress);
+
+                mProgressText.setText(mStringBuilder.toString());
+            }
+        });
+
+        mObsScrollView.setOnScrollChangedListener(new ObservableScrollView.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
+                // 调用修正偏移方法
+                mBubbleSeekBar6.correctOffsetWhenContainerOnScrolling();
+            }
+        });
+
     }
 
     @Override

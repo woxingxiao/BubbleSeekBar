@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">BubbleSeekBar</string>
     <string name="action_settings">Settings</string>
+    <string name="tips">下面演示BubbleSeekBar嵌套在可滑动的容器中时，监听滑动修正Bubble的位置偏移。（上下滑动，观察Bubble位置）</string>
+    <string name="fixed">已修正</string>
+    <string name="not_fix">未修正</string>
 </resources>
