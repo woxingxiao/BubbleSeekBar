@@ -19,7 +19,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -31,9 +30,6 @@ import android.view.animation.LinearInterpolator;
 
 import com.xw.repo.bubbleseekbar.R;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.math.BigDecimal;
@@ -77,7 +73,7 @@ public class BubbleSeekBar extends View {
     private int mBubbleTextSize; // 气泡文字大小
     private int mBubbleTextColor; // 气泡文字颜色
     private boolean isShowSectionMark; // 是否显示份数
-    private boolean isAutoAdjustSectionMark; // 是否自动滑到最近的整份数
+    private boolean isAutoAdjustSectionMark; // 是否自动滑到最近的整份数，以showSectionMark为前提
     private boolean isShowProgressInFloat; // 是否显示小数形式progress，所有小数均保留1位
 
     private int mDelta; // max - min
@@ -87,7 +83,6 @@ public class BubbleSeekBar extends View {
     private boolean isThumbOnDragging; // thumb是否在被拖动
     private int mTextSpace; // 文字与其他的间距
     private OnProgressChangedListener mOnProgressChangedListener; // progress变化监听
-    private boolean isBubbleShowing;
 
     private float mLeft; // 便于理解，假设显示SectionMark，该值为首个SectionMark圆心距自己左边的距离
     private float mRight; // 同上假设，该值为最后一个SectionMark圆心距自己左边的距离
@@ -101,6 +96,7 @@ public class BubbleSeekBar extends View {
     private float mBubbleCenterRawSolidY; // 气泡的固定RawY
     private float mBubbleCenterRawX; // 气泡的实时RawX
     private WindowManager.LayoutParams mLayoutParams;
+    private int[] mPoints = new int[2];
 
     public BubbleSeekBar(Context context) {
         this(context, null);
@@ -160,6 +156,9 @@ public class BubbleSeekBar extends View {
         if (mProgress < mMin) {
             mProgress = mMin;
         }
+        if (mProgress > mMax) {
+            mProgress = mMax;
+        }
         if (mSecondTrackSize < mTrackSize) {
             mSecondTrackSize = mTrackSize + dp2px(2);
         }
@@ -171,6 +170,9 @@ public class BubbleSeekBar extends View {
         }
         if (mSectionCount <= 0) {
             mSectionCount = 10;
+        }
+        if (isAutoAdjustSectionMark && !isShowSectionMark) {
+            isAutoAdjustSectionMark = false;
         }
         if (mSectionCount > mDelta) {
             isShowProgressInFloat = true;
@@ -266,18 +268,22 @@ public class BubbleSeekBar extends View {
 
         mBubbleView.measure(widthMeasureSpec, heightMeasureSpec);
 
-        int[] points = new int[2];
-        getLocationOnScreen(points);
-        /**
-         * 气泡BubbleView实际是通过WindowManager动态添加的一个视图，因此与SeekBar唯一的位置联系就是它们在屏
-         * 幕上的绝对坐标。
-         * 先计算进度mProgress为零时BubbleView的中心坐标（mBubbleCenterRawSolidX，mBubbleCenterRawSolidY），
-         * 然后根据进度来增量计算横坐标mBubbleCenterRawX，再动态设置LayoutParameter.x，就实现了气泡跟随滑动移动。
-         */
-        mBubbleCenterRawSolidX = points[0] + mLeft - mBubbleView.getMeasuredWidth() / 2f;
+        locatePositionOnScreen();
+    }
+
+    /**
+     * 气泡BubbleView实际是通过WindowManager动态添加的一个视图，因此与SeekBar唯一的位置联系就是它们在屏
+     * 幕上的绝对坐标。
+     * 先计算进度mProgress为零时BubbleView的中心坐标（mBubbleCenterRawSolidX，mBubbleCenterRawSolidY），
+     * 然后根据进度来增量计算横坐标mBubbleCenterRawX，再动态设置LayoutParameter.x，就实现了气泡跟随滑动移动。
+     */
+    private void locatePositionOnScreen() {
+        getLocationOnScreen(mPoints);
+
+        mBubbleCenterRawSolidX = mPoints[0] + mLeft - mBubbleView.getMeasuredWidth() / 2f;
         mBubbleCenterRawX = mBubbleCenterRawSolidX + mTrackLength * (mProgress - mMin) / mDelta;
-        mBubbleCenterRawSolidY = points[1] - mBubbleView.getMeasuredHeight();
-        if (!isFxxkingMIUI()) {
+        mBubbleCenterRawSolidY = mPoints[1] - mBubbleView.getMeasuredHeight();
+        if (!BuildUtils.isMIUI()) {
             mBubbleCenterRawSolidY -= dp2px(24);
         }
     }
@@ -411,7 +417,7 @@ public class BubbleSeekBar extends View {
                     mProgress = (mThumbCenterX - mLeft) * mDelta / mTrackLength + mMin;
 
                     mBubbleCenterRawX = mBubbleCenterRawSolidX + mTrackLength * (mProgress - mMin) / mDelta;
-                    mLayoutParams.x = (int) mBubbleCenterRawX;
+                    mLayoutParams.x = (int) (mBubbleCenterRawX + 0.5f);
                     mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
                     mBubbleView.setProgressText(isShowProgressInFloat ?
                             String.valueOf(getProgressInFloat()) : String.valueOf(getProgress()));
@@ -427,22 +433,27 @@ public class BubbleSeekBar extends View {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                if (isThumbOnDragging) {
+                if (isAutoAdjustSectionMark) {
+                    autoAdjustSection();
+                } else if (isThumbOnDragging) {
                     mBubbleView.animate().alpha(0f).setDuration(200)
                             .setListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-
                                     hideBubble();
+
+                                    isThumbOnDragging = false;
+                                    invalidate();
+                                }
+
+                                @Override
+                                public void onAnimationCancel(Animator animation) {
+                                    hideBubble();
+
                                     isThumbOnDragging = false;
                                     invalidate();
                                 }
                             }).start();
-                }
-
-                if (isAutoAdjustSectionMark) {
-                    autoAdjustSection();
                 }
 
                 break;
@@ -466,7 +477,7 @@ public class BubbleSeekBar extends View {
      * 原理是利用WindowManager动态添加一个与Toast相同类型的BubbleView，消失时再移除
      */
     private void showBubble() {
-        if (isBubbleShowing) {
+        if (mBubbleView.getParent() != null) {
             return;
         }
 
@@ -479,14 +490,14 @@ public class BubbleSeekBar extends View {
             mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                     | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
-            if (isFxxkingMIUI()) { // MIUI禁止了开发者使用TYPE_TOAST
+            if (BuildUtils.isMIUI()) { // MIUI禁止了开发者使用TYPE_TOAST
                 mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL;
             } else {
                 mLayoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
             }
         }
-        mLayoutParams.x = (int) mBubbleCenterRawX;
-        mLayoutParams.y = (int) mBubbleCenterRawSolidY;
+        mLayoutParams.x = (int) (mBubbleCenterRawX + 0.5f);
+        mLayoutParams.y = (int) (mBubbleCenterRawSolidY + 0.5f);
 
         mBubbleView.setAlpha(0);
         mBubbleView.setVisibility(VISIBLE);
@@ -494,37 +505,9 @@ public class BubbleSeekBar extends View {
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationStart(Animator animation) {
-                        super.onAnimationStart(animation);
                         mWindowManager.addView(mBubbleView, mLayoutParams);
-                        isBubbleShowing = true;
                     }
                 }).start();
-    }
-
-    /**
-     * 判断是否MIUI
-     */
-    private boolean isFxxkingMIUI() {
-        String line;
-        BufferedReader input = null;
-        try {
-            Process p = Runtime.getRuntime().exec("getprop " + "ro.miui.ui.version.name");
-            input = new BufferedReader(new InputStreamReader(p.getInputStream()), 1024);
-            line = input.readLine();
-            input.close();
-        } catch (IOException ex) {
-            return false;
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return !TextUtils.isEmpty(line);
     }
 
     /**
@@ -540,39 +523,62 @@ public class BubbleSeekBar extends View {
             }
         }
 
+        BigDecimal bigDecimal = BigDecimal.valueOf(mThumbCenterX);
+        float x_ = bigDecimal.setScale(1, BigDecimal.ROUND_HALF_UP).floatValue();
+        boolean onSection = x_ == x; // 就在section处，不作valueAnim，优化性能
+
         AnimatorSet animatorSet = new AnimatorSet();
 
-        ValueAnimator valueAnim;
-        if (mThumbCenterX - x <= mSectionOffset / 2f) {
-            valueAnim = ValueAnimator.ofFloat(mThumbCenterX, x);
-        } else {
-            valueAnim = ValueAnimator.ofFloat(mThumbCenterX, (i + 1) * mSectionOffset + mLeft);
-        }
-        valueAnim.setInterpolator(new LinearInterpolator());
-        valueAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mThumbCenterX = (float) animation.getAnimatedValue();
+        ValueAnimator valueAnim = null;
+        if (!onSection) {
+            if (mThumbCenterX - x <= mSectionOffset / 2f) {
+                valueAnim = ValueAnimator.ofFloat(mThumbCenterX, x);
+            } else {
+                valueAnim = ValueAnimator.ofFloat(mThumbCenterX, (i + 1) * mSectionOffset + mLeft);
+            }
+            valueAnim.setInterpolator(new LinearInterpolator());
+            valueAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mThumbCenterX = (float) animation.getAnimatedValue();
+                    mProgress = (mThumbCenterX - mLeft) * mDelta / mTrackLength + mMin;
 
-                if (isBubbleShowing) {
                     mBubbleCenterRawX = mBubbleCenterRawSolidX + mThumbCenterX - mLeft;
-                    mLayoutParams.x = (int) mBubbleCenterRawX;
-                    mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
+                    mLayoutParams.x = (int) (mBubbleCenterRawX + 0.5f);
+                    if (mBubbleView.getParent() != null) {
+                        mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
+                    }
                     mBubbleView.setProgressText(isShowProgressInFloat ?
                             String.valueOf(getProgressInFloat()) : String.valueOf(getProgress()));
-                }
 
-                invalidate();
-            }
-        });
+                    invalidate();
+
+                    if (mOnProgressChangedListener != null) {
+                        mOnProgressChangedListener.onProgressChanged(getProgress());
+                        mOnProgressChangedListener.onProgressChanged(getProgressInFloat());
+                    }
+                }
+            });
+        }
 
         ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(mBubbleView, View.ALPHA, 0);
 
-        animatorSet.setDuration(200).playTogether(valueAnim, alphaAnim);
+        if (onSection) {
+            animatorSet.setDuration(200).play(alphaAnim);
+        } else {
+            animatorSet.setDuration(200).playTogether(valueAnim, alphaAnim);
+        }
         animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
+                hideBubble();
+
+                mProgress = (mThumbCenterX - mLeft) * mDelta / mTrackLength + mMin;
+                isThumbOnDragging = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
                 hideBubble();
 
                 mProgress = (mThumbCenterX - mLeft) * mDelta / mTrackLength + mMin;
@@ -586,10 +592,20 @@ public class BubbleSeekBar extends View {
      * 隐藏气泡
      */
     private void hideBubble() {
-        if (isBubbleShowing) {
-            mBubbleView.setVisibility(GONE); // 防闪烁
-            mWindowManager.removeView(mBubbleView);
-            isBubbleShowing = false;
+        mBubbleView.setVisibility(GONE); // 防闪烁
+        if (mBubbleView.getParent() != null) {
+            mWindowManager.removeViewImmediate(mBubbleView);
+        }
+    }
+
+    /**
+     * 当外部容器是可滑动的控件时，监听滑动调用该方法来实时修正偏移
+     */
+    public void correctOffsetWhenContainerOnScrolling() {
+        locatePositionOnScreen();
+
+        if (mBubbleView.getParent() != null) {
+            postInvalidate();
         }
     }
 
@@ -910,6 +926,10 @@ public class BubbleSeekBar extends View {
     public void setShowSectionMark(boolean showSectionMark) {
         if (isShowSectionMark != showSectionMark) {
             isShowSectionMark = showSectionMark;
+
+            if (isAutoAdjustSectionMark && !isShowSectionMark) {
+                isAutoAdjustSectionMark = false;
+            }
             postInvalidate();
         }
     }
@@ -921,6 +941,10 @@ public class BubbleSeekBar extends View {
     public void setAutoAdjustSectionMark(boolean autoAdjustSectionMark) {
         if (isAutoAdjustSectionMark != autoAdjustSectionMark) {
             isAutoAdjustSectionMark = autoAdjustSectionMark;
+
+            if (isAutoAdjustSectionMark && !isShowSectionMark) {
+                isAutoAdjustSectionMark = false;
+            }
             postInvalidate();
         }
     }
