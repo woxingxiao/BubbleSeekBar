@@ -19,7 +19,7 @@ root project:`build.gradle`
 app:`build.gradle`
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:v1.3'
+     compile 'com.github.woxingxiao:BubbleSeekBar:v1.4'
   }
 ```  
 ##Attributes
@@ -50,7 +50,7 @@ bsb_bubble_color|int|气泡的颜色，默认与左track相同
 bsb_bubble_text_size|dimension|气泡中进度文字大小，默认14sp
 bsb_bubble_text_color|int|气泡中进度文字颜色，默认白色  
 
-##Useage
+##Usage
 ```xml
    <com.xw.repo.BubbleSeekBar
         android:id="@+id/bubble_seek_bar_0"
@@ -124,6 +124,17 @@ bsb_bubble_text_color|int|气泡中进度文字颜色，默认白色
         app:bsb_thumb_text_color="@color/colorPrimary"
         app:bsb_thumb_text_size="18sp"/>
 ```
+如果`BubbleSeekBar`的外部容器是可滑动的控件，需要设置滑动监听来修正气泡的偏移，否则滑动后气泡出现位置可能错乱。方法如下：
+```java
+   mContainer.setOnYourContainerScrollListener(new OnYourContainerScrollListener() {
+       @Override
+       public void onScroll() {
+           // 调用修正偏移方法
+           mBubbleSeekBar.correctOffsetWhenContainerOnScrolling();
+       }
+   });
+```
+
 ##License
 ```
 The MIT License (MIT)
