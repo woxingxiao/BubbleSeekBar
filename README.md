@@ -5,7 +5,7 @@
 ##Screenshot
 ![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/demo.gif)  
 
-[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/sample.apk)  
+[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
 ##Download
 root project:`build.gradle`
 ```groovy
@@ -19,7 +19,7 @@ root project:`build.gradle`
 app:`build.gradle`
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:v1.4'
+     compile 'com.github.woxingxiao:BubbleSeekBar:v1.5'
   }
 ```  
 ##Attributes
