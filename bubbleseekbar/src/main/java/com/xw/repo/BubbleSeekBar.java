@@ -82,7 +82,7 @@ public class BubbleSeekBar extends View {
     private float mSectionOffset; // 一个section的长度
     private boolean isThumbOnDragging; // thumb是否在被拖动
     private int mTextSpace; // 文字与其他的间距
-    private OnProgressChangedListener mOnProgressChangedListener; // progress变化监听
+    private OnProgressChangedListener mProgressListener; // progress变化监听
 
     private float mLeft; // 便于理解，假设显示SectionMark，该值为首个SectionMark圆心距自己左边的距离
     private float mRight; // 同上假设，该值为最后一个SectionMark圆心距自己左边的距离
@@ -96,7 +96,7 @@ public class BubbleSeekBar extends View {
     private float mBubbleCenterRawSolidY; // 气泡的固定RawY
     private float mBubbleCenterRawX; // 气泡的实时RawX
     private WindowManager.LayoutParams mLayoutParams;
-    private int[] mPoints = new int[2];
+    private int[] mPoint = new int[2];
 
     public BubbleSeekBar(Context context) {
         this(context, null);
@@ -278,11 +278,11 @@ public class BubbleSeekBar extends View {
      * 然后根据进度来增量计算横坐标mBubbleCenterRawX，再动态设置LayoutParameter.x，就实现了气泡跟随滑动移动。
      */
     private void locatePositionOnScreen() {
-        getLocationOnScreen(mPoints);
+        getLocationOnScreen(mPoint);
 
-        mBubbleCenterRawSolidX = mPoints[0] + mLeft - mBubbleView.getMeasuredWidth() / 2f;
+        mBubbleCenterRawSolidX = mPoint[0] + mLeft - mBubbleView.getMeasuredWidth() / 2f;
         mBubbleCenterRawX = mBubbleCenterRawSolidX + mTrackLength * (mProgress - mMin) / mDelta;
-        mBubbleCenterRawSolidY = mPoints[1] - mBubbleView.getMeasuredHeight();
+        mBubbleCenterRawSolidY = mPoint[1] - mBubbleView.getMeasuredHeight();
         if (!BuildUtils.isMIUI()) {
             mBubbleCenterRawSolidY -= dp2px(24);
         }
@@ -424,9 +424,9 @@ public class BubbleSeekBar extends View {
 
                     invalidate();
 
-                    if (mOnProgressChangedListener != null) {
-                        mOnProgressChangedListener.onProgressChanged(getProgress());
-                        mOnProgressChangedListener.onProgressChanged(getProgressInFloat());
+                    if (mProgressListener != null) {
+                        mProgressListener.onProgressChanged(getProgress());
+                        mProgressListener.onProgressChanged(getProgressInFloat());
                     }
                 }
 
@@ -444,6 +444,11 @@ public class BubbleSeekBar extends View {
 
                                     isThumbOnDragging = false;
                                     invalidate();
+
+                                    if (mProgressListener != null) {
+                                        mProgressListener.getProgressOnFinally(getProgress());
+                                        mProgressListener.getProgressOnFinally(getProgressInFloat());
+                                    }
                                 }
 
                                 @Override
@@ -454,6 +459,11 @@ public class BubbleSeekBar extends View {
                                     invalidate();
                                 }
                             }).start();
+
+                    if (mProgressListener != null) {
+                        mProgressListener.getProgressOnActionUp(getProgress());
+                        mProgressListener.getProgressOnActionUp(getProgressInFloat());
+                    }
                 }
 
                 break;
@@ -469,7 +479,7 @@ public class BubbleSeekBar extends View {
         float x = mTrackLength / mDelta * (mProgress - mMin) + mLeft;
         float y = getHeight() / 2f;
         return (event.getX() - x) * (event.getX() - x) + (event.getY() - y) * (event.getY() - y)
-                <= (mLeft + dp2px(4)) * (mLeft + dp2px(4));
+                <= (mLeft + dp2px(8)) * (mLeft + dp2px(8));
     }
 
     /**
@@ -553,9 +563,9 @@ public class BubbleSeekBar extends View {
 
                     invalidate();
 
-                    if (mOnProgressChangedListener != null) {
-                        mOnProgressChangedListener.onProgressChanged(getProgress());
-                        mOnProgressChangedListener.onProgressChanged(getProgressInFloat());
+                    if (mProgressListener != null) {
+                        mProgressListener.onProgressChanged(getProgress());
+                        mProgressListener.onProgressChanged(getProgressInFloat());
                     }
                 }
             });
@@ -575,6 +585,12 @@ public class BubbleSeekBar extends View {
 
                 mProgress = (mThumbCenterX - mLeft) * mDelta / mTrackLength + mMin;
                 isThumbOnDragging = false;
+                invalidate();
+
+                if (mProgressListener != null) {
+                    mProgressListener.getProgressOnFinally(getProgress());
+                    mProgressListener.getProgressOnFinally(getProgressInFloat());
+                }
             }
 
             @Override
@@ -583,6 +599,7 @@ public class BubbleSeekBar extends View {
 
                 mProgress = (mThumbCenterX - mLeft) * mDelta / mTrackLength + mMin;
                 isThumbOnDragging = false;
+                invalidate();
             }
         });
         animatorSet.start();
@@ -675,12 +692,23 @@ public class BubbleSeekBar extends View {
     }
 
     public void setProgress(int progress) {
+        setProgress(progress + 0.0f);
+    }
+
+    public void setProgress(float progress) {
         if (mProgress == progress || progress < mMin || progress > mMax) {
             return;
         }
 
         mProgress = progress;
         mBubbleCenterRawX = mBubbleCenterRawSolidX + mTrackLength * (mProgress - mMin) / mDelta;
+
+        if (mProgressListener != null) {
+            mProgressListener.onProgressChanged(getProgress());
+            mProgressListener.onProgressChanged(getProgressInFloat());
+            mProgressListener.getProgressOnFinally(getProgress());
+            mProgressListener.getProgressOnFinally(getProgressInFloat());
+        }
 
         postInvalidate();
     }
@@ -950,21 +978,61 @@ public class BubbleSeekBar extends View {
     }
 
     public OnProgressChangedListener getOnProgressChangedListener() {
-        return mOnProgressChangedListener;
+        return mProgressListener;
     }
 
     public void setOnProgressChangedListener(OnProgressChangedListener onProgressChangedListener) {
-        mOnProgressChangedListener = onProgressChangedListener;
+        mProgressListener = onProgressChangedListener;
     }
 
     /**
      * progress改变监听器
      */
-    public interface OnProgressChangedListener {
+    private interface OnProgressChangedListener {
 
         void onProgressChanged(int progress);
 
         void onProgressChanged(float progress);
+
+        void getProgressOnActionUp(int progress);
+
+        void getProgressOnActionUp(float progress);
+
+        void getProgressOnFinally(int progress);
+
+        void getProgressOnFinally(float progress);
+    }
+
+    /**
+     * progress改变监听
+     * <br/>
+     * 用法同{@link AnimatorListenerAdapter}
+     */
+    public static abstract class OnProgressChangedListenerAdapter implements OnProgressChangedListener {
+
+        @Override
+        public void onProgressChanged(int progress) {
+        }
+
+        @Override
+        public void onProgressChanged(float progress) {
+        }
+
+        @Override
+        public void getProgressOnActionUp(int progress) {
+        }
+
+        @Override
+        public void getProgressOnActionUp(float progress) {
+        }
+
+        @Override
+        public void getProgressOnFinally(int progress) {
+        }
+
+        @Override
+        public void getProgressOnFinally(float progress) {
+        }
     }
 
 
