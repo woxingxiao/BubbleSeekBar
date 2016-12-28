@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.xw.repo.BubbleSeekBar;
 
@@ -49,7 +50,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mBubbleSeekBar5.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListener() {
+        mBubbleSeekBar0.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListenerAdapter() {
+            @Override
+            public void getProgressOnActionUp(int progress) {
+                Toast.makeText(MainActivity.this, "progressOnActionUp:" + progress, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mBubbleSeekBar5.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListenerAdapter() {
             @Override
             public void onProgressChanged(int progress) {
                 mStringBuilder.delete(0, mStringBuilder.length());
@@ -70,6 +78,13 @@ public class MainActivity extends AppCompatActivity {
             public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
                 // 调用修正偏移方法
                 mBubbleSeekBar6.correctOffsetWhenContainerOnScrolling();
+            }
+        });
+
+        mBubbleSeekBar6.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListenerAdapter() {
+            @Override
+            public void getProgressOnFinally(int progress) {
+                Toast.makeText(MainActivity.this, "progressOnFinally(int):" + progress, Toast.LENGTH_SHORT).show();
             }
         });
 
