@@ -193,7 +193,15 @@ public class BubbleSeekBar extends View {
         mBubbleView.setProgressText(isShowProgressInFloat ?
                 String.valueOf(getProgressInFloat()) : String.valueOf(getProgress()));
 
+        calculateRadiusOfBubble();
+    }
+
+    /**
+     * 根据min、max计算气泡半径
+     */
+    private void calculateRadiusOfBubble() {
         mPaint.setTextSize(mBubbleTextSize);
+
         // 计算滑到两端气泡里文字需要显示的宽度，比较取最大值为气泡的半径
         String text = mMin < 0 ? "-" + mMin : "" + mMin;
         mPaint.getTextBounds(text, 0, text.length(), mRectText);
@@ -683,6 +691,9 @@ public class BubbleSeekBar extends View {
 
         mMin = min;
         mDelta = mMax - mMin;
+
+        calculateRadiusOfBubble();
+
         postInvalidate();
     }
 
@@ -691,7 +702,18 @@ public class BubbleSeekBar extends View {
     }
 
     public void setMax(int max) {
+        if (mMax == max || max < mMin) {
+            return;
+        }
+
         mMax = max;
+        mDelta = mMax - mMin;
+
+        if (mProgress > mMax) {
+            mProgress = mMax;
+        }
+        calculateRadiusOfBubble();
+
         postInvalidate();
     }
 
@@ -812,6 +834,11 @@ public class BubbleSeekBar extends View {
             if (mSectionCount <= 0 || mSectionCount > mMax - mMin) {
                 mSectionCount = 10;
             }
+            if (mSectionCount > mDelta) {
+                isShowProgressInFloat = true;
+
+                calculateRadiusOfBubble();
+            }
 
             requestLayout();
         }
@@ -921,8 +948,16 @@ public class BubbleSeekBar extends View {
     }
 
     public void setShowProgressInFloat(boolean showProgressInFloat) {
+        if (mSectionCount > mDelta) {
+            isShowProgressInFloat = true;
+            return;
+        }
+
         if (isShowProgressInFloat != showProgressInFloat) {
             isShowProgressInFloat = showProgressInFloat;
+
+            calculateRadiusOfBubble();
+
             postInvalidate();
         }
     }
