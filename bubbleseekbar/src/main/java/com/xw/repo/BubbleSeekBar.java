@@ -235,7 +235,7 @@ public class BubbleSeekBar extends View {
         setMeasuredDimension(resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec), height);
 
         mLeft = getPaddingLeft() + mThumbRadiusOnDragging;
-        mRight = getWidth() - getPaddingRight() - mThumbRadiusOnDragging;
+        mRight = getMeasuredWidth() - getPaddingRight() - mThumbRadiusOnDragging;
 
         if (isShowText) {
             mPaint.setTextSize(mTextSize);
@@ -259,7 +259,7 @@ public class BubbleSeekBar extends View {
                 text = String.valueOf(mMax);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
                 max = Math.max(mThumbRadiusOnDragging, mRectText.width() / 2f);
-                mRight = getWidth() - getPaddingRight() - max;
+                mRight = getMeasuredWidth() - getPaddingRight() - max;
             }
         }
 
@@ -692,6 +692,7 @@ public class BubbleSeekBar extends View {
 
     public void setMax(int max) {
         mMax = max;
+        postInvalidate();
     }
 
     public int getProgress() {
