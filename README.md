@@ -19,7 +19,7 @@ root project:`build.gradle`
 app:`build.gradle`
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:v1.5'
+     compile 'com.github.woxingxiao:BubbleSeekBar:v1.6'
   }
 ```  
 ##Attributes
