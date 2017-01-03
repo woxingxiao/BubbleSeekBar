@@ -391,6 +391,18 @@ public class BubbleSeekBar extends View {
                 mThumbRadius, mPaint);
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+
+        post(new Runnable() {
+            @Override
+            public void run() {
+                requestLayout();
+            }
+        });
+    }
+
     float dx;
 
     @Override
