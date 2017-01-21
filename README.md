@@ -19,7 +19,7 @@ root project:`build.gradle`
 app:`build.gradle`
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:v1.6'
+     compile 'com.github.woxingxiao:BubbleSeekBar:v1.7'
   }
 ```  
 ##Attributes
@@ -48,7 +48,8 @@ bsb_thumb_text_color|int|thumb下进度文字颜色，默认与左track相同
 bsb_show_progress_in_float|boolean|进度是否显示浮点数，默认false
 bsb_bubble_color|int|气泡的颜色，默认与左track相同
 bsb_bubble_text_size|dimension|气泡中进度文字大小，默认14sp
-bsb_bubble_text_color|int|气泡中进度文字颜色，默认白色  
+bsb_bubble_text_color|int|气泡中进度文字颜色，默认白色
+bsb_anim_duration|int|动画时长，默认200ms  
 
 ##Usage
 ```xml
