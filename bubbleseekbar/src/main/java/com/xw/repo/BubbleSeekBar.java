@@ -97,6 +97,7 @@ public class BubbleSeekBar extends View {
     private float mBubbleCenterRawX; // 气泡的实时RawX
     private WindowManager.LayoutParams mLayoutParams;
     private int[] mPoint = new int[2];
+    private long mAnimDuration = 200;
 
     public BubbleSeekBar(Context context) {
         this(context, null);
@@ -144,6 +145,8 @@ public class BubbleSeekBar extends View {
         isShowSectionMark = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_section_mark, false);
         isAutoAdjustSectionMark = a.getBoolean(R.styleable.BubbleSeekBar_bsb_auto_adjust_section_mark, false);
         isShowProgressInFloat = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_progress_in_float, false);
+        int duration = a.getInteger(R.styleable.BubbleSeekBar_bsb_anim_duration, -1);
+        mAnimDuration = duration < 0 ? 200 : duration;
         a.recycle();
 
         if (mMin > mMax) {
@@ -456,7 +459,7 @@ public class BubbleSeekBar extends View {
                 if (isAutoAdjustSectionMark) {
                     autoAdjustSection();
                 } else if (isThumbOnDragging) {
-                    mBubbleView.animate().alpha(0f).setDuration(200)
+                    mBubbleView.animate().alpha(0f).setDuration(mAnimDuration)
                             .setListener(new AnimatorListenerAdapter() {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
@@ -531,7 +534,7 @@ public class BubbleSeekBar extends View {
 
         mBubbleView.setAlpha(0);
         mBubbleView.setVisibility(VISIBLE);
-        mBubbleView.animate().alpha(1f).setDuration(200)
+        mBubbleView.animate().alpha(1f).setDuration(mAnimDuration)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationStart(Animator animation) {
@@ -594,9 +597,9 @@ public class BubbleSeekBar extends View {
         ObjectAnimator alphaAnim = ObjectAnimator.ofFloat(mBubbleView, View.ALPHA, 0);
 
         if (onSection) {
-            animatorSet.setDuration(200).play(alphaAnim);
+            animatorSet.setDuration(mAnimDuration).play(alphaAnim);
         } else {
-            animatorSet.setDuration(200).playTogether(valueAnim, alphaAnim);
+            animatorSet.setDuration(mAnimDuration).playTogether(valueAnim, alphaAnim);
         }
         animatorSet.addListener(new AnimatorListenerAdapter() {
             @Override

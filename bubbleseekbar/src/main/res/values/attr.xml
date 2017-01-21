@@ -28,5 +28,6 @@
         <attr name="bsb_show_section_mark" format="boolean"/>
         <attr name="bsb_auto_adjust_section_mark" format="boolean"/>
         <attr name="bsb_show_progress_in_float" format="boolean"/>
+        <attr name="bsb_anim_duration" format="integer"/>
     </declare-styleable>
 </resources>
