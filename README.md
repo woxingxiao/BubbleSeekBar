@@ -1,9 +1,11 @@
-[![](https://jitpack.io/v/woxingxiao/BubbleSeekBar.svg)](https://jitpack.io/#woxingxiao/BubbleSeekBar)  
-  
-**自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**  
+[![](https://jitpack.io/v/woxingxiao/BubbleSeekBar.svg)](https://jitpack.io/#woxingxiao/BubbleSeekBar)
+
+[**中文说明**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/README_zh.md)
+
+**A beautiful Android custom seekbar, which has a bubble view with progress appearing upon when seeking. Highly customizable, mostly demands has been considered. `star` or `pull request` will be welcomed**
 ****
 ##Screenshot
-![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/demo.gif)  
+![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/demo.gif)
 
 [**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
 ##Download
@@ -21,35 +23,35 @@ app:`build.gradle`
   dependencies {
      compile 'com.github.woxingxiao:BubbleSeekBar:v1.7'
   }
-```  
+```
 ##Attributes
 attr | format | description
 -------- | ---|---
-bsb_min|int|最小值，或起始值，或首值，整数（可正可负），默认0
-bsb_max|int|最大值，或结束值，或尾值，整数，默认100
-bsb_progress|int|进度值，或实时值，介于min和max之间的整数
-bsb_track_size|dimension|进度值右边track（右track）的厚度，默认2dp
-bsb_second_track_size|dimension|进度值左边track（左track）的厚度，默认比右track厚2dp
-bsb_thumb_radius|dimension|thumb半径，默认比左track厚2dp
-bsb_thumb_radius_on_dragging|dimension|当拖动时thumb半径，默认是左track的2倍
-bsb_section_count|int|整个track均分份数，默认10
-bsb_show_section_mark|boolean|是否显示track均分标识，默认false
-bsb_auto_adjust_section_mark|boolean|是否拖动放手后自动滑向均分点，默认false
-bsb_track_color|int|右track颜色，默认R.color.colorPrimary
-bsb_second_track_color|int|左track颜色，默认R.color.colorAccent
-bsb_thumb_color|int|thumb颜色，默认与左track颜色相同
-bsb_show_text|boolean|是否显示起始值和结束值，默认false
-bsb_text_size|dimension|显示起始值和结束值的文字大小，默认14sp
-bsb_text_color|int|显示起始值和结束值的文字颜色，默认与右track相同
-bsb_text_position|enum|显示首尾值与track的位置关系，在两端还是在底部，默认在两端
-bsb_show_thumb_text|boolean|是否在thumb下面显示进度值，默认false
-bsb_thumb_text_size|dimension|thumb下进度文字大小，默认14sp
-bsb_thumb_text_color|int|thumb下进度文字颜色，默认与左track相同
-bsb_show_progress_in_float|boolean|进度是否显示浮点数，默认false
-bsb_bubble_color|int|气泡的颜色，默认与左track相同
-bsb_bubble_text_size|dimension|气泡中进度文字大小，默认14sp
-bsb_bubble_text_color|int|气泡中进度文字颜色，默认白色
-bsb_anim_duration|int|动画时长，默认200ms  
+bsb_min|int|min value, `Integer.MIN_VALUE` <= min < max, default: 0
+bsb_max|int|max value, min < max <= `Integer.MAX_VALUE`, default: 100
+bsb_progress|int|real time progress value
+bsb_track_size|dimension|height of _right-track_(on the right of _thumb_), default: 2dp
+bsb_second_track_size|dimension|height of _left-track_(on the left of _thumb_), default: 2dp higher than _right-track_'s height
+bsb_thumb_radius|dimension|radius of _thumb_, default: 2dp higher than _left-track_'s height
+bsb_thumb_radius_on_dragging|dimension|radius of _thumb_ when be dragging, default: 2 times of _left-track_'s height
+bsb_section_count|int|shares of whole progress(max - min), default: 10
+bsb_show_section_mark|boolean|show demarcation points or not, default: false
+bsb_auto_adjust_section_mark|boolean|auto scroll to nearly _section_mark_ or not, default: false
+bsb_track_color|int|color of _right-track_, default: R.color.colorPrimary
+bsb_second_track_color|int|color of _left-track_, default: R.color.colorAccent
+bsb_thumb_color|int|color of _thumb_, default: same as _left-track_'s color
+bsb_show_text|boolean|show _min-text_ and _max-text_ or not, default: false
+bsb_text_size|dimension|text size of _min-text_ and _max-text_, default: 14sp
+bsb_text_color|int|text color of _min-text_ and _max-text_, default: same as _right-track_'s color
+bsb_text_position|enum|text position of _min-text_ and _max-text_ relative to _track_, `SIDES` or `BOTTOM`, default: `SIDES`
+bsb_show_thumb_text|boolean|show real time _progress-text_ under _thumb_ or not, default: false
+bsb_thumb_text_size|dimension|text size of _progress-text_, default: 14sp
+bsb_thumb_text_color|int|text color of _progress-text_, default: same as _left-track_'s color
+bsb_show_progress_in_float|boolean|show _bubble-progress_ in float or not, default: false
+bsb_bubble_color|int|color of bubble, default: same as _left-track_'s color
+bsb_bubble_text_size|dimension|text size of _bubble-progress_, default: 14sp
+bsb_bubble_text_color|int|text color of _bubble-progress_, default: #ffffffff
+bsb_anim_duration|int|duration of animation, default: 200ms  
 
 ##Usage
 ```xml
@@ -125,12 +127,12 @@ bsb_anim_duration|int|动画时长，默认200ms  
         app:bsb_thumb_text_color="@color/colorPrimary"
         app:bsb_thumb_text_size="18sp"/>
 ```
-如果`BubbleSeekBar`的外部容器是可滑动的控件，需要设置滑动监听来修正气泡的偏移，否则滑动后气泡出现位置可能错乱。方法如下：
+You must correct the offsets by setting `ScrollListener` when `BubbleSeekBar`'s parent view is scrollable, otherwise the position of bubble appears maybe be wrong. For example:
 ```java
    mContainer.setOnYourContainerScrollListener(new OnYourContainerScrollListener() {
        @Override
        public void onScroll() {
-           // 调用修正偏移方法
+           // call this method to correct offsets
            mBubbleSeekBar.correctOffsetWhenContainerOnScrolling();
        }
    });
