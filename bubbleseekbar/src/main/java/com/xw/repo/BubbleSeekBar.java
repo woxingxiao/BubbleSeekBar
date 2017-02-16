@@ -17,6 +17,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
@@ -294,8 +295,9 @@ public class BubbleSeekBar extends View {
         mBubbleCenterRawSolidX = mPoint[0] + mLeft - mBubbleView.getMeasuredWidth() / 2f;
         mBubbleCenterRawX = mBubbleCenterRawSolidX + mTrackLength * (mProgress - mMin) / mDelta;
         mBubbleCenterRawSolidY = mPoint[1] - mBubbleView.getMeasuredHeight();
-        if (!BuildUtils.isMIUI()) {
-            mBubbleCenterRawSolidY -= dp2px(24);
+        mBubbleCenterRawSolidY -= dp2px(24);
+        if (BuildUtils.isMIUI()) {
+            mBubbleCenterRawSolidY += dp2px(4);
         }
     }
 
@@ -524,7 +526,7 @@ public class BubbleSeekBar extends View {
                     | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
             if (BuildUtils.isMIUI()) { // MIUI禁止了开发者使用TYPE_TOAST
-                mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL;
+                mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION;
             } else {
                 mLayoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
             }
@@ -847,24 +849,38 @@ public class BubbleSeekBar extends View {
         }
     }
 
+    @ColorInt
     public int getTrackColor() {
         return mTrackColor;
     }
 
-    public void setTrackColor(int trackColor) {
+    public void setTrackColor(@ColorInt int trackColor) {
         if (mTrackColor != trackColor) {
             mTrackColor = trackColor;
             postInvalidate();
         }
     }
 
+    @ColorInt
     public int getSecondTrackColor() {
         return mSecondTrackColor;
     }
 
-    public void setSecondTrackColor(int secondTrackColor) {
+    public void setSecondTrackColor(@ColorInt int secondTrackColor) {
         if (mSecondTrackColor != secondTrackColor) {
             mSecondTrackColor = secondTrackColor;
+            postInvalidate();
+        }
+    }
+
+    @ColorInt
+    public int getThumbColor() {
+        return mThumbColor;
+    }
+
+    public void setThumbColor(@ColorInt int thumbColor) {
+        if (mThumbColor != thumbColor) {
+            mThumbColor = thumbColor;
             postInvalidate();
         }
     }
@@ -891,11 +907,12 @@ public class BubbleSeekBar extends View {
         }
     }
 
+    @ColorInt
     public int getTextColor() {
         return mTextColor;
     }
 
-    public void setTextColor(int textColor) {
+    public void setTextColor(@ColorInt int textColor) {
         if (mTextColor != textColor) {
             mTextColor = textColor;
             postInvalidate();
@@ -935,11 +952,12 @@ public class BubbleSeekBar extends View {
         }
     }
 
+    @ColorInt
     public int getThumbTextColor() {
         return mThumbTextColor;
     }
 
-    public void setThumbTextColor(int thumbTextColor) {
+    public void setThumbTextColor(@ColorInt int thumbTextColor) {
         if (mThumbTextColor != thumbTextColor) {
             mThumbTextColor = thumbTextColor;
             postInvalidate();
@@ -965,11 +983,12 @@ public class BubbleSeekBar extends View {
         }
     }
 
+    @ColorInt
     public int getBubbleColor() {
         return mBubbleColor;
     }
 
-    public void setBubbleColor(int bubbleColor) {
+    public void setBubbleColor(@ColorInt int bubbleColor) {
         if (mBubbleColor != bubbleColor) {
             mBubbleColor = bubbleColor;
             mBubbleView.postInvalidate();
@@ -987,11 +1006,12 @@ public class BubbleSeekBar extends View {
         }
     }
 
+    @ColorInt
     public int getBubbleTextColor() {
         return mBubbleTextColor;
     }
 
-    public void setBubbleTextColor(int bubbleTextColor) {
+    public void setBubbleTextColor(@ColorInt int bubbleTextColor) {
         if (mBubbleTextColor != bubbleTextColor) {
             mBubbleTextColor = bubbleTextColor;
             mBubbleView.postInvalidate();
