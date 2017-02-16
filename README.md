@@ -21,7 +21,7 @@ root project:`build.gradle`
 app:`build.gradle`
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:v1.7'
+     compile 'com.github.woxingxiao:BubbleSeekBar:v1.8'
   }
 ```
 ##Attributes
@@ -142,7 +142,7 @@ You must correct the offsets by setting `ScrollListener` when `BubbleSeekBar`'s 
 ```
 The MIT License (MIT)
 
-Copyright (c) 2016 woxingxiao
+Copyright (c) 2017 woxingxiao
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

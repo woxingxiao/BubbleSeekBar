@@ -19,7 +19,7 @@ root project:`build.gradle`
 app:`build.gradle`
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:v1.7'
+     compile 'com.github.woxingxiao:BubbleSeekBar:v1.8'
   }
 ```  
 ##Attributes
@@ -139,7 +139,7 @@ bsb_bubble_text_color|int|气泡中进度文字颜色，默认白色
 ```
 The MIT License (MIT)
 
-Copyright (c) 2016 woxingxiao
+Copyright (c) 2017 woxingxiao
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
