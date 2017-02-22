@@ -5,9 +5,8 @@
 **A beautiful Android custom seekbar, which has a bubble view with progress appearing upon when seeking. Highly customizable, mostly demands has been considered. `star` or `pull request` will be welcomed**
 ****
 ##Screenshot
-![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/demo.gif)
-
-[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
+![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo.gif)
+![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo2.gif)
 ##Download
 root project:`build.gradle`
 ```groovy
@@ -21,9 +20,26 @@ root project:`build.gradle`
 app:`build.gradle`
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:v1.8'
+     compile 'com.github.woxingxiao:BubbleSeekBar:v1.9'
   }
 ```
+##Usage
+Check out the demo for more details: [**`MainActivity.java`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/java/com/xw/samlpe/bubbleseekbar/MainActivity.java)   [**`content_main.xml`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/res/layout/content_main.xml)
+[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
+##Attentions
+- You must correct the offsets by setting `ScrollListener` when `BubbleSeekBar`'s parent view is scrollable, otherwise the position of bubble appears maybe be wrong. For example:
+```java
+   mContainer.setOnYourContainerScrollListener(new OnYourContainerScrollListener() {
+       @Override
+       public void onScroll() {
+           // call this method to correct offsets
+           mBubbleSeekBar.correctOffsetWhenContainerOnScrolling();
+       }
+   });
+```
+- When set `bsb_touch_to_seek` attribute to be `true` , you better not to click **too fast** because the animation may not have enough time to play.
+- This library depends `support:appcompat-v7` is **`provided`**, so you don't need to worry about redundant `dependencies`.
+
 ##Attributes
 attr | format | description
 -------- | ---|---
@@ -51,93 +67,8 @@ bsb_show_progress_in_float|boolean|show _bubble-progress_ in float or not, defau
 bsb_bubble_color|int|color of bubble, default: same as _left-track_'s color
 bsb_bubble_text_size|dimension|text size of _bubble-progress_, default: 14sp
 bsb_bubble_text_color|int|text color of _bubble-progress_, default: #ffffffff
-bsb_anim_duration|int|duration of animation, default: 200ms  
-
-##Usage
-```xml
-   <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_0"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:layout_marginTop="32dp"/>
-
-    <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:bsb_progress="50"
-        app:bsb_second_track_color="@color/color_green"
-        app:bsb_show_section_mark="true"
-        app:bsb_track_color="@color/color_gray"/>
-
-    <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:bsb_max="500"
-        app:bsb_min="100"
-        app:bsb_progress="200"
-        app:bsb_second_track_color="@color/color_green"
-        app:bsb_track_color="@color/color_gray"
-        app:bsb_track_size="4dp"/>
-
-    <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_3"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:layout_marginTop="32dp"
-        app:bsb_show_progress_in_float="true"
-        app:bsb_show_section_mark="true"
-        app:bsb_show_text="true"
-        app:bsb_show_thumb_text="true"/>
-
-    <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:bsb_auto_adjust_section_mark="true"
-        app:bsb_bubble_color="@color/color_red_light"
-        app:bsb_bubble_text_color="@color/colorPrimaryDark"
-        app:bsb_bubble_text_size="10sp"
-        app:bsb_max="50"
-        app:bsb_min="-50"
-        app:bsb_second_track_color="@color/color_red"
-        app:bsb_show_section_mark="true"
-        app:bsb_show_text="true"
-        app:bsb_show_thumb_text="true"
-        app:bsb_text_position="bottom"
-        app:bsb_track_color="@color/color_red_light"/>
-
-    <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:bsb_auto_adjust_section_mark="true"
-        app:bsb_second_track_color="@color/color_blue"
-        app:bsb_section_count="5"
-        app:bsb_show_progress_in_float="true"
-        app:bsb_show_section_mark="true"
-        app:bsb_show_text="true"
-        app:bsb_show_thumb_text="true"
-        app:bsb_text_position="bottom"
-        app:bsb_thumb_text_color="@color/colorPrimary"
-        app:bsb_thumb_text_size="18sp"/>
-```
-You must correct the offsets by setting `ScrollListener` when `BubbleSeekBar`'s parent view is scrollable, otherwise the position of bubble appears maybe be wrong. For example:
-```java
-   mContainer.setOnYourContainerScrollListener(new OnYourContainerScrollListener() {
-       @Override
-       public void onScroll() {
-           // call this method to correct offsets
-           mBubbleSeekBar.correctOffsetWhenContainerOnScrolling();
-       }
-   });
-```
-
+bsb_anim_duration|int|duration of animation, default: 200ms
+bsb_touch_to_seek|boolean|touch anywhere on _track_ to quickly seek, default: false
 ##License
 ```
 The MIT License (MIT)

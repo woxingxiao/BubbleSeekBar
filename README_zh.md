@@ -3,9 +3,8 @@
 **自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**  
 ****
 ##Screenshot
-![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/demo.gif)  
-
-[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
+![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo.gif)
+![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo2.gif)
 ##Download
 root project:`build.gradle`
 ```groovy
@@ -19,9 +18,25 @@ root project:`build.gradle`
 app:`build.gradle`
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:v1.8'
+     compile 'com.github.woxingxiao:BubbleSeekBar:v1.9'
   }
-```  
+```
+##Usage
+查看demo获知更多使用细节: [**`MainActivity.java`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/java/com/xw/samlpe/bubbleseekbar/MainActivity.java)   [**`content_main.xml`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/res/layout/content_main.xml)
+[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
+##Attentions
+- 如果`BubbleSeekBar`的外部容器是可滑动的控件，需要设置滑动监听来修正气泡的偏移，否则滑动后气泡出现位置可能错乱。方法如下：
+```java
+   mContainer.setOnYourContainerScrollListener(new OnYourContainerScrollListener() {
+       @Override
+       public void onScroll() {
+           // 调用修正偏移方法
+           mBubbleSeekBar.correctOffsetWhenContainerOnScrolling();
+       }
+   });
+```
+- 当设置`bsb_touch_to_seek`属性为`true`时， 最好不要点击**太快**去seek进度，否则动画可能没有足够时间播放。
+- 本库依赖`support:appcompat-v7`采用的**`provided`**方式，所以不必担心冗余的依赖引入。
 ##Attributes
 attr | format | description
 -------- | ---|---
@@ -48,93 +63,9 @@ bsb_thumb_text_color|int|thumb下进度文字颜色，默认与左track相同
 bsb_show_progress_in_float|boolean|进度是否显示浮点数，默认false
 bsb_bubble_color|int|气泡的颜色，默认与左track相同
 bsb_bubble_text_size|dimension|气泡中进度文字大小，默认14sp
-bsb_bubble_text_color|int|气泡中进度文字颜色，默认白色  
-
-##Usage
-```xml
-   <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_0"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:layout_marginTop="32dp"/>
-
-    <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:bsb_progress="50"
-        app:bsb_second_track_color="@color/color_green"
-        app:bsb_show_section_mark="true"
-        app:bsb_track_color="@color/color_gray"/>
-
-    <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:bsb_max="500"
-        app:bsb_min="100"
-        app:bsb_progress="200"
-        app:bsb_second_track_color="@color/color_green"
-        app:bsb_track_color="@color/color_gray"
-        app:bsb_track_size="4dp"/>
-
-    <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_3"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:layout_marginTop="32dp"
-        app:bsb_show_progress_in_float="true"
-        app:bsb_show_section_mark="true"
-        app:bsb_show_text="true"
-        app:bsb_show_thumb_text="true"/>
-
-    <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:bsb_auto_adjust_section_mark="true"
-        app:bsb_bubble_color="@color/color_red_light"
-        app:bsb_bubble_text_color="@color/colorPrimaryDark"
-        app:bsb_bubble_text_size="10sp"
-        app:bsb_max="50"
-        app:bsb_min="-50"
-        app:bsb_second_track_color="@color/color_red"
-        app:bsb_show_section_mark="true"
-        app:bsb_show_text="true"
-        app:bsb_show_thumb_text="true"
-        app:bsb_text_position="bottom"
-        app:bsb_track_color="@color/color_red_light"/>
-
-    <com.xw.repo.BubbleSeekBar
-        android:id="@+id/bubble_seek_bar_5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:bsb_auto_adjust_section_mark="true"
-        app:bsb_second_track_color="@color/color_blue"
-        app:bsb_section_count="5"
-        app:bsb_show_progress_in_float="true"
-        app:bsb_show_section_mark="true"
-        app:bsb_show_text="true"
-        app:bsb_show_thumb_text="true"
-        app:bsb_text_position="bottom"
-        app:bsb_thumb_text_color="@color/colorPrimary"
-        app:bsb_thumb_text_size="18sp"/>
-```
-如果`BubbleSeekBar`的外部容器是可滑动的控件，需要设置滑动监听来修正气泡的偏移，否则滑动后气泡出现位置可能错乱。方法如下：
-```java
-   mContainer.setOnYourContainerScrollListener(new OnYourContainerScrollListener() {
-       @Override
-       public void onScroll() {
-           // 调用修正偏移方法
-           mBubbleSeekBar.correctOffsetWhenContainerOnScrolling();
-       }
-   });
-```
-
+bsb_bubble_text_color|int|气泡中进度文字颜色，默认白色
+bsb_anim_duration|int|动画执行时间， 默认: 200ms
+bsb_touch_to_seek|boolean|是否点击track任意地方来快速设置进度， 默认: false  
 ##License
 ```
 The MIT License (MIT)
