@@ -18,8 +18,14 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     BubbleSeekBar mBubbleSeekBar0;
+    BubbleSeekBar mBubbleSeekBar1;
+    BubbleSeekBar mBubbleSeekBar2;
+    BubbleSeekBar mBubbleSeekBar3;
+    BubbleSeekBar mBubbleSeekBar4;
     BubbleSeekBar mBubbleSeekBar5;
     BubbleSeekBar mBubbleSeekBar6;
+    BubbleSeekBar mBubbleSeekBar8;
+    BubbleSeekBar mBubbleSeekBar9;
     TextView mProgressText;
     ObservableScrollView mObsScrollView;
 
@@ -33,10 +39,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         mBubbleSeekBar0 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_0);
+        mBubbleSeekBar1 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_1);
+        mBubbleSeekBar2 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_2);
+        mBubbleSeekBar3 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_3);
+        mBubbleSeekBar4 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_4);
         mBubbleSeekBar5 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_5);
         mBubbleSeekBar6 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_6);
+        mBubbleSeekBar8 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_8);
+        mBubbleSeekBar9 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_9);
         mProgressText = (TextView) findViewById(R.id.progress_text);
-        mObsScrollView = (ObservableScrollView) findViewById(R.id.scroll_view);
+        mObsScrollView = (ObservableScrollView) findViewById(R.id.content_main);
 
         setSupportActionBar(toolbar);
 
@@ -44,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mObsScrollView.smoothScrollTo(0, 0);
+
                 int progress = new Random().nextInt(100);
                 mBubbleSeekBar0.setProgress(progress);
                 Snackbar.make(view, "set random progress = " + progress, Snackbar.LENGTH_SHORT).show();
@@ -77,7 +91,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
                 // 调用修正偏移方法
+                mBubbleSeekBar0.correctOffsetWhenContainerOnScrolling();
+                mBubbleSeekBar1.correctOffsetWhenContainerOnScrolling();
+                mBubbleSeekBar2.correctOffsetWhenContainerOnScrolling();
+                mBubbleSeekBar3.correctOffsetWhenContainerOnScrolling();
+                mBubbleSeekBar4.correctOffsetWhenContainerOnScrolling();
+                mBubbleSeekBar5.correctOffsetWhenContainerOnScrolling();
                 mBubbleSeekBar6.correctOffsetWhenContainerOnScrolling();
+                mBubbleSeekBar8.correctOffsetWhenContainerOnScrolling();
+                mBubbleSeekBar9.correctOffsetWhenContainerOnScrolling();
             }
         });
 
