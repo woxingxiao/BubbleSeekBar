@@ -29,5 +29,6 @@
         <attr name="bsb_auto_adjust_section_mark" format="boolean"/>
         <attr name="bsb_show_progress_in_float" format="boolean"/>
         <attr name="bsb_anim_duration" format="integer"/>
+        <attr name="bsb_touch_to_seek" format="boolean"/>
     </declare-styleable>
 </resources>

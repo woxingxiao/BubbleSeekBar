@@ -76,6 +76,7 @@ public class BubbleSeekBar extends View {
     private boolean isShowSectionMark; // 是否显示份数
     private boolean isAutoAdjustSectionMark; // 是否自动滑到最近的整份数，以showSectionMark为前提
     private boolean isShowProgressInFloat; // 是否显示小数形式progress，所有小数均保留1位
+    private boolean isTouchToSeek; // 是否点击快速seek
 
     private int mDelta; // max - min
     private float mThumbCenterX; // thumb的中心X坐标
@@ -99,6 +100,7 @@ public class BubbleSeekBar extends View {
     private WindowManager.LayoutParams mLayoutParams;
     private int[] mPoint = new int[2];
     private long mAnimDuration = 200;
+    private boolean isTouchToSeekAnimEnd = true;
 
     public BubbleSeekBar(Context context) {
         this(context, null);
@@ -148,6 +150,7 @@ public class BubbleSeekBar extends View {
         isShowProgressInFloat = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_progress_in_float, false);
         int duration = a.getInteger(R.styleable.BubbleSeekBar_bsb_anim_duration, -1);
         mAnimDuration = duration < 0 ? 200 : duration;
+        isTouchToSeek = a.getBoolean(R.styleable.BubbleSeekBar_bsb_touch_to_seek, false);
         a.recycle();
 
         if (mMin > mMax) {
@@ -209,20 +212,20 @@ public class BubbleSeekBar extends View {
         // 计算滑到两端气泡里文字需要显示的宽度，比较取最大值为气泡的半径
         String text = mMin < 0 ? "-" + mMin : "" + mMin;
         mPaint.getTextBounds(text, 0, text.length(), mRectText);
-        int w1 = (mRectText.width() + mTextSpace * 2) / 2;
+        int w1 = (mRectText.width() + mTextSpace * 2) >> 1;
         if (isShowProgressInFloat) {
             text = (mMin < 0 ? "-" + mMin : mMin) + ".0";
             mPaint.getTextBounds(text, 0, text.length(), mRectText);
-            w1 = (mRectText.width() + mTextSpace * 2) / 2;
+            w1 = (mRectText.width() + mTextSpace * 2) >> 1;
         }
 
         text = mMax < 0 ? "-" + mMax : "" + mMax;
         mPaint.getTextBounds(text, 0, text.length(), mRectText);
-        int w2 = (mRectText.width() + mTextSpace * 2) / 2;
+        int w2 = (mRectText.width() + mTextSpace * 2) >> 1;
         if (isShowProgressInFloat) {
             text = (mMax < 0 ? "-" + mMax : mMax) + ".0";
             mPaint.getTextBounds(text, 0, text.length(), mRectText);
-            w2 = (mRectText.width() + mTextSpace * 2) / 2;
+            w2 = (mRectText.width() + mTextSpace * 2) >> 1;
         }
 
         mBubbleRadius = dp2px(14); // 默认半径14dp
@@ -306,7 +309,7 @@ public class BubbleSeekBar extends View {
         super.onDraw(canvas);
 
         float x1 = getPaddingLeft();
-        float x2 = getWidth() - getPaddingRight();
+        float x2 = getMeasuredWidth() - getPaddingRight();
         float y = getPaddingTop() + mThumbRadiusOnDragging;
 
         if (isShowText) {
@@ -352,7 +355,7 @@ public class BubbleSeekBar extends View {
             mThumbCenterX = mTrackLength / mDelta * (mProgress - mMin) + x1;
         }
 
-        if (isShowThumbText && !isThumbOnDragging) {
+        if (isShowThumbText && !isThumbOnDragging && isTouchToSeekAnimEnd) {
             // 排除显示小数实时值、首尾文字在Bottom时，滑到首尾的情况（不会与首尾文字重合，故索性不显示）
             if (mTextPosition == SIDES || !isShowProgressInFloat ||
                     ((int) mProgress != mMin && (int) mProgress != mMax)) {
@@ -426,7 +429,21 @@ public class BubbleSeekBar extends View {
                 if (isThumbOnDragging) {
                     showBubble();
                     invalidate();
+                } else if (isTouchToSeek && isTrackTouched(event)) {
+                    mThumbCenterX = event.getX();
+                    if (mThumbCenterX < mLeft) {
+                        mThumbCenterX = mLeft;
+                    }
+                    if (mThumbCenterX > mRight) {
+                        mThumbCenterX = mRight;
+                    }
+                    mProgress = (mThumbCenterX - mLeft) * mDelta / mTrackLength + mMin;
+                    mBubbleCenterRawX = mBubbleCenterRawSolidX + mTrackLength * (mProgress - mMin) / mDelta;
+
+                    showBubble();
+                    invalidate();
                 }
+
                 dx = mThumbCenterX - event.getX();
 
                 break;
@@ -459,31 +476,47 @@ public class BubbleSeekBar extends View {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 if (isAutoAdjustSectionMark) {
-                    autoAdjustSection();
-                } else if (isThumbOnDragging) {
-                    mBubbleView.animate().alpha(0f).setDuration(mAnimDuration)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    hideBubble();
+                    if (isTouchToSeek) {
+                        mBubbleView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                isTouchToSeekAnimEnd = false;
+                                autoAdjustSection();
+                            }
+                        }, 300);
+                    } else {
+                        autoAdjustSection();
+                    }
+                } else if (isThumbOnDragging || isTouchToSeek) {
+                    mBubbleView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mBubbleView.animate().alpha(0f).setDuration(mAnimDuration)
+                                    .setListener(new AnimatorListenerAdapter() {
+                                        @Override
+                                        public void onAnimationEnd(Animator animation) {
+                                            hideBubble();
 
-                                    isThumbOnDragging = false;
-                                    invalidate();
+                                            isThumbOnDragging = false;
+                                            invalidate();
 
-                                    if (mProgressListener != null) {
-                                        mProgressListener.getProgressOnFinally(getProgress());
-                                        mProgressListener.getProgressOnFinally(getProgressInFloat());
-                                    }
-                                }
+                                            if (mProgressListener != null) {
+                                                mProgressListener.getProgressOnFinally(getProgress());
+                                                mProgressListener.getProgressOnFinally(getProgressInFloat());
+                                            }
+                                        }
 
-                                @Override
-                                public void onAnimationCancel(Animator animation) {
-                                    hideBubble();
+                                        @Override
+                                        public void onAnimationCancel(Animator animation) {
+                                            hideBubble();
 
-                                    isThumbOnDragging = false;
-                                    invalidate();
-                                }
-                            }).start();
+                                            isThumbOnDragging = false;
+                                            invalidate();
+                                        }
+                                    }).start();
+
+                        }
+                    }, !isThumbOnDragging && isTouchToSeek ? 300 : 0);
 
                     if (mProgressListener != null) {
                         mProgressListener.getProgressOnActionUp(getProgress());
@@ -494,7 +527,7 @@ public class BubbleSeekBar extends View {
                 break;
         }
 
-        return isThumbOnDragging || super.onTouchEvent(event);
+        return isThumbOnDragging || isTouchToSeek || super.onTouchEvent(event);
     }
 
     /**
@@ -502,9 +535,17 @@ public class BubbleSeekBar extends View {
      */
     private boolean isThumbTouched(MotionEvent event) {
         float x = mTrackLength / mDelta * (mProgress - mMin) + mLeft;
-        float y = getHeight() / 2f;
+        float y = getMeasuredHeight() / 2f;
         return (event.getX() - x) * (event.getX() - x) + (event.getY() - y) * (event.getY() - y)
                 <= (mLeft + dp2px(8)) * (mLeft + dp2px(8));
+    }
+
+    /**
+     * 识别track是否被有效点击
+     */
+    private boolean isTrackTouched(MotionEvent event) {
+        return event.getX() >= getPaddingLeft() && event.getX() <= getMeasuredWidth() - getPaddingRight()
+                && event.getY() >= getPaddingTop() && event.getY() <= getPaddingTop() + mThumbRadiusOnDragging * 2;
     }
 
     /**
@@ -543,6 +584,8 @@ public class BubbleSeekBar extends View {
                         mWindowManager.addView(mBubbleView, mLayoutParams);
                     }
                 }).start();
+        mBubbleView.setProgressText(isShowProgressInFloat ?
+                String.valueOf(getProgressInFloat()) : String.valueOf(getProgress()));
     }
 
     /**
@@ -610,6 +653,7 @@ public class BubbleSeekBar extends View {
 
                 mProgress = (mThumbCenterX - mLeft) * mDelta / mTrackLength + mMin;
                 isThumbOnDragging = false;
+                isTouchToSeekAnimEnd = true;
                 invalidate();
 
                 if (mProgressListener != null) {
@@ -624,6 +668,7 @@ public class BubbleSeekBar extends View {
 
                 mProgress = (mThumbCenterX - mLeft) * mDelta / mTrackLength + mMin;
                 isThumbOnDragging = false;
+                isTouchToSeekAnimEnd = true;
                 invalidate();
             }
         });
@@ -689,33 +734,23 @@ public class BubbleSeekBar extends View {
         return mMin;
     }
 
-    public void setMin(int min) {
-        if (mMin == min || min > mMax) {
-            return;
-        }
-
-        mMin = min;
-        mDelta = mMax - mMin;
-
-        calculateRadiusOfBubble();
-
-        postInvalidate();
-    }
-
     public int getMax() {
         return mMax;
     }
 
-    public void setMax(int max) {
-        if (mMax == max || max < mMin) {
-            return;
-        }
+    public void setProgressRange(int min, int max) {
+        setProgressRange(min, max, getProgressInFloat());
+    }
 
-        mMax = max;
+    public void setProgressRange(int min, int max, float progress) {
+        mMin = Math.min(min, max);
+        mMax = Math.max(min, max);
         mDelta = mMax - mMin;
-
-        if (mProgress > mMax) {
+        if (progress > mMax) {
             mProgress = mMax;
+        }
+        if (progress < mMin) {
+            mProgress = mMin;
         }
         calculateRadiusOfBubble();
 
@@ -983,6 +1018,14 @@ public class BubbleSeekBar extends View {
         }
     }
 
+    public boolean isTouchToSeek() {
+        return isTouchToSeek;
+    }
+
+    public void setTouchToSeek(boolean touchToSeek) {
+        isTouchToSeek = touchToSeek;
+    }
+
     @ColorInt
     public int getBubbleColor() {
         return mBubbleColor;
@@ -1144,8 +1187,8 @@ public class BubbleSeekBar extends View {
 
             setMeasuredDimension(3 * mBubbleRadius, 3 * mBubbleRadius);
 
-            mBubbleRectF.set(getWidth() / 2f - mBubbleRadius, 0,
-                    getWidth() / 2f + mBubbleRadius, 2 * mBubbleRadius);
+            mBubbleRectF.set(getMeasuredWidth() / 2f - mBubbleRadius, 0,
+                    getMeasuredWidth() / 2f + mBubbleRadius, 2 * mBubbleRadius);
         }
 
         @Override
@@ -1153,10 +1196,10 @@ public class BubbleSeekBar extends View {
             super.onDraw(canvas);
 
             mBubblePath.reset();
-            float x0 = getWidth() / 2f;
-            float y0 = getHeight() - mBubbleRadius / 3f;
+            float x0 = getMeasuredWidth() / 2f;
+            float y0 = getMeasuredHeight() - mBubbleRadius / 3f;
             mBubblePath.moveTo(x0, y0);
-            float x1 = (float) (getWidth() / 2f - Math.sqrt(3) / 2f * mBubbleRadius);
+            float x1 = (float) (getMeasuredWidth() / 2f - Math.sqrt(3) / 2f * mBubbleRadius);
             float y1 = 3 / 2f * mBubbleRadius;
             mBubblePath.quadTo(
                     x1 - dp2px(2), y1 - dp2px(2),
@@ -1164,7 +1207,7 @@ public class BubbleSeekBar extends View {
             );
             mBubblePath.arcTo(mBubbleRectF, 150, 240);
 
-            float x2 = (float) (getWidth() / 2f + Math.sqrt(3) / 2f * mBubbleRadius);
+            float x2 = (float) (getMeasuredWidth() / 2f + Math.sqrt(3) / 2f * mBubbleRadius);
             mBubblePath.quadTo(
                     x2 + dp2px(2), y1 - dp2px(2),
                     x0, y0
@@ -1179,7 +1222,7 @@ public class BubbleSeekBar extends View {
             mBubblePaint.getTextBounds(mProgressText, 0, mProgressText.length(), mRect);
             Paint.FontMetrics fm = mBubblePaint.getFontMetrics();
             float baseline = mBubbleRadius + (fm.descent - fm.ascent) / 2f - fm.descent;
-            canvas.drawText(mProgressText, getWidth() / 2f, baseline, mBubblePaint);
+            canvas.drawText(mProgressText, getMeasuredWidth() / 2f, baseline, mBubblePaint);
         }
 
         void setProgressText(String progressText) {
