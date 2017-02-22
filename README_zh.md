@@ -3,7 +3,7 @@
 **自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**  
 ****
 ##Screenshot
-![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo.gif)
+![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo.gif)  
 ![demo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo2.gif)
 ##Download
 root project:`build.gradle`
@@ -22,7 +22,7 @@ app:`build.gradle`
   }
 ```
 ##Usage
-查看demo获知更多使用细节: [**`MainActivity.java`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/java/com/xw/samlpe/bubbleseekbar/MainActivity.java)   [**`content_main.xml`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/res/layout/content_main.xml)
+查看demo获知更多使用细节: [**`MainActivity.java`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/java/com/xw/samlpe/bubbleseekbar/MainActivity.java)  [**`content_main.xml`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/res/layout/content_main.xml)  
 [**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
 ##Attentions
 - 如果`BubbleSeekBar`的外部容器是可滑动的控件，需要设置滑动监听来修正气泡的偏移，否则滑动后气泡出现位置可能错乱。方法如下：
@@ -36,8 +36,9 @@ app:`build.gradle`
    });
 ```
 - 当设置`bsb_touch_to_seek`属性为`true`时， 最好不要点击**太快**去seek进度，否则动画可能没有足够时间播放。
-- 本库依赖`support:appcompat-v7`采用的**`provided`**方式，所以不必担心冗余的依赖引入。
-##Attributes
+- 本库依赖`support:appcompat-v7`采用的**`provided`**方式，所以不必担心冗余的依赖引入。  
+
+##Attributes  
 attr | format | description
 -------- | ---|---
 bsb_min|int|最小值，或起始值，或首值，整数（可正可负），默认0
