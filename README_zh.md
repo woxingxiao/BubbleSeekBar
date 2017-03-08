@@ -67,6 +67,9 @@ bsb_bubble_text_size|dimension|气泡中进度文字大小，默认14sp
 bsb_bubble_text_color|int|气泡中进度文字颜色，默认白色
 bsb_anim_duration|int|动画执行时间， 默认: 200ms
 bsb_touch_to_seek|boolean|是否点击track任意地方来快速设置进度， 默认: false  
+--------
+>**人生苦短，请选择科学上网。推荐一下本人正在使用的，稳定高速，便宜好用。[推介链接](https://portal.shadowsocks.com.hk/aff.php?aff=8881) **  
+
 ##License
 ```
 The MIT License (MIT)
