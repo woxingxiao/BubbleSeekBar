@@ -15,6 +15,7 @@ import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
@@ -566,7 +567,8 @@ public class BubbleSeekBar extends View {
             mLayoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                     | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
-            if (BuildUtils.isMIUI()) { // MIUI禁止了开发者使用TYPE_TOAST
+            // MIUI禁止了开发者使用TYPE_TOAST，Android 7.1.1 对TYPE_TOAST的使用更严格
+            if (BuildUtils.isMIUI() || Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                 mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION;
             } else {
                 mLayoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
