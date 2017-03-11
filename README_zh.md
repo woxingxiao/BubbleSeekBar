@@ -1,4 +1,5 @@
-[![](https://jitpack.io/v/woxingxiao/BubbleSeekBar.svg)](https://jitpack.io/#woxingxiao/BubbleSeekBar)  
+[![](https://jitpack.io/v/woxingxiao/BubbleSeekBar.svg)](https://jitpack.io/#woxingxiao/BubbleSeekBar)
+[![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)]()
   
 **自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**  
 ****
@@ -18,11 +19,12 @@ root project:`build.gradle`
 app:`build.gradle`
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:v1.9'
+     compile 'com.github.woxingxiao:BubbleSeekBar:$LATEST_VERSION'
   }
 ```
 ##Usage
-查看demo获知更多使用细节: [**`MainActivity.java`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/java/com/xw/samlpe/bubbleseekbar/MainActivity.java)  [**`content_main.xml`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/res/layout/content_main.xml)  
+查看demo获知更多使用细节: [**`MainActivity.java`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/java/com/xw/samlpe/bubbleseekbar/MainActivity.java)
+[**`content_main.xml`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/res/layout/content_main.xml)
 [**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
 ##Attentions
 - 如果`BubbleSeekBar`的外部容器是可滑动的控件，需要设置滑动监听来修正气泡的偏移，否则滑动后气泡出现位置可能错乱。方法如下：

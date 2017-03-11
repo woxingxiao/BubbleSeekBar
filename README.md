@@ -1,4 +1,5 @@
 [![](https://jitpack.io/v/woxingxiao/BubbleSeekBar.svg)](https://jitpack.io/#woxingxiao/BubbleSeekBar)
+[![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)]()
 
 [**中文说明**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/README_zh.md)
 
@@ -20,11 +21,12 @@ root project:`build.gradle`
 app:`build.gradle`
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:v1.9'
+     compile 'com.github.woxingxiao:BubbleSeekBar:$LATEST_VERSION'
   }
 ```
 ##Usage
-Check out the demo for more details: [**`MainActivity.java`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/java/com/xw/samlpe/bubbleseekbar/MainActivity.java)   [**`content_main.xml`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/res/layout/content_main.xml)
+Check out the demo for more details: [**`MainActivity.java`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/java/com/xw/samlpe/bubbleseekbar/MainActivity.java)
+[**`content_main.xml`**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/res/layout/content_main.xml)
 [**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
 ##Attentions
 - You must correct the offsets by setting `ScrollListener` when `BubbleSeekBar`'s parent view is scrollable, otherwise the position of bubble appears maybe be wrong. For example:
