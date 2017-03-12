@@ -36,7 +36,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.math.BigDecimal;
 
-import static com.xw.repo.BubbleSeekBar.TextPosition.BOTTOM;
+import static com.xw.repo.BubbleSeekBar.TextPosition.BELOW_SECTION_MARK;
+import static com.xw.repo.BubbleSeekBar.TextPosition.BOTTOM_SIDES;
 import static com.xw.repo.BubbleSeekBar.TextPosition.SIDES;
 
 /**
@@ -46,10 +47,10 @@ import static com.xw.repo.BubbleSeekBar.TextPosition.SIDES;
  */
 public class BubbleSeekBar extends View {
 
-    @IntDef({SIDES, BOTTOM})
+    @IntDef({SIDES, BOTTOM_SIDES, BELOW_SECTION_MARK})
     @Retention(RetentionPolicy.SOURCE)
     public @interface TextPosition {
-        int SIDES = 0, BOTTOM = 1;
+        int SIDES = 0, BOTTOM_SIDES = 1, BELOW_SECTION_MARK = 2;
     }
 
     private int mMin; // 首值（起始值）
@@ -63,11 +64,12 @@ public class BubbleSeekBar extends View {
     private int mThumbColor; // thumb的颜色
     private int mTrackColor; // 下层track的颜色
     private int mSecondTrackColor; // 上层track的颜色
-    private boolean isShowText; // 是否显示首尾值文字
-    private int mTextSize; // 首尾值文字大小
-    private int mTextColor; // 首尾值文字颜色
+    private boolean isShowSectionText; // 是否显示section值文字
+    private int mSectionTextSize; // section值文字大小
+    private int mSectionTextColor; // section值文字颜色
     @TextPosition
-    private int mTextPosition; // 首尾值文字位置
+    private int mSectionTextPosition; // section值文字位置
+    private int mSectionTextInterval; // section值文字每间隔多少section显示
     private boolean isShowThumbText; // 是否显示实时值文字
     private int mThumbTextSize; // 实时值文字大小
     private int mThumbTextColor; // 实时值文字颜色
@@ -78,8 +80,10 @@ public class BubbleSeekBar extends View {
     private boolean isAutoAdjustSectionMark; // 是否自动滑到最近的整份数，以showSectionMark为前提
     private boolean isShowProgressInFloat; // 是否显示小数形式progress，所有小数均保留1位
     private boolean isTouchToSeek; // 是否点击快速seek
+    private boolean isSeekBySection; // 是否以section为单位seek，仅适用于整型progress，可能progress非连续
 
     private int mDelta; // max - min
+    private int mSectionValue; // (mDelta / mSectionCount)
     private float mThumbCenterX; // thumb的中心X坐标
     private float mTrackLength; // track的长度
     private float mSectionOffset; // 一个section的长度
@@ -102,6 +106,7 @@ public class BubbleSeekBar extends View {
     private int[] mPoint = new int[2];
     private long mAnimDuration = 200;
     private boolean isTouchToSeekAnimEnd = true;
+    private int mPreSecValue; // previous SectionValue
 
     public BubbleSeekBar(Context context) {
         this(context, null);
@@ -131,15 +136,19 @@ public class BubbleSeekBar extends View {
         mSecondTrackColor = a.getColor(R.styleable.BubbleSeekBar_bsb_second_track_color,
                 ContextCompat.getColor(context, R.color.colorAccent));
         mThumbColor = a.getColor(R.styleable.BubbleSeekBar_bsb_thumb_color, mSecondTrackColor);
-        isShowText = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_text, false);
-        mTextSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_text_size, sp2px(14));
-        mTextColor = a.getColor(R.styleable.BubbleSeekBar_bsb_text_color, mTrackColor);
-        int pos = a.getInteger(R.styleable.BubbleSeekBar_bsb_text_position, 0);
+        isShowSectionText = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_section_text, false);
+        mSectionTextSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_section_text_size, sp2px(14));
+        mSectionTextColor = a.getColor(R.styleable.BubbleSeekBar_bsb_section_text_color, mTrackColor);
+        isSeekBySection = a.getBoolean(R.styleable.BubbleSeekBar_bsb_seek_by_section, false);
+        int pos = a.getInteger(R.styleable.BubbleSeekBar_bsb_section_text_position, 0);
         if (pos == 0) {
-            mTextPosition = SIDES;
+            mSectionTextPosition = SIDES;
         } else if (pos == 1) {
-            mTextPosition = TextPosition.BOTTOM;
+            mSectionTextPosition = TextPosition.BOTTOM_SIDES;
+        } else if (pos == 2) {
+            mSectionTextPosition = TextPosition.BELOW_SECTION_MARK;
         }
+        mSectionTextInterval = a.getInteger(R.styleable.BubbleSeekBar_bsb_section_text_interval, 1);
         isShowThumbText = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_thumb_text, false);
         mThumbTextSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_thumb_text_size, sp2px(14));
         mThumbTextColor = a.getColor(R.styleable.BubbleSeekBar_bsb_thumb_text_color, mSecondTrackColor);
@@ -160,6 +169,29 @@ public class BubbleSeekBar extends View {
             mMin = tmp;
         }
         mDelta = mMax - mMin;
+        mSectionValue = mDelta / mSectionCount;
+
+        if (mSectionCount <= 0) {
+            mSectionCount = 10;
+        }
+        if (mSectionCount > mDelta) {
+            isShowProgressInFloat = true;
+        }
+        if (isShowSectionText) {
+            isShowSectionMark = true;
+        }
+        if (isAutoAdjustSectionMark && !isShowSectionMark) {
+            isAutoAdjustSectionMark = false;
+        }
+        if (isSeekBySection && !isShowProgressInFloat && mDelta % mSectionCount == 0) {
+            isSeekBySection = mSectionValue != 1;
+            if (isSeekBySection) {
+                mPreSecValue = mMin;
+                isShowSectionMark = true;
+                isAutoAdjustSectionMark = true;
+                isTouchToSeek = false;
+            }
+        }
 
         if (mProgress < mMin) {
             mProgress = mMin;
@@ -175,15 +207,6 @@ public class BubbleSeekBar extends View {
         }
         if (mThumbRadiusOnDragging <= mSecondTrackSize) {
             mThumbRadiusOnDragging = mSecondTrackSize * 2;
-        }
-        if (mSectionCount <= 0) {
-            mSectionCount = 10;
-        }
-        if (isAutoAdjustSectionMark && !isShowSectionMark) {
-            isAutoAdjustSectionMark = false;
-        }
-        if (mSectionCount > mDelta) {
-            isShowProgressInFloat = true;
         }
 
         mPaint = new Paint();
@@ -243,8 +266,8 @@ public class BubbleSeekBar extends View {
             mPaint.getTextBounds("j", 0, 1, mRectText); // “j”是字母和阿拉伯数字中最高的
             height += mRectText.height() + mTextSpace; // 如果显示实时进度，则原来基础上加上进度文字高度和间隔
         }
-        if (isShowText && mTextPosition == TextPosition.BOTTOM) { // 如果首尾值在track之下显示，比较取较大值
-            mPaint.setTextSize(mTextSize);
+        if (isShowSectionText && mSectionTextPosition >= TextPosition.BOTTOM_SIDES) { // 如果Section值在track之下显示，比较取较大值
+            mPaint.setTextSize(mSectionTextSize);
             mPaint.getTextBounds("j", 0, 1, mRectText);
             height = Math.max(height, mThumbRadiusOnDragging * 2 + mRectText.height() + mTextSpace);
         }
@@ -253,9 +276,9 @@ public class BubbleSeekBar extends View {
         mLeft = getPaddingLeft() + mThumbRadiusOnDragging;
         mRight = getMeasuredWidth() - getPaddingRight() - mThumbRadiusOnDragging;
 
-        if (isShowText) {
-            mPaint.setTextSize(mTextSize);
-            if (mTextPosition == SIDES) {
+        if (isShowSectionText) {
+            mPaint.setTextSize(mSectionTextSize);
+            if (mSectionTextPosition == SIDES) {
 
                 String text = String.valueOf(mMin);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
@@ -265,7 +288,7 @@ public class BubbleSeekBar extends View {
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
                 mRight -= (mRectText.width() + mTextSpace);
 
-            } else if (mTextPosition == TextPosition.BOTTOM) {
+            } else if (mSectionTextPosition >= TextPosition.BOTTOM_SIDES) {
 
                 String text = String.valueOf(mMin);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
@@ -309,103 +332,120 @@ public class BubbleSeekBar extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        float x1 = getPaddingLeft();
-        float x2 = getMeasuredWidth() - getPaddingRight();
-        float y = getPaddingTop() + mThumbRadiusOnDragging;
+        float xLeft = getPaddingLeft();
+        float xRight = getMeasuredWidth() - getPaddingRight();
+        float yTop = getPaddingTop() + mThumbRadiusOnDragging;
 
-        if (isShowText) {
-            mPaint.setTextSize(mTextSize);
-            mPaint.setColor(mTextColor);
+        if (isShowSectionText) {
+            mPaint.setTextSize(mSectionTextSize);
+            mPaint.setColor(mSectionTextColor);
 
-            // 画首尾值文字
-            if (mTextPosition == SIDES) {
-                float y_ = y + mRectText.height() / 2f;
+            // 画Section值文字
+            if (mSectionTextPosition == SIDES) {
+                float y_ = yTop + mRectText.height() / 2f;
 
                 String text = String.valueOf(mMin);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
-                canvas.drawText(text, x1 + mRectText.width() / 2f, y_, mPaint);
-                x1 += mRectText.width() + mTextSpace;
+                canvas.drawText(text, xLeft + mRectText.width() / 2f, y_, mPaint);
+                xLeft += mRectText.width() + mTextSpace;
 
                 text = String.valueOf(mMax);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
-                canvas.drawText(text, x2 - mRectText.width() / 2f, y_, mPaint);
-                x2 -= (mRectText.width() + mTextSpace);
+                canvas.drawText(text, xRight - mRectText.width() / 2f, y_, mPaint);
+                xRight -= (mRectText.width() + mTextSpace);
 
-            } else if (mTextPosition == TextPosition.BOTTOM) {
-                float y_ = y + mThumbRadiusOnDragging + mTextSpace;
+            } else if (mSectionTextPosition >= TextPosition.BOTTOM_SIDES) {
+                float y_ = yTop + mThumbRadiusOnDragging + mTextSpace;
 
                 String text = String.valueOf(mMin);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
                 y_ += mRectText.height();
-                x1 = mLeft;
-                canvas.drawText(text, x1, y_, mPaint);
+                xLeft = mLeft;
+                if (mSectionTextPosition == TextPosition.BOTTOM_SIDES) {
+                    canvas.drawText(text, xLeft, y_, mPaint);
+                }
 
                 text = String.valueOf(mMax);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
-                x2 = mRight;
-                canvas.drawText(text, x2, y_, mPaint);
+                xRight = mRight;
+                if (mSectionTextPosition == TextPosition.BOTTOM_SIDES) {
+                    canvas.drawText(text, xRight, y_, mPaint);
+                }
             }
         }
+        if (!isShowSectionText || mSectionTextPosition == TextPosition.SIDES) {
+            xLeft += mThumbRadiusOnDragging;
+            xRight -= mThumbRadiusOnDragging;
+        }
 
-        if (!isShowText || mTextPosition != TextPosition.BOTTOM) {
-            x1 += mThumbRadiusOnDragging;
-            x2 -= mThumbRadiusOnDragging;
+        boolean isShowTextBelowSectionMark = isShowSectionText && mSectionTextPosition ==
+                TextPosition.BELOW_SECTION_MARK && mSectionValue > 0;
+        boolean conditionInterval = mSectionCount % 2 == 0;
+
+        if (isShowTextBelowSectionMark || isShowSectionMark) {
+            float r = (mThumbRadiusOnDragging - dp2px(2)) / 2f;
+            float junction = mTrackLength / mDelta * Math.abs(mProgress - mMin) + mLeft; // 交汇点
+            mPaint.setTextSize(mSectionTextSize);
+            mPaint.getTextBounds("0123456789", 0, "0123456789".length(), mRectText);
+
+            float x_;
+            float y_ = yTop + mRectText.height() + mThumbRadiusOnDragging + mTextSpace;
+
+            for (int i = 0; i <= mSectionCount; i++) {
+                x_ = xLeft + i * mSectionOffset;
+                mPaint.setColor(x_ <= junction ? mSecondTrackColor : mTrackColor);
+                // 画section mark
+                canvas.drawCircle(x_, yTop, r, mPaint);
+
+                // 画section mark对应的进度值
+                if (isShowTextBelowSectionMark) {
+                    if (mSectionTextInterval > 1) {
+                        if (conditionInterval && i % mSectionTextInterval == 0) {
+                            mPaint.setColor(mTrackColor);
+                            canvas.drawText(String.valueOf(mMin + mSectionValue * i), x_, y_, mPaint);
+                        }
+                    } else {
+                        mPaint.setColor(mTrackColor);
+                        canvas.drawText(String.valueOf(mMin + mSectionValue * i), x_, y_, mPaint);
+                    }
+                }
+            }
         }
 
         if (!isThumbOnDragging) {
-            mThumbCenterX = mTrackLength / mDelta * (mProgress - mMin) + x1;
+            mThumbCenterX = mTrackLength / mDelta * (mProgress - mMin) + xLeft;
         }
 
         if (isShowThumbText && !isThumbOnDragging && isTouchToSeekAnimEnd) {
-            // 排除显示小数实时值、首尾文字在Bottom时，滑到首尾的情况（不会与首尾文字重合，故索性不显示）
-            if (mTextPosition == SIDES || !isShowProgressInFloat ||
-                    ((int) mProgress != mMin && (int) mProgress != mMax)) {
+            // 判断显示小数实时值、TextPosition.BOTTOM时，滑到首尾的情况
+            isShowTextBelowSectionMark |= (mSectionTextPosition == TextPosition.BOTTOM_SIDES &&
+                    (getProgress() == mMin || getProgress() == mMax));
 
-                mPaint.setTextSize(mThumbTextSize);
-                mPaint.setColor(mThumbTextColor);
+            mPaint.setColor(mThumbTextColor);
+            mPaint.setTextSize(isShowTextBelowSectionMark ? mSectionTextSize : mThumbTextSize);
+            mPaint.getTextBounds("0123456789", 0, "0123456789".length(), mRectText);
+            float y_ = yTop + mRectText.height() + mThumbRadiusOnDragging + mTextSpace;
 
-                if (isShowProgressInFloat) {
-                    mPaint.getTextBounds(String.valueOf(getProgressInFloat()), 0,
-                            String.valueOf(getProgressInFloat()).length(), mRectText);
-                    float y_ = y + mRectText.height() + mThumbRadiusOnDragging + mTextSpace;
-                    canvas.drawText(String.valueOf(getProgressInFloat()), mThumbCenterX, y_, mPaint);
-                } else {
-                    mPaint.getTextBounds(String.valueOf(getProgress()), 0,
-                            String.valueOf(getProgress()).length(), mRectText);
-                    float y_ = y + mRectText.height() + mThumbRadiusOnDragging + mTextSpace;
-                    canvas.drawText(String.valueOf(getProgress()), mThumbCenterX, y_, mPaint);
-                }
-            }
-        }
-
-        if (isShowSectionMark) {
-            // 画分段标识点
-            float r = (mThumbRadiusOnDragging - dp2px(2)) / 2f;
-            float junction = mTrackLength / mDelta * Math.abs(mProgress - mMin) + mLeft; // 交汇点
-            for (int i = 0; i <= mSectionCount; i++) {
-                if (x1 + i * mSectionOffset <= junction) {
-                    mPaint.setColor(mSecondTrackColor);
-                } else {
-                    mPaint.setColor(mTrackColor);
-                }
-                canvas.drawCircle(x1 + i * mSectionOffset, y, r, mPaint);
+            if (isShowProgressInFloat && !isShowTextBelowSectionMark) {
+                canvas.drawText(String.valueOf(getProgressInFloat()), mThumbCenterX, y_, mPaint);
+            } else {
+                canvas.drawText(String.valueOf(getProgress()), mThumbCenterX, y_, mPaint);
             }
         }
 
         // 画下层track
         mPaint.setColor(mSecondTrackColor);
         mPaint.setStrokeWidth(mSecondTrackSize);
-        canvas.drawLine(x1, y, mThumbCenterX, y, mPaint);
+        canvas.drawLine(xLeft, yTop, mThumbCenterX, yTop, mPaint);
 
         // 画上层track
         mPaint.setColor(mTrackColor);
         mPaint.setStrokeWidth(mTrackSize);
-        canvas.drawLine(mThumbCenterX, y, x2, y, mPaint);
+        canvas.drawLine(mThumbCenterX, yTop, xRight, yTop, mPaint);
 
         // 画thumb
         mPaint.setColor(mThumbColor);
-        canvas.drawCircle(mThumbCenterX, y, isThumbOnDragging ? mThumbRadiusOnDragging :
-                mThumbRadius, mPaint);
+        canvas.drawCircle(mThumbCenterX, yTop, isThumbOnDragging ? mThumbRadiusOnDragging : mThumbRadius, mPaint);
     }
 
     @Override
@@ -468,8 +508,7 @@ public class BubbleSeekBar extends View {
                     invalidate();
 
                     if (mProgressListener != null) {
-                        mProgressListener.onProgressChanged(getProgress());
-                        mProgressListener.onProgressChanged(getProgressInFloat());
+                        mProgressListener.onProgressChanged(getProgress(), getProgressInFloat());
                     }
                 }
 
@@ -484,7 +523,7 @@ public class BubbleSeekBar extends View {
                                 isTouchToSeekAnimEnd = false;
                                 autoAdjustSection();
                             }
-                        }, 300);
+                        }, isThumbOnDragging ? 0 : 300);
                     } else {
                         autoAdjustSection();
                     }
@@ -502,8 +541,8 @@ public class BubbleSeekBar extends View {
                                             invalidate();
 
                                             if (mProgressListener != null) {
-                                                mProgressListener.getProgressOnFinally(getProgress());
-                                                mProgressListener.getProgressOnFinally(getProgressInFloat());
+                                                mProgressListener.onProgressChanged(getProgress(),
+                                                        getProgressInFloat());
                                             }
                                         }
 
@@ -518,11 +557,10 @@ public class BubbleSeekBar extends View {
 
                         }
                     }, !isThumbOnDragging && isTouchToSeek ? 300 : 0);
+                }
 
-                    if (mProgressListener != null) {
-                        mProgressListener.getProgressOnActionUp(getProgress());
-                        mProgressListener.getProgressOnActionUp(getProgressInFloat());
-                    }
+                if (mProgressListener != null) {
+                    mProgressListener.getProgressOnActionUp(getProgress(), getProgressInFloat());
                 }
 
                 break;
@@ -634,8 +672,7 @@ public class BubbleSeekBar extends View {
                     invalidate();
 
                     if (mProgressListener != null) {
-                        mProgressListener.onProgressChanged(getProgress());
-                        mProgressListener.onProgressChanged(getProgressInFloat());
+                        mProgressListener.onProgressChanged(getProgress(), getProgressInFloat());
                     }
                 }
             });
@@ -659,8 +696,7 @@ public class BubbleSeekBar extends View {
                 invalidate();
 
                 if (mProgressListener != null) {
-                    mProgressListener.getProgressOnFinally(getProgress());
-                    mProgressListener.getProgressOnFinally(getProgressInFloat());
+                    mProgressListener.getProgressOnFinally(getProgress(), getProgressInFloat());
                 }
             }
 
@@ -760,6 +796,30 @@ public class BubbleSeekBar extends View {
     }
 
     public int getProgress() {
+        if (isSeekBySection && mSectionValue > 0) {
+            float half = mSectionValue >> 1;
+
+            if (mProgress >= mPreSecValue) { // increasing
+                if (mProgress >= mPreSecValue + half) {
+                    mPreSecValue += mSectionValue;
+                    mProgress = mPreSecValue;
+                    return Math.round(mProgress);
+                } else {
+                    mProgress = mPreSecValue;
+                    return Math.round(mProgress);
+                }
+            } else { // reducing
+                if (mProgress >= mPreSecValue - half) {
+                    mProgress = mPreSecValue;
+                    return Math.round(mProgress);
+                } else {
+                    mPreSecValue -= mSectionValue;
+                    mProgress = mPreSecValue;
+                    return Math.round(mProgress);
+                }
+            }
+        }
+
         return Math.round(mProgress);
     }
 
@@ -781,10 +841,8 @@ public class BubbleSeekBar extends View {
         mBubbleCenterRawX = mBubbleCenterRawSolidX + mTrackLength * (mProgress - mMin) / mDelta;
 
         if (mProgressListener != null) {
-            mProgressListener.onProgressChanged(getProgress());
-            mProgressListener.onProgressChanged(getProgressInFloat());
-            mProgressListener.getProgressOnFinally(getProgress());
-            mProgressListener.getProgressOnFinally(getProgressInFloat());
+            mProgressListener.onProgressChanged(getProgress(), getProgressInFloat());
+            mProgressListener.getProgressOnFinally(getProgress(), getProgressInFloat());
         }
 
         postInvalidate();
@@ -922,49 +980,64 @@ public class BubbleSeekBar extends View {
         }
     }
 
-    public boolean isShowText() {
-        return isShowText;
+    public boolean isShowSectionText() {
+        return isShowSectionText;
     }
 
-    public void setShowText(boolean showText) {
-        if (isShowText != showText) {
-            isShowText = showText;
+    public void setShowSectionText(boolean showSectionText) {
+        if (isShowSectionText != showSectionText) {
+            isShowSectionText = showSectionText;
+            if (isShowSectionText) {
+                isShowSectionMark = true;
+            }
             requestLayout();
         }
     }
 
-    public int getTextSize() {
-        return mTextSize;
+    public int getSectionTextSize() {
+        return mSectionTextSize;
     }
 
-    public void setTextSize(int textSize) {
-        if (mTextSize != textSize) {
-            mTextSize = textSize;
+    public void setSectionTextSize(int sectionTextSize) {
+        if (mSectionTextSize != sectionTextSize) {
+            mSectionTextSize = sectionTextSize;
             requestLayout();
         }
     }
 
     @ColorInt
-    public int getTextColor() {
-        return mTextColor;
+    public int getSectionTextColor() {
+        return mSectionTextColor;
     }
 
-    public void setTextColor(@ColorInt int textColor) {
-        if (mTextColor != textColor) {
-            mTextColor = textColor;
+    public void setSectionTextColor(@ColorInt int sectionTextColor) {
+        if (mSectionTextColor != sectionTextColor) {
+            mSectionTextColor = sectionTextColor;
             postInvalidate();
         }
     }
 
-    public int getTextPosition() {
-        return mTextPosition;
+    public int getSectionTextPosition() {
+        return mSectionTextPosition;
     }
 
-    public void setTextPosition(@TextPosition int textPosition) {
-        if (mTextPosition != textPosition) {
-            mTextPosition = textPosition;
+    public void setSectionTextPosition(@TextPosition int sectionTextPosition) {
+        if (mSectionTextPosition != sectionTextPosition) {
+            mSectionTextPosition = sectionTextPosition;
             requestLayout();
         }
+    }
+
+    public int getSectionTextInterval() {
+        return mSectionTextInterval;
+    }
+
+    public void setSectionTextInterval(int sectionTextInterval) {
+        if (sectionTextInterval < 1 || sectionTextInterval == mSectionTextInterval)
+            return;
+
+        mSectionTextInterval = sectionTextInterval;
+        postInvalidate();
     }
 
     public boolean isShowThumbText() {
@@ -1093,6 +1166,28 @@ public class BubbleSeekBar extends View {
         }
     }
 
+    public boolean isSeekBySection() {
+        return isSeekBySection;
+    }
+
+    public void setSeekBySection(boolean seekBySection) {
+        if (isSeekBySection != seekBySection) {
+            isSeekBySection = seekBySection;
+
+            if (isSeekBySection && !isShowProgressInFloat && mDelta % mSectionCount == 0) {
+                mSectionValue = mDelta / mSectionCount;
+                isSeekBySection = mSectionValue != 1;
+                if (isSeekBySection) {
+                    mPreSecValue = mMin;
+                    isShowSectionMark = true;
+                    isAutoAdjustSectionMark = true;
+                    isTouchToSeek = false;
+                }
+            }
+            postInvalidate();
+        }
+    }
+
     public OnProgressChangedListener getOnProgressChangedListener() {
         return mProgressListener;
     }
@@ -1104,19 +1199,13 @@ public class BubbleSeekBar extends View {
     /**
      * progress改变监听器
      */
-    private interface OnProgressChangedListener {
+    public interface OnProgressChangedListener {
 
-        void onProgressChanged(int progress);
+        void onProgressChanged(int progress, float progressFloat);
 
-        void onProgressChanged(float progress);
+        void getProgressOnActionUp(int progress, float progressFloat);
 
-        void getProgressOnActionUp(int progress);
-
-        void getProgressOnActionUp(float progress);
-
-        void getProgressOnFinally(int progress);
-
-        void getProgressOnFinally(float progress);
+        void getProgressOnFinally(int progress, float progressFloat);
     }
 
     /**
@@ -1127,27 +1216,15 @@ public class BubbleSeekBar extends View {
     public static abstract class OnProgressChangedListenerAdapter implements OnProgressChangedListener {
 
         @Override
-        public void onProgressChanged(int progress) {
+        public void onProgressChanged(int progress, float progressFloat) {
         }
 
         @Override
-        public void onProgressChanged(float progress) {
+        public void getProgressOnActionUp(int progress, float progressFloat) {
         }
 
         @Override
-        public void getProgressOnActionUp(int progress) {
-        }
-
-        @Override
-        public void getProgressOnActionUp(float progress) {
-        }
-
-        @Override
-        public void getProgressOnFinally(int progress) {
-        }
-
-        @Override
-        public void getProgressOnFinally(float progress) {
+        public void getProgressOnFinally(int progress, float progressFloat) {
         }
     }
 

@@ -12,13 +12,15 @@
         <attr name="bsb_thumb_color" format="color|reference"/>
         <attr name="bsb_track_color" format="color|reference"/>
         <attr name="bsb_second_track_color" format="color|reference"/>
-        <attr name="bsb_show_text" format="boolean"/>
-        <attr name="bsb_text_size" format="dimension|reference"/>
-        <attr name="bsb_text_color" format="color|reference"/>
-        <attr name="bsb_text_position">
+        <attr name="bsb_show_section_text" format="boolean"/>
+        <attr name="bsb_section_text_size" format="dimension|reference"/>
+        <attr name="bsb_section_text_color" format="color|reference"/>
+        <attr name="bsb_section_text_position">
             <enum name="sides" value="0"/>
-            <enum name="bottom" value="1"/>
+            <enum name="bottom_sides" value="1"/>
+            <enum name="below_section_mark" value="2"/>
         </attr>
+        <attr name="bsb_section_text_interval" format="integer"/>
         <attr name="bsb_show_thumb_text" format="boolean"/>
         <attr name="bsb_thumb_text_size" format="dimension|reference"/>
         <attr name="bsb_thumb_text_color" format="color|reference"/>
@@ -30,5 +32,6 @@
         <attr name="bsb_show_progress_in_float" format="boolean"/>
         <attr name="bsb_anim_duration" format="integer"/>
         <attr name="bsb_touch_to_seek" format="boolean"/>
+        <attr name="bsb_seek_by_section" format="boolean"/>
     </declare-styleable>
 </resources>
