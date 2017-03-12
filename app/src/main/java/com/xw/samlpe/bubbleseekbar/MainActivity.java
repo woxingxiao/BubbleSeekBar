@@ -1,35 +1,18 @@
 package com.xw.samlpe.bubbleseekbar;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.xw.repo.BubbleSeekBar;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-import java.util.Random;
-
-public class MainActivity extends AppCompatActivity {
-
-    BubbleSeekBar mBubbleSeekBar0;
-    BubbleSeekBar mBubbleSeekBar1;
-    BubbleSeekBar mBubbleSeekBar2;
-    BubbleSeekBar mBubbleSeekBar3;
-    BubbleSeekBar mBubbleSeekBar4;
-    BubbleSeekBar mBubbleSeekBar5;
-    BubbleSeekBar mBubbleSeekBar6;
-    BubbleSeekBar mBubbleSeekBar8;
-    BubbleSeekBar mBubbleSeekBar9;
-    TextView mProgressText;
-    ObservableScrollView mObsScrollView;
-
-    StringBuilder mStringBuilder = new StringBuilder();
+    private String mTag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,79 +20,61 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        mBubbleSeekBar0 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_0);
-        mBubbleSeekBar1 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_1);
-        mBubbleSeekBar2 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_2);
-        mBubbleSeekBar3 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_3);
-        mBubbleSeekBar4 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_4);
-        mBubbleSeekBar5 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_5);
-        mBubbleSeekBar6 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_6);
-        mBubbleSeekBar8 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_8);
-        mBubbleSeekBar9 = (BubbleSeekBar) findViewById(R.id.bubble_seek_bar_9);
-        mProgressText = (TextView) findViewById(R.id.progress_text);
-        mObsScrollView = (ObservableScrollView) findViewById(R.id.content_main);
-
         setSupportActionBar(toolbar);
 
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mObsScrollView.smoothScrollTo(0, 0);
+        findViewById(R.id.main_tab_btn_1).setOnClickListener(this);
+        findViewById(R.id.main_tab_btn_2).setOnClickListener(this);
+        findViewById(R.id.main_tab_btn_3).setOnClickListener(this);
 
-                int progress = new Random().nextInt(100);
-                mBubbleSeekBar0.setProgress(progress);
-                Snackbar.make(view, "set random progress = " + progress, Snackbar.LENGTH_SHORT).show();
+        if (savedInstanceState == null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.container, DemoFragment1.newInstance(), "demo1");
+            ft.commit();
+            mTag = "demo1";
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.main_tab_btn_1:
+                switchContent("demo1");
+                break;
+            case R.id.main_tab_btn_2:
+                switchContent("demo2");
+                break;
+            case R.id.main_tab_btn_3:
+                switchContent("demo3");
+                break;
+        }
+    }
+
+    public void switchContent(String toTag) {
+        if (mTag.equals(toTag))
+            return;
+
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment from = fm.findFragmentByTag(mTag);
+        Fragment to = fm.findFragmentByTag(toTag);
+
+        FragmentTransaction ft = fm.beginTransaction();
+        if (to == null) {
+            if ("demo1".equals(toTag)) {
+                to = DemoFragment1.newInstance();
+            } else if ("demo2".equals(toTag)) {
+                to = DemoFragment2.newInstance();
+            } else {
+                to = DemoFragment3.newInstance();
             }
-        });
+        }
+        if (!to.isAdded()) {
+            ft.hide(from).add(R.id.container, to, toTag);
+        } else {
+            ft.hide(from).show(to);
+        }
+        ft.commit();
 
-        mBubbleSeekBar0.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListenerAdapter() {
-            @Override
-            public void getProgressOnActionUp(int progress) {
-                Toast.makeText(MainActivity.this, "progressOnActionUp:" + progress, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        mBubbleSeekBar5.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListenerAdapter() {
-            @Override
-            public void onProgressChanged(int progress) {
-                mStringBuilder.delete(0, mStringBuilder.length());
-
-                mStringBuilder.append("(listener) int:").append(progress);
-            }
-
-            @Override
-            public void onProgressChanged(float progress) {
-                mStringBuilder.append(", float:").append(progress);
-
-                mProgressText.setText(mStringBuilder.toString());
-            }
-        });
-
-        mObsScrollView.setOnScrollChangedListener(new ObservableScrollView.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
-                // 调用修正偏移方法
-                mBubbleSeekBar0.correctOffsetWhenContainerOnScrolling();
-                mBubbleSeekBar1.correctOffsetWhenContainerOnScrolling();
-                mBubbleSeekBar2.correctOffsetWhenContainerOnScrolling();
-                mBubbleSeekBar3.correctOffsetWhenContainerOnScrolling();
-                mBubbleSeekBar4.correctOffsetWhenContainerOnScrolling();
-                mBubbleSeekBar5.correctOffsetWhenContainerOnScrolling();
-                mBubbleSeekBar6.correctOffsetWhenContainerOnScrolling();
-                mBubbleSeekBar8.correctOffsetWhenContainerOnScrolling();
-                mBubbleSeekBar9.correctOffsetWhenContainerOnScrolling();
-            }
-        });
-
-        mBubbleSeekBar6.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListenerAdapter() {
-            @Override
-            public void getProgressOnFinally(int progress) {
-                Toast.makeText(MainActivity.this, "progressOnFinally(int):" + progress, Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        mTag = toTag;
     }
 
     @Override
