@@ -46,7 +46,7 @@ public class DemoFragment1 extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int progress = new Random().nextInt(bubbleSeekBar.getMax());
+                int progress = new Random().nextInt((int)bubbleSeekBar.getMax());
                 bubbleSeekBar.setProgress(progress);
                 Snackbar.make(v, "set random progress = " + progress, Snackbar.LENGTH_SHORT).show();
             }

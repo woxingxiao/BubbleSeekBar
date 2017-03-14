@@ -4,6 +4,7 @@
         <attr name="bsb_min" format="integer|reference"/>
         <attr name="bsb_max" format="integer|reference"/>
         <attr name="bsb_progress" format="integer|reference"/>
+        <attr name="bsb_is_float_type" format="boolean"/>
         <attr name="bsb_track_size" format="dimension|reference"/>
         <attr name="bsb_second_track_size" format="dimension|reference"/>
         <attr name="bsb_thumb_radius" format="dimension|reference"/>

@@ -78,6 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:bsb_auto_adjust_section_mark="true"
+        app:bsb_is_float_type="true"
         app:bsb_second_track_color="@color/color_blue"
         app:bsb_section_count="5"
         app:bsb_section_text_position="bottom_sides"
@@ -85,7 +86,6 @@
         app:bsb_show_section_mark="true"
         app:bsb_show_section_text="true"
         app:bsb_show_thumb_text="true"
-        app:bsb_thumb_text_color="@color/colorPrimary"
         app:bsb_thumb_text_size="18sp"/>
 
     <TextView
