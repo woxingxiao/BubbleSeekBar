@@ -11,13 +11,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public class BuildUtils {
+class BubbleBuildUtils {
 
     private static final File BUILD_PROP_FILE = new File(Environment.getRootDirectory(), "build.prop");
     private static Properties sBuildProperties;
     private static final Object sBuildPropertiesLock = new Object();
 
-    public static Properties getBuildProperties() {
+    private static Properties getBuildProperties() {
         synchronized (sBuildPropertiesLock) {
             if (sBuildProperties == null) {
                 sBuildProperties = new Properties();
@@ -39,7 +39,7 @@ public class BuildUtils {
 //        return getBuildProperties().getProperty("ro.build.version.emui");
 //    }
 
-    public static boolean isMIUI() {
+    static boolean isMIUI() {
         return getBuildProperties().containsKey("ro.miui.ui.version.name");
     }
 }

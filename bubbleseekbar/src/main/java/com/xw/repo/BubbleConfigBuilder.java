@@ -12,13 +12,45 @@ import android.util.TypedValue;
  */
 public class BubbleConfigBuilder {
 
-    public float min, max, progress;
-    public int trackSize, trackColor, secondTrackSize, secondTrackColor, thumbRadius, thumbColor,
-            thumbRadiusOnDragging, sectionCount, sectionTextSize, sectionTextColor,
-            sectionTextPosition, sectionTextInterval, thumbTextSize, thumbTextColor,
-            bubbleColor, bubbleTextSize, bubbleTextColor;
-    public boolean floatType, showSectionMark, autoAdjustSectionMark, showSectionText,
-            showThumbText, showProgressInFloat, touchToSeek, seekBySection;
+    float min;
+    float max;
+    float progress;
+    boolean floatType;
+    int trackSize;
+    int secondTrackSize;
+    int thumbRadius;
+    int thumbRadiusOnDragging;
+    int trackColor;
+    int secondTrackColor;
+    int thumbColor;
+    int sectionCount;
+    boolean showSectionMark;
+    boolean autoAdjustSectionMark;
+    boolean showSectionText;
+    int sectionTextSize;
+    int sectionTextColor;
+    @BubbleSeekBar.TextPosition
+    int sectionTextPosition;
+    int sectionTextInterval;
+    boolean showThumbText;
+    int thumbTextSize;
+    int thumbTextColor;
+    boolean showProgressInFloat;
+    boolean touchToSeek;
+    boolean seekBySection;
+    int bubbleColor;
+    int bubbleTextSize;
+    int bubbleTextColor;
+
+    private BubbleSeekBar mBubbleSeekBar;
+
+    BubbleConfigBuilder(BubbleSeekBar bubbleSeekBar) {
+        mBubbleSeekBar = bubbleSeekBar;
+    }
+
+    public void build() {
+        mBubbleSeekBar.config(this);
+    }
 
     public BubbleConfigBuilder min(float min) {
         this.min = min;
@@ -158,6 +190,118 @@ public class BubbleConfigBuilder {
     public BubbleConfigBuilder bubbleTextColor(@ColorInt int color) {
         this.bubbleTextColor = color;
         return this;
+    }
+
+    public float getMin() {
+        return min;
+    }
+
+    public float getMax() {
+        return max;
+    }
+
+    public float getProgress() {
+        return progress;
+    }
+
+    public boolean isFloatType() {
+        return floatType;
+    }
+
+    public int getTrackSize() {
+        return trackSize;
+    }
+
+    public int getSecondTrackSize() {
+        return secondTrackSize;
+    }
+
+    public int getThumbRadius() {
+        return thumbRadius;
+    }
+
+    public int getThumbRadiusOnDragging() {
+        return thumbRadiusOnDragging;
+    }
+
+    public int getTrackColor() {
+        return trackColor;
+    }
+
+    public int getSecondTrackColor() {
+        return secondTrackColor;
+    }
+
+    public int getThumbColor() {
+        return thumbColor;
+    }
+
+    public int getSectionCount() {
+        return sectionCount;
+    }
+
+    public boolean isShowSectionMark() {
+        return showSectionMark;
+    }
+
+    public boolean isAutoAdjustSectionMark() {
+        return autoAdjustSectionMark;
+    }
+
+    public boolean isShowSectionText() {
+        return showSectionText;
+    }
+
+    public int getSectionTextSize() {
+        return sectionTextSize;
+    }
+
+    public int getSectionTextColor() {
+        return sectionTextColor;
+    }
+
+    public int getSectionTextPosition() {
+        return sectionTextPosition;
+    }
+
+    public int getSectionTextInterval() {
+        return sectionTextInterval;
+    }
+
+    public boolean isShowThumbText() {
+        return showThumbText;
+    }
+
+    public int getThumbTextSize() {
+        return thumbTextSize;
+    }
+
+    public int getThumbTextColor() {
+        return thumbTextColor;
+    }
+
+    public boolean isShowProgressInFloat() {
+        return showProgressInFloat;
+    }
+
+    public boolean isTouchToSeek() {
+        return touchToSeek;
+    }
+
+    public boolean isSeekBySection() {
+        return seekBySection;
+    }
+
+    public int getBubbleColor() {
+        return bubbleColor;
+    }
+
+    public int getBubbleTextSize() {
+        return bubbleTextSize;
+    }
+
+    public int getBubbleTextColor() {
+        return bubbleTextColor;
     }
 
     private int dp2px(int dp) {
