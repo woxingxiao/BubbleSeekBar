@@ -3,11 +3,11 @@
   
 **自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**  
 ****
-##Screenshot
+## Screenshot
 ![demo1](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo1.gif)
 ![demo2](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo2.gif)
 ![demo3](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo3.gif)
-##Download
+## Download
 root project:`build.gradle`
 ```groovy
   allprojects {
@@ -29,8 +29,8 @@ app:`build.gradle`
      // compile 'com.github.woxingxiao:BubbleSeekBar:${LATEST_VERSION}-lite' 
   }
 ```
-##Usage  
-###xml  
+## Usage  
+### xml  
 ```xml
 <com.xw.repo.BubbleSeekBar
     android:layout_width="match_parent"
@@ -65,7 +65,7 @@ app:`build.gradle`
     app:bsb_thumb_text_size="18sp"
     app:bsb_touch_to_seek="true"/>
 ```
-###java (not for **lite version**)  
+### java (not for **lite version**)  
 ```java
 mBbubbleSeekBar.getConfigBuilder()
                .min(0)
@@ -93,12 +93,15 @@ mBbubbleSeekBar.getConfigBuilder()
 或者下载安装apk：
 [**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
 
-##Attentions
+## Attentions
 - 下列是两个版本的差异对比：  
-version | init | getter/setter
--------- | ---|---
-lite|xml|min, max, progress
-enhanced|xml, java|all attrs
+
+  version | init | getter/setter
+  -------- | ---|---
+  lite|xml|min, max, progress
+  enhanced|xml, java|all attrs
+  
+  **lite version** is recommended.
 
 - 如果`BubbleSeekBar`的外部容器是可滑动的控件，需要设置滑动监听来修正气泡的偏移，否则滑动后气泡出现位置可能错乱。方法如下：
 ```java
@@ -113,7 +116,7 @@ enhanced|xml, java|all attrs
 - 当设置`bsb_touch_to_seek`属性为`true`时， 最好不要点击**太快**去seek进度，否则动画可能没有足够时间播放。
 - 本库依赖`support:appcompat-v7`采用的**`provided`**方式，所以不必担心冗余的依赖引入。  
 
-##Attributes  
+## Attributes  
 ```xml
 <attr name="bsb_min" format="integer|reference"/>
 <attr name="bsb_max" format="integer|reference"/>
@@ -150,9 +153,9 @@ enhanced|xml, java|all attrs
 <attr name="bsb_seek_by_section" format="boolean"/>
 ```
 --------
->**人生苦短，请选择科学上网。推荐一下本人正在使用的，稳定高速，便宜好用。[推介链接](https://portal.shadowsocks.com.hk/aff.php?aff=8881) **  
+> **人生苦短，请选择科学上网。推荐一下本人正在使用的，稳定高速，便宜好用。[推介链接](https://portal.shadowsocks.com.hk/aff.php?aff=8881)**  
 
-##License
+## License
 ```
 The MIT License (MIT)
 
