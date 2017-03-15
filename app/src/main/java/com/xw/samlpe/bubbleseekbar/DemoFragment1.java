@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.xw.repo.BubbleSeekBar;
 
@@ -35,12 +34,6 @@ public class DemoFragment1 extends Fragment {
         final BubbleSeekBar bubbleSeekBar = (BubbleSeekBar) view.findViewById(R.id.demo_1_seek_bar);
         Button button = (Button) view.findViewById(R.id.demo_1_button);
 
-        bubbleSeekBar.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListenerAdapter() {
-            @Override
-            public void getProgressOnActionUp(int progress, float progressFloat) {
-                Toast.makeText(getContext(), "progressOnActionUp:" + progress, Toast.LENGTH_SHORT).show();
-            }
-        });
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

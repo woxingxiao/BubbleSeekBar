@@ -65,15 +65,5 @@
             android:gravity="center"
             android:text="demo3"
             android:textColor="@drawable/selector_radio_text_color"/>
-
-        <RadioButton
-            android:id="@+id/main_tab_btn_4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center"
-            android:text="demo4"
-            android:textColor="@drawable/selector_radio_text_color"/>
     </RadioGroup>
 </LinearLayout>
