@@ -9,6 +9,7 @@
 ![demo1](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo1.gif)
 ![demo2](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo2.gif)
 ![demo3](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo3.gif)
+
 ##Download
 root project:`build.gradle`
 ```groovy
@@ -22,14 +23,86 @@ root project:`build.gradle`
 app:`build.gradle`
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:$LATEST_VERSION'
+     // enhanced version
+     // e.g. compile 'com.github.woxingxiao:BubbleSeekBar:3.0' 
+     compile 'com.github.woxingxiao:BubbleSeekBar:${LATEST_VERSION}'
+     
+     // lite version
+     // e.g. compile 'com.github.woxingxiao:BubbleSeekBar:3.0-lite'
+     // compile 'com.github.woxingxiao:BubbleSeekBar:${LATEST_VERSION}-lite' 
   }
 ```
-##Usage
-Check out the demo for more details.
+
+##Usage  
+###xml  
+```xml
+<com.xw.repo.BubbleSeekBar
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    app:bsb_bubble_color="@color/color_red_light"
+    app:bsb_bubble_text_color="@color/colorPrimaryDark"
+    app:bsb_max="50"
+    app:bsb_min="-50"
+    app:bsb_progress="0"
+    app:bsb_second_track_color="@color/color_red"
+    app:bsb_section_count="5"
+    app:bsb_section_text_position="bottom_sides"
+    app:bsb_show_progress_in_float="true"
+    app:bsb_show_section_mark="true"
+    app:bsb_show_section_text="true"
+    app:bsb_show_thumb_text="true"
+    app:bsb_track_color="@color/color_red_light"/>
+```
+```xml
+<com.xw.repo.BubbleSeekBar
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    app:bsb_auto_adjust_section_mark="true"
+    app:bsb_second_track_color="@color/color_blue"
+    app:bsb_section_count="5"
+    app:bsb_section_text_position="below_section_mark"
+    app:bsb_show_section_mark="true"
+    app:bsb_show_section_text="true"
+    app:bsb_show_thumb_text="true"
+    app:bsb_thumb_text_size="18sp"
+    app:bsb_touch_to_seek="true"/>
+```
+###java (not for **lite version**)  
+```java
+mBbubbleSeekBar.getConfigBuilder()
+               .min(0)
+               .max(50)
+               .progress(20)
+               .sectionCount(5)
+               .trackColor(ContextCompat.getColor(getContext(), R.color.color_gray))
+               .secondTrackColor(ContextCompat.getColor(getContext(), R.color.color_blue))
+               .thumbColor(ContextCompat.getColor(getContext(), R.color.color_blue))
+               .showSectionText()
+               .sectionTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+               .sectionTextSize(18)
+               .showThumbText()
+               .thumbTextColor(ContextCompat.getColor(getContext(), R.color.color_red))
+               .thumbTextSize(18)
+               .bubbleColor(ContextCompat.getColor(getContext(), R.color.color_green))
+               .bubbleTextSize(18)
+               .showSectionMark()
+               .seekBySection()
+               .autoAdjustSectionMark()
+               .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
+               .build();
+```
+Check out the demo for more details.  
 Or download the apk:
 [**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
-##Attentions
+##Attentions  
+- There are two versions of this library.The differences as follow:  
+version | init | getter/setter
+-------- | ---|---
+lite|xml|min, max, progress
+enhanced|xml, java|all attrs
+
 - You must correct the offsets by setting `ScrollListener` when `BubbleSeekBar`'s parent view is scrollable, otherwise the position of bubble appears maybe be wrong. For example:
 ```java
    mContainer.setOnYourContainerScrollListener(new OnYourContainerScrollListener() {
@@ -43,38 +116,42 @@ Or download the apk:
 - When set `bsb_touch_to_seek` attribute to be `true` , you better not to click **too fast** because the animation may not have enough time to play.
 - This library depends `support:appcompat-v7` is **`provided`**, so you don't need to worry about redundant `dependencies`.
 
-##Attributes
-attr | format | description
--------- | ---|---
-bsb_min|int|min value, `Integer.MIN_VALUE` <= min < max, default: 0
-bsb_max|int|max value, min < max <= `Integer.MAX_VALUE`, default: 100
-bsb_progress|int|real time progress value
-bsb_track_size|dimension|height of _right-track_(on the right of _thumb_), default: 2dp
-bsb_second_track_size|dimension|height of _left-track_(on the left of _thumb_), default: 2dp higher than _right-track_'s height
-bsb_thumb_radius|dimension|radius of _thumb_, default: 2dp higher than _left-track_'s height
-bsb_thumb_radius_on_dragging|dimension|radius of _thumb_ when be dragging, default: 2 times of _left-track_'s height
-bsb_section_count|int|shares of whole progress(max - min), default: 10
-bsb_show_section_mark|boolean|show demarcation points or not, default: false
-bsb_auto_adjust_section_mark|boolean|auto scroll to nearly _section_mark_ or not, default: false
-bsb_track_color|int|color of _right-track_, default: R.color.colorPrimary
-bsb_second_track_color|int|color of _left-track_, default: R.color.colorAccent
-bsb_thumb_color|int|color of _thumb_, default: same as _left-track_'s color
-bsb_show_text|boolean|show _min-text_ and _max-text_ or not, default: false
-bsb_show_section_text|boolean|show _section-text_ or not, default: false
-bsb_section_text_size|dimension|text size of _section-text_, default: 14sp
-bsb_section_text_color|int|text color of _section-text_, default: same as _right-track_'s color
-bsb_section_text_position|enum|text position of _section-text_ relative to _track_, `SIDES` `BOTTOM_SIDES` `BELOW_SECTION_MARK`, default: `SIDES`
-bsb_section_text_interval|int|the interval of two _section-text_, default: 1
-bsb_show_thumb_text|boolean|show real time _progress-text_ under _thumb_ or not, default: false
-bsb_thumb_text_size|dimension|text size of _progress-text_, default: 14sp
-bsb_thumb_text_color|int|text color of _progress-text_, default: same as _left-track_'s color
-bsb_show_progress_in_float|boolean|show _bubble-progress_ in float or not, default: false
-bsb_bubble_color|int|color of bubble, default: same as _left-track_'s color
-bsb_bubble_text_size|dimension|text size of _bubble-progress_, default: 14sp
-bsb_bubble_text_color|int|text color of _bubble-progress_, default: #ffffffff
-bsb_anim_duration|int|duration of animation, default: 200ms
-bsb_touch_to_seek|boolean|touch anywhere on _track_ to quickly seek, default: false
-bsb_seek_by_section|boolean|seek by section, the _progress_ may not be continuous, default: false
+##Attributes  
+```xml
+<attr name="bsb_min" format="integer|reference"/>
+<attr name="bsb_max" format="integer|reference"/>
+<attr name="bsb_progress" format="integer|reference"/>
+<attr name="bsb_is_float_type" format="boolean"/>
+<attr name="bsb_track_size" format="dimension|reference"/>
+<attr name="bsb_second_track_size" format="dimension|reference"/>
+<attr name="bsb_thumb_radius" format="dimension|reference"/>
+<attr name="bsb_thumb_radius_on_dragging" format="dimension|reference"/>
+<attr name="bsb_section_count" format="integer|reference"/>
+<attr name="bsb_thumb_color" format="color|reference"/>
+<attr name="bsb_track_color" format="color|reference"/>
+<attr name="bsb_second_track_color" format="color|reference"/>
+<attr name="bsb_show_section_text" format="boolean"/>
+<attr name="bsb_section_text_size" format="dimension|reference"/>
+<attr name="bsb_section_text_color" format="color|reference"/>
+<attr name="bsb_section_text_position">
+    <enum name="sides" value="0"/>
+    <enum name="bottom_sides" value="1"/>
+    <enum name="below_section_mark" value="2"/>
+</attr>
+<attr name="bsb_section_text_interval" format="integer"/>
+<attr name="bsb_show_thumb_text" format="boolean"/>
+<attr name="bsb_thumb_text_size" format="dimension|reference"/>
+<attr name="bsb_thumb_text_color" format="color|reference"/>
+<attr name="bsb_bubble_color" format="color|reference"/>
+<attr name="bsb_bubble_text_size" format="dimension|reference"/>
+<attr name="bsb_bubble_text_color" format="color|reference"/>
+<attr name="bsb_show_section_mark" format="boolean"/>
+<attr name="bsb_auto_adjust_section_mark" format="boolean"/>
+<attr name="bsb_show_progress_in_float" format="boolean"/>
+<attr name="bsb_anim_duration" format="integer"/>
+<attr name="bsb_touch_to_seek" format="boolean"/>
+<attr name="bsb_seek_by_section" format="boolean"/>
+```
 ##License
 ```
 The MIT License (MIT)
