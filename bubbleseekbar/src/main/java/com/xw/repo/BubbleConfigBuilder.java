@@ -54,6 +54,7 @@ public class BubbleConfigBuilder {
 
     public BubbleConfigBuilder min(float min) {
         this.min = min;
+        this.progress = min;
         return this;
     }
 
@@ -67,8 +68,8 @@ public class BubbleConfigBuilder {
         return this;
     }
 
-    public BubbleConfigBuilder floatType(boolean b) {
-        this.floatType = b;
+    public BubbleConfigBuilder floatType() {
+        this.floatType = true;
         return this;
     }
 
@@ -94,11 +95,15 @@ public class BubbleConfigBuilder {
 
     public BubbleConfigBuilder trackColor(@ColorInt int color) {
         this.trackColor = color;
+        this.sectionTextColor = color;
         return this;
     }
 
     public BubbleConfigBuilder secondTrackColor(@ColorInt int color) {
         this.secondTrackColor = color;
+        this.thumbColor = color;
+        this.thumbTextColor = color;
+        this.bubbleColor = color;
         return this;
     }
 
@@ -107,23 +112,23 @@ public class BubbleConfigBuilder {
         return this;
     }
 
-    public BubbleConfigBuilder sectionCount(int dp) {
-        this.sectionCount = dp2px(dp);
+    public BubbleConfigBuilder sectionCount(@IntRange(from = 1) int count) {
+        this.sectionCount = count;
         return this;
     }
 
-    public BubbleConfigBuilder showSectionMark(boolean show) {
-        this.showSectionMark = show;
+    public BubbleConfigBuilder showSectionMark() {
+        this.showSectionMark = true;
         return this;
     }
 
-    public BubbleConfigBuilder autoAdjustSectionMark(boolean auto) {
-        this.autoAdjustSectionMark = auto;
+    public BubbleConfigBuilder autoAdjustSectionMark() {
+        this.autoAdjustSectionMark = true;
         return this;
     }
 
-    public BubbleConfigBuilder showSectionText(boolean show) {
-        this.showSectionText = show;
+    public BubbleConfigBuilder showSectionText() {
+        this.showSectionText = true;
         return this;
     }
 
@@ -142,13 +147,13 @@ public class BubbleConfigBuilder {
         return this;
     }
 
-    public BubbleConfigBuilder sectionTextInterval(@IntRange(from = 1, to = 100) int interval) {
+    public BubbleConfigBuilder sectionTextInterval(@IntRange(from = 1) int interval) {
         this.sectionTextInterval = interval;
         return this;
     }
 
-    public BubbleConfigBuilder showThumbText(boolean show) {
-        this.showThumbText = show;
+    public BubbleConfigBuilder showThumbText() {
+        this.showThumbText = true;
         return this;
     }
 
@@ -162,18 +167,18 @@ public class BubbleConfigBuilder {
         return this;
     }
 
-    public BubbleConfigBuilder showProgressInFloat(boolean show) {
-        this.showProgressInFloat = show;
+    public BubbleConfigBuilder showProgressInFloat() {
+        this.showProgressInFloat = true;
         return this;
     }
 
-    public BubbleConfigBuilder touchToSeek(boolean b) {
-        this.touchToSeek = b;
+    public BubbleConfigBuilder touchToSeek() {
+        this.touchToSeek = true;
         return this;
     }
 
-    public BubbleConfigBuilder seekBySection(boolean b) {
-        this.seekBySection = b;
+    public BubbleConfigBuilder seekBySection() {
+        this.seekBySection = true;
         return this;
     }
 
