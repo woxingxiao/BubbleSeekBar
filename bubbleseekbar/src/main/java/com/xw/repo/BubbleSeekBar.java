@@ -110,7 +110,6 @@ public class BubbleSeekBar extends View {
     private long mAnimDuration = 200;
     private boolean isTouchToSeekAnimEnd = true;
     private float mPreSecValue; // previous SectionValue
-    private BubbleConfigBuilder mConfigBuilder; // config attributes
 
     public BubbleSeekBar(Context context) {
         this(context, null);
@@ -259,7 +258,7 @@ public class BubbleSeekBar extends View {
         // 计算滑到两端气泡里文字需要显示的宽度，比较取最大值为气泡的半径
         String text;
         if (isShowProgressInFloat) {
-            text = float2String(mMin + 0.0f);
+            text = float2String(mMin);
         } else {
             text = getMinText();
         }
@@ -267,7 +266,7 @@ public class BubbleSeekBar extends View {
         int w1 = (mRectText.width() + mTextSpace * 2) >> 1;
 
         if (isShowProgressInFloat) {
-            text = float2String(mMax + 0.0f);
+            text = float2String(mMax);
         } else {
             text = getMaxText();
         }
@@ -275,12 +274,8 @@ public class BubbleSeekBar extends View {
         int w2 = (mRectText.width() + mTextSpace * 2) >> 1;
 
         mBubbleRadius = dp2px(14); // 默认半径14dp
-        if (Math.abs(mBubbleRadius - Math.max(w1, w2)) <= mTextSpace) {
-            int max = Math.max(mBubbleRadius, Math.max(w1, w2));
-            mBubbleRadius = max + mTextSpace;
-        } else {
-            mBubbleRadius = Math.max(mBubbleRadius, Math.max(w1, w2));
-        }
+        int max = Math.max(mBubbleRadius, Math.max(w1, w2));
+        mBubbleRadius = max + mTextSpace;
     }
 
     @Override
@@ -470,7 +465,7 @@ public class BubbleSeekBar extends View {
 
             if (isFloatType || (isShowProgressInFloat && mSectionTextPosition == TextPosition.BOTTOM_SIDES &&
                     mProgress != mMin && mProgress != mMax)) {
-                canvas.drawText(float2String(getProgressFloat()), mThumbCenterX, y_, mPaint);
+                canvas.drawText(String.valueOf(getProgressFloat()), mThumbCenterX, y_, mPaint);
             } else {
                 canvas.drawText(String.valueOf(getProgress()), mThumbCenterX, y_, mPaint);
             }
@@ -840,86 +835,6 @@ public class BubbleSeekBar extends View {
 
     public void setOnProgressChangedListener(OnProgressChangedListener onProgressChangedListener) {
         mProgressListener = onProgressChangedListener;
-    }
-
-    void config(BubbleConfigBuilder builder) {
-        mMin = builder.min;
-        mMax = builder.max;
-        mProgress = builder.progress;
-        isFloatType = builder.floatType;
-        mTrackSize = builder.trackSize;
-        mSecondTrackSize = builder.secondTrackSize;
-        mThumbRadius = builder.thumbRadius;
-        mThumbRadiusOnDragging = builder.thumbRadiusOnDragging;
-        mTrackColor = builder.trackColor;
-        mSecondTrackColor = builder.secondTrackColor;
-        mThumbColor = builder.thumbColor;
-        mSectionCount = builder.sectionCount;
-        isShowSectionMark = builder.showSectionMark;
-        isAutoAdjustSectionMark = builder.autoAdjustSectionMark;
-        isShowSectionText = builder.showSectionText;
-        mSectionTextSize = builder.sectionTextSize;
-        mSectionTextColor = builder.sectionTextColor;
-        mSectionTextPosition = builder.sectionTextPosition;
-        mSectionTextInterval = builder.sectionTextInterval;
-        isShowThumbText = builder.showThumbText;
-        mThumbTextSize = builder.thumbTextSize;
-        mThumbTextColor = builder.thumbTextColor;
-        isShowProgressInFloat = builder.showProgressInFloat;
-        isTouchToSeek = builder.touchToSeek;
-        isSeekBySection = builder.seekBySection;
-        mBubbleColor = builder.bubbleColor;
-        mBubbleTextSize = builder.bubbleTextSize;
-        mBubbleTextColor = builder.bubbleTextColor;
-
-        initConfigByPriority();
-        calculateRadiusOfBubble();
-
-        if (mProgressListener != null) {
-            mProgressListener.onProgressChanged(getProgress(), getProgressFloat());
-            mProgressListener.getProgressOnFinally(getProgress(), getProgressFloat());
-        }
-
-        mConfigBuilder = null;
-
-        requestLayout();
-    }
-
-    public BubbleConfigBuilder getConfigBuilder() {
-        if (mConfigBuilder == null) {
-            mConfigBuilder = new BubbleConfigBuilder(this);
-        }
-
-        mConfigBuilder.min = mMin;
-        mConfigBuilder.max = mMax;
-        mConfigBuilder.progress = mProgress;
-        mConfigBuilder.floatType = isFloatType;
-        mConfigBuilder.trackSize = mTrackSize;
-        mConfigBuilder.secondTrackSize = mSecondTrackSize;
-        mConfigBuilder.thumbRadius = mThumbRadius;
-        mConfigBuilder.thumbRadiusOnDragging = mThumbRadiusOnDragging;
-        mConfigBuilder.trackColor = mTrackColor;
-        mConfigBuilder.secondTrackColor = mSecondTrackColor;
-        mConfigBuilder.thumbColor = mThumbColor;
-        mConfigBuilder.sectionCount = mSectionCount;
-        mConfigBuilder.showSectionMark = isShowSectionMark;
-        mConfigBuilder.autoAdjustSectionMark = isAutoAdjustSectionMark;
-        mConfigBuilder.showSectionText = isShowSectionText;
-        mConfigBuilder.sectionTextSize = mSectionTextSize;
-        mConfigBuilder.sectionTextColor = mSectionTextColor;
-        mConfigBuilder.sectionTextPosition = mSectionTextPosition;
-        mConfigBuilder.sectionTextInterval = mSectionTextInterval;
-        mConfigBuilder.showThumbText = isShowThumbText;
-        mConfigBuilder.thumbTextSize = mThumbTextSize;
-        mConfigBuilder.thumbTextColor = mThumbTextColor;
-        mConfigBuilder.showProgressInFloat = isShowProgressInFloat;
-        mConfigBuilder.touchToSeek = isTouchToSeek;
-        mConfigBuilder.seekBySection = isSeekBySection;
-        mConfigBuilder.bubbleColor = mBubbleColor;
-        mConfigBuilder.bubbleTextSize = mBubbleTextSize;
-        mConfigBuilder.bubbleTextColor = mBubbleTextColor;
-
-        return mConfigBuilder;
     }
 
     @Override
