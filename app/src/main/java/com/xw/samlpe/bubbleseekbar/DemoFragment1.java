@@ -22,8 +22,6 @@ import java.util.Random;
 
 public class DemoFragment1 extends Fragment {
 
-    private BubbleSeekBar mBubbleSeekBar;
-
     public static DemoFragment1 newInstance() {
         return new DemoFragment1();
     }
@@ -46,7 +44,7 @@ public class DemoFragment1 extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int progress = new Random().nextInt((int)bubbleSeekBar.getMax());
+                int progress = new Random().nextInt((int) bubbleSeekBar.getMax());
                 bubbleSeekBar.setProgress(progress);
                 Snackbar.make(v, "set random progress = " + progress, Snackbar.LENGTH_SHORT).show();
             }

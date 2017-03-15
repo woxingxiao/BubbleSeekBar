@@ -6,7 +6,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/activity_horizontal_margin">
-
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/demo_3_seek_bar_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="custom track size, min : 100, max : 500"
+        android:text="custom track size, min:100, max:500"
         android:textSize="12sp"/>
 
     <com.xw.repo.BubbleSeekBar
@@ -49,9 +53,28 @@
         app:bsb_max="500"
         app:bsb_min="100"
         app:bsb_progress="200"
-        app:bsb_second_track_color="@color/color_green"
-        app:bsb_track_color="@color/color_gray"
+        app:bsb_second_track_color="@color/color_blue"
         app:bsb_track_size="4dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="section count:5, custom bubble attrs, show thumb text"/>
+
+    <com.xw.repo.BubbleSeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:bsb_bubble_color="@color/color_red_light"
+        app:bsb_bubble_text_color="@color/color_green"
+        app:bsb_bubble_text_size="18sp"
+        app:bsb_max="50"
+        app:bsb_min="-50"
+        app:bsb_second_track_color="@color/color_red"
+        app:bsb_section_count="5"
+        app:bsb_show_section_mark="true"
+        app:bsb_thumb_text_size="18sp"/>
 
     <Button
         android:id="@+id/demo_1_button"
