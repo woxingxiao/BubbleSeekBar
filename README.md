@@ -5,12 +5,12 @@
 
 **A beautiful Android custom seekbar, which has a bubble view with progress appearing upon when seeking. Highly customizable, mostly demands has been considered. `star` or `pull request` will be welcomed**
 ****
-##Screenshot
+## Screenshot
 ![demo1](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo1.gif)
 ![demo2](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo2.gif)
 ![demo3](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo3.gif)
 
-##Download
+## Download
 root project:`build.gradle`
 ```groovy
   allprojects {
@@ -33,8 +33,8 @@ app:`build.gradle`
   }
 ```
 
-##Usage  
-###xml  
+## Usage  
+### xml  
 ```xml
 <com.xw.repo.BubbleSeekBar
     android:layout_width="match_parent"
@@ -69,7 +69,7 @@ app:`build.gradle`
     app:bsb_thumb_text_size="18sp"
     app:bsb_touch_to_seek="true"/>
 ```
-###java (not for **lite version**)  
+### java (not for **lite version**)  
 ```java
 mBbubbleSeekBar.getConfigBuilder()
                .min(0)
@@ -96,12 +96,13 @@ mBbubbleSeekBar.getConfigBuilder()
 Check out the demo for more details.  
 Or download the apk:
 [**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
-##Attentions  
+## Attentions  
 - There are two versions of this library.The differences as follow:  
-version | init | getter/setter
--------- | ---|---
-lite|xml|min, max, progress
-enhanced|xml, java|all attrs
+
+  version | init | getter/setter 
+  -------- | ---|---
+  lite|xml|min, max, progress
+  enhanced|xml, java|all attrs
 
 - You must correct the offsets by setting `ScrollListener` when `BubbleSeekBar`'s parent view is scrollable, otherwise the position of bubble appears maybe be wrong. For example:
 ```java
@@ -116,7 +117,7 @@ enhanced|xml, java|all attrs
 - When set `bsb_touch_to_seek` attribute to be `true` , you better not to click **too fast** because the animation may not have enough time to play.
 - This library depends `support:appcompat-v7` is **`provided`**, so you don't need to worry about redundant `dependencies`.
 
-##Attributes  
+## Attributes  
 ```xml
 <attr name="bsb_min" format="integer|reference"/>
 <attr name="bsb_max" format="integer|reference"/>
@@ -152,7 +153,7 @@ enhanced|xml, java|all attrs
 <attr name="bsb_touch_to_seek" format="boolean"/>
 <attr name="bsb_seek_by_section" format="boolean"/>
 ```
-##License
+## License
 ```
 The MIT License (MIT)
 
