@@ -35,6 +35,7 @@
         app:bsb_bubble_text_color="@color/colorPrimaryDark"
         app:bsb_max="50"
         app:bsb_min="-50"
+        app:bsb_progress="0"
         app:bsb_second_track_color="@color/color_red"
         app:bsb_section_count="5"
         app:bsb_section_text_position="bottom_sides"
