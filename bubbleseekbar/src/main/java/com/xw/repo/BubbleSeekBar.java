@@ -259,7 +259,7 @@ public class BubbleSeekBar extends View {
         // 计算滑到两端气泡里文字需要显示的宽度，比较取最大值为气泡的半径
         String text;
         if (isShowProgressInFloat) {
-            text = float2String(mMin + 0.0f);
+            text = float2String(mMin);
         } else {
             text = getMinText();
         }
@@ -267,7 +267,7 @@ public class BubbleSeekBar extends View {
         int w1 = (mRectText.width() + mTextSpace * 2) >> 1;
 
         if (isShowProgressInFloat) {
-            text = float2String(mMax + 0.0f);
+            text = float2String(mMax);
         } else {
             text = getMaxText();
         }
@@ -275,12 +275,8 @@ public class BubbleSeekBar extends View {
         int w2 = (mRectText.width() + mTextSpace * 2) >> 1;
 
         mBubbleRadius = dp2px(14); // 默认半径14dp
-        if (Math.abs(mBubbleRadius - Math.max(w1, w2)) <= mTextSpace) {
-            int max = Math.max(mBubbleRadius, Math.max(w1, w2));
-            mBubbleRadius = max + mTextSpace;
-        } else {
-            mBubbleRadius = Math.max(mBubbleRadius, Math.max(w1, w2));
-        }
+        int max = Math.max(mBubbleRadius, Math.max(w1, w2));
+        mBubbleRadius = max + mTextSpace;
     }
 
     @Override
@@ -470,7 +466,7 @@ public class BubbleSeekBar extends View {
 
             if (isFloatType || (isShowProgressInFloat && mSectionTextPosition == TextPosition.BOTTOM_SIDES &&
                     mProgress != mMin && mProgress != mMax)) {
-                canvas.drawText(float2String(getProgressFloat()), mThumbCenterX, y_, mPaint);
+                canvas.drawText(String.valueOf(getProgressFloat()), mThumbCenterX, y_, mPaint);
             } else {
                 canvas.drawText(String.valueOf(getProgress()), mThumbCenterX, y_, mPaint);
             }
