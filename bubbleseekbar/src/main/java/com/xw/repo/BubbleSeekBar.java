@@ -240,6 +240,9 @@ public class BubbleSeekBar extends View {
         }
         if (isSeekBySection) {
             mPreSecValue = mMin;
+            if (mProgress != mMin) {
+                mPreSecValue = mSectionValue;
+            }
             isShowSectionMark = true;
             isAutoAdjustSectionMark = true;
             isTouchToSeek = false;

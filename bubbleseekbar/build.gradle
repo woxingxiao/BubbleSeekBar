@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 
+def VERSION_NAME = "3.0-lite"
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -7,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 15
-        versionName "3.0-lite"
+        versionCode 16
+        versionName VERSION_NAME
     }
 
     buildTypes {
@@ -22,4 +24,14 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     provided 'com.android.support:appcompat-v7:25.3.0'
+}
+
+apply plugin: 'com.novoda.bintray-release'
+publish {
+    userOrg = 'woxingxiao'
+    groupId = 'com.xw.repo'
+    artifactId = 'bubbleseekbar'
+    publishVersion = VERSION_NAME
+    desc = 'A beautiful Android custom seekbar, which has a bubble view with progress appearing upon when seeking.'
+    website = 'https://github.com/woxingxiao/BubbleSeekBar'
 }
