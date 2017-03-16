@@ -1,33 +1,101 @@
-[![](https://jitpack.io/v/woxingxiao/BubbleSeekBar.svg)](https://jitpack.io/#woxingxiao/BubbleSeekBar)
-[![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)]()
-  
-**自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**  
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.0)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.0-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
+[![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
+
+**自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**
 ****
-##Screenshot
+## Screenshot
 ![demo1](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo1.gif)
 ![demo2](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo2.gif)
 ![demo3](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo3.gif)
-##Download
-root project:`build.gradle`
-```groovy
-  allprojects {
-	 repositories {
-		...
-		maven { url "https://jitpack.io" }
-	 }
-  }
-```
-app:`build.gradle`
+![demo4](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo4.gif)
+## Download
+The **LATEST_VERSION**：[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg)](https://bintray.com/woxingxiao/maven/bubbleseekbar/_latestVersion)
 ```groovy
   dependencies {
-     compile 'com.github.woxingxiao:BubbleSeekBar:$LATEST_VERSION'
+     // enhanced version 增强版
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.0'
+        compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
+
+     // lite version 轻量版
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.0-lite'
+     // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
   }
 ```
-##Usage
+## Usage
+### xml
+```xml
+<com.xw.repo.BubbleSeekBar
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    app:bsb_bubble_color="@color/color_red_light"
+    app:bsb_bubble_text_color="@color/colorPrimaryDark"
+    app:bsb_max="50"
+    app:bsb_min="-50"
+    app:bsb_progress="0"
+    app:bsb_second_track_color="@color/color_red"
+    app:bsb_section_count="5"
+    app:bsb_section_text_position="bottom_sides"
+    app:bsb_show_progress_in_float="true"
+    app:bsb_show_section_mark="true"
+    app:bsb_show_section_text="true"
+    app:bsb_show_thumb_text="true"
+    app:bsb_track_color="@color/color_red_light"/>
+```
+```xml
+<com.xw.repo.BubbleSeekBar
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    app:bsb_auto_adjust_section_mark="true"
+    app:bsb_second_track_color="@color/color_blue"
+    app:bsb_section_count="5"
+    app:bsb_section_text_position="below_section_mark"
+    app:bsb_show_section_mark="true"
+    app:bsb_show_section_text="true"
+    app:bsb_show_thumb_text="true"
+    app:bsb_thumb_text_size="18sp"
+    app:bsb_touch_to_seek="true"/>
+```
+### java (not for **lite** version)
+```java
+mBbubbleSeekBar.getConfigBuilder()
+               .min(0)
+               .max(50)
+               .progress(20)
+               .sectionCount(5)
+               .trackColor(ContextCompat.getColor(getContext(), R.color.color_gray))
+               .secondTrackColor(ContextCompat.getColor(getContext(), R.color.color_blue))
+               .thumbColor(ContextCompat.getColor(getContext(), R.color.color_blue))
+               .showSectionText()
+               .sectionTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+               .sectionTextSize(18)
+               .showThumbText()
+               .thumbTextColor(ContextCompat.getColor(getContext(), R.color.color_red))
+               .thumbTextSize(18)
+               .bubbleColor(ContextCompat.getColor(getContext(), R.color.color_green))
+               .bubbleTextSize(18)
+               .showSectionMark()
+               .seekBySection()
+               .autoAdjustSectionMark()
+               .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
+               .build();
+```
 查看demo获知更多使用细节。
 或者下载安装apk：
 [**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
-##Attentions
+
+## Attentions
+- 下列是两个版本的差异对比：
+
+  version | init | getter/setter
+  -------- | ---|---
+  lite|xml|min, max, progress
+  enhanced|xml, java|all attrs
+
+  推荐使用**lite**版本。
+
 - 如果`BubbleSeekBar`的外部容器是可滑动的控件，需要设置滑动监听来修正气泡的偏移，否则滑动后气泡出现位置可能错乱。方法如下：
 ```java
    mContainer.setOnYourContainerScrollListener(new OnYourContainerScrollListener() {
@@ -39,63 +107,60 @@ app:`build.gradle`
    });
 ```
 - 当设置`bsb_touch_to_seek`属性为`true`时， 最好不要点击**太快**去seek进度，否则动画可能没有足够时间播放。
-- 本库依赖`support:appcompat-v7`采用的**`provided`**方式，所以不必担心冗余的依赖引入。  
+- 本库依赖`support:appcompat-v7`采用的**`provided`**方式，所以不必担心冗余的依赖引入。
 
-##Attributes  
-attr | format | description
--------- | ---|---
-bsb_min|int|最小值，或起始值，或首值，整数（可正可负），默认0
-bsb_max|int|最大值，或结束值，或尾值，整数，默认100
-bsb_progress|int|进度值，或实时值，介于min和max之间的整数
-bsb_track_size|dimension|进度值右边track（右track）的厚度，默认2dp
-bsb_second_track_size|dimension|进度值左边track（左track）的厚度，默认比右track厚2dp
-bsb_thumb_radius|dimension|thumb半径，默认比左track厚2dp
-bsb_thumb_radius_on_dragging|dimension|当拖动时thumb半径，默认是左track的2倍
-bsb_section_count|int|整个track均分份数，默认10
-bsb_show_section_mark|boolean|是否显示track均分标识，默认false
-bsb_auto_adjust_section_mark|boolean|是否拖动放手后自动滑向均分点，默认false
-bsb_track_color|int|右track颜色，默认R.color.colorPrimary
-bsb_second_track_color|int|左track颜色，默认R.color.colorAccent
-bsb_thumb_color|int|thumb颜色，默认与左track颜色相同
-bsb_show_section_text|boolean|是否显示起始值和结束值，默认false
-bsb_section_text_size|dimension|显示起始值和结束值的文字大小，默认14sp
-bsb_section_text_color|int|显示起始值和结束值的文字颜色，默认与右track相同
-bsb_section_text_position|enum|显示首尾值与track的位置关系，在两端、首尾底部或者底部，默认在两端
-bsb_section_text_interval|int|section-text显示间隔多少个section，默认1个
-bsb_show_thumb_text|boolean|是否在thumb下面显示进度值，默认false
-bsb_thumb_text_size|dimension|thumb下进度文字大小，默认14sp
-bsb_thumb_text_color|int|thumb下进度文字颜色，默认与左track相同
-bsb_show_progress_in_float|boolean|进度是否显示浮点数，默认false
-bsb_bubble_color|int|气泡的颜色，默认与左track相同
-bsb_bubble_text_size|dimension|气泡中进度文字大小，默认14sp
-bsb_bubble_text_color|int|气泡中进度文字颜色，默认白色
-bsb_anim_duration|int|动画执行时间， 默认: 200ms
-bsb_touch_to_seek|boolean|是否点击track任意地方来快速设置进度， 默认: false  
-bsb_seek_by_section|boolean|是否按section为增量来seek，如此操作progress可能不连续，默认: false
---------
->**人生苦短，请选择科学上网。推荐一下本人正在使用的，稳定高速，便宜好用。[推介链接](https://portal.shadowsocks.com.hk/aff.php?aff=8881) **  
-
-##License
+## Attributes
+```xml
+<attr name="bsb_min" format="integer|reference"/>
+<attr name="bsb_max" format="integer|reference"/>
+<attr name="bsb_progress" format="integer|reference"/>
+<attr name="bsb_is_float_type" format="boolean"/>
+<attr name="bsb_track_size" format="dimension|reference"/>
+<attr name="bsb_second_track_size" format="dimension|reference"/>
+<attr name="bsb_thumb_radius" format="dimension|reference"/>
+<attr name="bsb_thumb_radius_on_dragging" format="dimension|reference"/>
+<attr name="bsb_section_count" format="integer|reference"/>
+<attr name="bsb_thumb_color" format="color|reference"/>
+<attr name="bsb_track_color" format="color|reference"/>
+<attr name="bsb_second_track_color" format="color|reference"/>
+<attr name="bsb_show_section_text" format="boolean"/>
+<attr name="bsb_section_text_size" format="dimension|reference"/>
+<attr name="bsb_section_text_color" format="color|reference"/>
+<attr name="bsb_section_text_position">
+    <enum name="sides" value="0"/>
+    <enum name="bottom_sides" value="1"/>
+    <enum name="below_section_mark" value="2"/>
+</attr>
+<attr name="bsb_section_text_interval" format="integer"/>
+<attr name="bsb_show_thumb_text" format="boolean"/>
+<attr name="bsb_thumb_text_size" format="dimension|reference"/>
+<attr name="bsb_thumb_text_color" format="color|reference"/>
+<attr name="bsb_bubble_color" format="color|reference"/>
+<attr name="bsb_bubble_text_size" format="dimension|reference"/>
+<attr name="bsb_bubble_text_color" format="color|reference"/>
+<attr name="bsb_show_section_mark" format="boolean"/>
+<attr name="bsb_auto_adjust_section_mark" format="boolean"/>
+<attr name="bsb_show_progress_in_float" format="boolean"/>
+<attr name="bsb_anim_duration" format="integer"/>
+<attr name="bsb_touch_to_seek" format="boolean"/>
+<attr name="bsb_seek_by_section" format="boolean"/>
 ```
-The MIT License (MIT)
+--------
+> **人生苦短，请选择科学上网。推荐一下本人正在使用的，稳定高速，便宜好用。[推介链接](https://portal.shadowsocks.com.hk/aff.php?aff=8881)**  
 
-Copyright (c) 2017 woxingxiao
+## License
+```
+   Copyright 2017 woxingxiao
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+     http://www.apache.org/licenses/LICENSE-2.0
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 ```
