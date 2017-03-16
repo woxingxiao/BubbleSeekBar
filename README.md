@@ -1,35 +1,28 @@
-[![](https://jitpack.io/v/woxingxiao/BubbleSeekBar.svg)](https://jitpack.io/#woxingxiao/BubbleSeekBar)
-[![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)]()
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.0)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.0-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
+[![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 [**中文说明**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/README_zh.md)
 
-**A beautiful Android custom seekbar, which has a bubble view with progress appearing upon when seeking. Highly customizable, mostly demands has been considered. `star` or `pull request` will be welcomed**
+**A beautiful Android custom seek bar, which has a bubble view with progress appearing upon when seeking. Highly customizable, mostly demands has been considered. `star` or `pull request` will be welcomed**
 ****
 ## Screenshot
 ![demo1](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo1.gif)
 ![demo2](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo2.gif)
 ![demo3](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo3.gif)
+![demo4](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo4.gif)
 
 ## Download
-root project:`build.gradle`
-```groovy
-  allprojects {
-	 repositories {
-		...
-		maven { url "https://jitpack.io" }
-	 }
-  }
-```
-app:`build.gradle`
+The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg)](https://bintray.com/woxingxiao/maven/bubbleseekbar/_latestVersion)
 ```groovy
   dependencies {
      // enhanced version
-     // e.g. compile 'com.github.woxingxiao:BubbleSeekBar:3.0' 
-     compile 'com.github.woxingxiao:BubbleSeekBar:${LATEST_VERSION}'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.0'
+     compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
      
      // lite version
-     // e.g. compile 'com.github.woxingxiao:BubbleSeekBar:3.0-lite'
-     // compile 'com.github.woxingxiao:BubbleSeekBar:${LATEST_VERSION}-lite' 
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.0-lite'
+     // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
   }
 ```
 
@@ -69,7 +62,7 @@ app:`build.gradle`
     app:bsb_thumb_text_size="18sp"
     app:bsb_touch_to_seek="true"/>
 ```
-### java (not for **lite version**)  
+### java (not for **lite** version)
 ```java
 mBbubbleSeekBar.getConfigBuilder()
                .min(0)
@@ -99,10 +92,12 @@ Or download the apk:
 ## Attentions  
 - There are two versions of this library.The differences as follow:  
 
-  version | init | getter/setter 
+  version | init | getter/setter
   -------- | ---|---
   lite|xml|min, max, progress
   enhanced|xml, java|all attrs
+
+  **lite** version is recommended.
 
 - You must correct the offsets by setting `ScrollListener` when `BubbleSeekBar`'s parent view is scrollable, otherwise the position of bubble appears maybe be wrong. For example:
 ```java
@@ -155,25 +150,17 @@ Or download the apk:
 ```
 ## License
 ```
-The MIT License (MIT)
+   Copyright 2017 woxingxiao
 
-Copyright (c) 2017 woxingxiao
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+     http://www.apache.org/licenses/LICENSE-2.0
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 ```
