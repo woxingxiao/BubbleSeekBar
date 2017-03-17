@@ -6,7 +6,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -21,7 +20,6 @@ import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -38,9 +36,12 @@ import java.math.BigDecimal;
 import static com.xw.repo.BubbleSeekBar.TextPosition.BELOW_SECTION_MARK;
 import static com.xw.repo.BubbleSeekBar.TextPosition.BOTTOM_SIDES;
 import static com.xw.repo.BubbleSeekBar.TextPosition.SIDES;
+import static com.xw.repo.BubbleUtils.dp2px;
+import static com.xw.repo.BubbleUtils.sp2px;
 
 /**
- * 气泡形式可视化的自定义SeekBar
+ * A beautiful and powerful Android custom seek bar, which has a bubble view with progress
+ * appearing upon when seeking. Highly customizable, mostly demands has been considered.
  * <p/>
  * Created by woxingxiao on 2016-10-27.
  */
@@ -54,60 +55,60 @@ public class BubbleSeekBar extends View {
         int SIDES = 0, BOTTOM_SIDES = 1, BELOW_SECTION_MARK = 2;
     }
 
-    private float mMin; // 首值（起始值）
-    private float mMax; // 尾值（结束值）
-    private float mProgress; // 实时值
-    private boolean isFloatType; // float type output
-    private int mTrackSize; // 下层track的高度
-    private int mSecondTrackSize; // 上层track的高度
-    private int mThumbRadius; // thumb的半径
-    private int mThumbRadiusOnDragging; // 当thumb被拖拽时的半径
-    private int mTrackColor; // 下层track的颜色
-    private int mSecondTrackColor; // 上层track的颜色
-    private int mThumbColor; // thumb的颜色
-    private int mSectionCount; // min到max均分的份数
-    private boolean isShowSectionMark; // 是否显示份数
-    private boolean isAutoAdjustSectionMark; // 是否自动滑到最近的整份数，以showSectionMark为前提
-    private boolean isShowSectionText; // 是否显示section值文字
-    private int mSectionTextSize; // section值文字大小
-    private int mSectionTextColor; // section值文字颜色
+    private float mMin; // min
+    private float mMax; // max
+    private float mProgress; // real time value
+    private boolean isFloatType; // support for float type output
+    private int mTrackSize; // height of right-track(on the right of thumb)
+    private int mSecondTrackSize; // height of left-track(on the left of thumb)
+    private int mThumbRadius; // radius of thumb
+    private int mThumbRadiusOnDragging; // radius of thumb when be dragging
+    private int mTrackColor; // color of right-track
+    private int mSecondTrackColor; // color of left-track
+    private int mThumbColor; // color of thumb
+    private int mSectionCount; // shares of whole progress(max - min)
+    private boolean isShowSectionMark; // show demarcation points or not
+    private boolean isAutoAdjustSectionMark; // auto scroll to the nearest section_mark or not
+    private boolean isShowSectionText; // show section-text or not
+    private int mSectionTextSize; // text size of section-text
+    private int mSectionTextColor; // text color of section-text
     @TextPosition
-    private int mSectionTextPosition = NONE; // section值文字位置
-    private int mSectionTextInterval; // section值文字每间隔多少section显示
-    private boolean isShowThumbText; // 是否显示实时值文字
-    private int mThumbTextSize; // 实时值文字大小
-    private int mThumbTextColor; // 实时值文字颜色
-    private boolean isShowProgressInFloat; // 是否显示小数形式progress，所有小数均保留1位
-    private boolean isTouchToSeek; // 是否点击快速seek
-    private boolean isSeekBySection; // 是否以section为单位seek，仅适用于整型progress，可能progress非连续
+    private int mSectionTextPosition = NONE; // text position of section-text relative to track
+    private int mSectionTextInterval; // the interval of two section-text
+    private boolean isShowThumbText; // show real time progress-text under thumb or not
+    private int mThumbTextSize; // text size of progress-text
+    private int mThumbTextColor; // text color of progress-text
+    private boolean isShowProgressInFloat; // show bubble-progress in float or not
+    private boolean isTouchToSeek; // touch anywhere on track to quickly seek
+    private boolean isSeekBySection; // seek by section, the progress may not be linear
+    private long mAnimDuration; // duration of animation
 
-    private int mBubbleColor;// 气泡颜色
-    private int mBubbleTextSize; // 气泡文字大小
-    private int mBubbleTextColor; // 气泡文字颜色
+    private int mBubbleColor;// color of bubble
+    private int mBubbleTextSize; // text size of bubble-progress
+    private int mBubbleTextColor; // text color of bubble-progress
 
     private float mDelta; // max - min
     private float mSectionValue; // (mDelta / mSectionCount)
-    private float mThumbCenterX; // thumb的中心X坐标
-    private float mTrackLength; // track的长度
-    private float mSectionOffset; // 一个section的长度
-    private boolean isThumbOnDragging; // thumb是否在被拖动
-    private int mTextSpace; // 文字与其他的间距
-    private OnProgressChangedListener mProgressListener; // progress变化监听
+    private float mThumbCenterX; // X coordinate of thumb's center
+    private float mTrackLength; // pixel length of whole track
+    private float mSectionOffset; // pixel length of one section
+    private boolean isThumbOnDragging; // is thumb on dragging or not
+    private int mTextSpace; // space between text and track
 
-    private float mLeft; // 便于理解，假设显示SectionMark，该值为首个SectionMark圆心距自己左边的距离
-    private float mRight; // 同上假设，该值为最后一个SectionMark圆心距自己左边的距离
+    private OnProgressChangedListener mProgressListener; // progress changing listener
+    private float mLeft; // space between left of track and left of the view
+    private float mRight; // space between right of track and left of the view
     private Paint mPaint;
     private Rect mRectText;
-    private WindowManager mWindowManager;
 
-    private BubbleView mBubbleView; // 自定义气泡View
-    private int mBubbleRadius; // 气泡半径
-    private float mBubbleCenterRawSolidX; // 气泡在最左边的固定RawX
-    private float mBubbleCenterRawSolidY; // 气泡的固定RawY
-    private float mBubbleCenterRawX; // 气泡的实时RawX
+    private WindowManager mWindowManager;
+    private BubbleView mBubbleView;
+    private int mBubbleRadius;
+    private float mBubbleCenterRawSolidX;
+    private float mBubbleCenterRawSolidY;
+    private float mBubbleCenterRawX;
     private WindowManager.LayoutParams mLayoutParams;
     private int[] mPoint = new int[2];
-    private long mAnimDuration = 200;
     private boolean isTouchToSeekAnimEnd = true;
     private float mPreSecValue; // previous SectionValue
 
@@ -181,7 +182,7 @@ public class BubbleSeekBar extends View {
         mTextSpace = dp2px(2);
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 
-        // 初始化气泡View
+        // init BubbleView
         mBubbleView = new BubbleView(context);
         mBubbleView.setProgressText(isShowProgressInFloat ?
                 String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
@@ -253,7 +254,7 @@ public class BubbleSeekBar extends View {
     }
 
     /**
-     * 根据min、max计算气泡半径
+     * Calculate radius of bubble according to the Min and the Max
      */
     private void calculateRadiusOfBubble() {
         mPaint.setTextSize(mBubbleTextSize);
@@ -276,7 +277,7 @@ public class BubbleSeekBar extends View {
         mPaint.getTextBounds(text, 0, text.length(), mRectText);
         int w2 = (mRectText.width() + mTextSpace * 2) >> 1;
 
-        mBubbleRadius = dp2px(14); // 默认半径14dp
+        mBubbleRadius = dp2px(14); // default 14dp
         int max = Math.max(mBubbleRadius, Math.max(w1, w2));
         mBubbleRadius = max + mTextSpace;
     }
@@ -346,9 +347,19 @@ public class BubbleSeekBar extends View {
     }
 
     /**
-     * 气泡BubbleView实际是通过WindowManager动态添加的一个视图，因此与SeekBar唯一的位置联系就是它们在屏
-     * 幕上的绝对坐标。
-     * 先计算进度mProgress为零时BubbleView的中心坐标（mBubbleCenterRawSolidX，mBubbleCenterRawSolidY），
+     * In fact there two parts of the BubbleSeeBar, they are the BubbleView and the SeekBar.
+     * <p>
+     * The BubbleView is added to Window by the WindowManager, so the only connection between
+     * BubbleView and SeekBar is their origin raw coordinates on the screen.
+     * <p>
+     * It's easy to compute the coordinates(mBubbleCenterRawSolidX, mBubbleCenterRawSolidY) of point
+     * when the Progress equals the Min. Then compute the pixel length increment when the Progress is
+     * changing, the result is mBubbleCenterRawX. At last the WindowManager calls updateViewLayout()
+     * to update the LayoutParameter.x of the BubbleView.
+     * <p>
+     * 气泡BubbleView实际是通过WindowManager动态添加的一个视图，因此与SeekBar唯一的位置联系就是它们在屏幕上的
+     * 绝对坐标。
+     * 先计算进度mProgress为mMin时BubbleView的中心坐标（mBubbleCenterRawSolidX，mBubbleCenterRawSolidY），
      * 然后根据进度来增量计算横坐标mBubbleCenterRawX，再动态设置LayoutParameter.x，就实现了气泡跟随滑动移动。
      */
     private void locatePositionOnScreen() {
@@ -358,7 +369,7 @@ public class BubbleSeekBar extends View {
         mBubbleCenterRawX = mBubbleCenterRawSolidX + mTrackLength * (mProgress - mMin) / mDelta;
         mBubbleCenterRawSolidY = mPoint[1] - mBubbleView.getMeasuredHeight();
         mBubbleCenterRawSolidY -= dp2px(24);
-        if (BubbleBuildUtils.isMIUI()) {
+        if (BubbleUtils.isMIUI()) {
             mBubbleCenterRawSolidY += dp2px(4);
         }
     }
@@ -376,7 +387,6 @@ public class BubbleSeekBar extends View {
             mPaint.setTextSize(mSectionTextSize);
             mPaint.setColor(mSectionTextColor);
 
-            // 画Section值文字
             if (mSectionTextPosition == TextPosition.SIDES) {
                 float y_ = yTop + mRectText.height() / 2f;
 
@@ -611,7 +621,7 @@ public class BubbleSeekBar extends View {
     }
 
     /**
-     * 识别thumb是否被有效点击
+     * Detect effective touch of thumb
      */
     private boolean isThumbTouched(MotionEvent event) {
         float x = mTrackLength / mDelta * (mProgress - mMin) + mLeft;
@@ -621,7 +631,7 @@ public class BubbleSeekBar extends View {
     }
 
     /**
-     * 识别track是否被有效点击
+     * Detect effective touch of track
      */
     private boolean isTrackTouched(MotionEvent event) {
         return event.getX() >= getPaddingLeft() && event.getX() <= getMeasuredWidth() - getPaddingRight()
@@ -629,6 +639,8 @@ public class BubbleSeekBar extends View {
     }
 
     /**
+     * Showing the Bubble depends the way that the WindowManager adds a Toast type view to the Window.
+     * <p>
      * 显示气泡
      * 原理是利用WindowManager动态添加一个与Toast相同类型的BubbleView，消失时再移除
      */
@@ -647,7 +659,7 @@ public class BubbleSeekBar extends View {
                     | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                     | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
             // MIUI禁止了开发者使用TYPE_TOAST，Android 7.1.1 对TYPE_TOAST的使用更严格
-            if (BubbleBuildUtils.isMIUI() || Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            if (BubbleUtils.isMIUI() || Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                 mLayoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION;
             } else {
                 mLayoutParams.type = WindowManager.LayoutParams.TYPE_TOAST;
@@ -670,7 +682,7 @@ public class BubbleSeekBar extends View {
     }
 
     /**
-     * 自动滚向最近的分段处
+     * Auto scroll to the nearest section mark
      */
     private void autoAdjustSection() {
         int i;
@@ -755,7 +767,7 @@ public class BubbleSeekBar extends View {
     }
 
     /**
-     * 隐藏气泡
+     * The WindowManager removes the BubbleView from the Window.
      */
     private void hideBubble() {
         mBubbleView.setVisibility(GONE); // 防闪烁
@@ -765,7 +777,8 @@ public class BubbleSeekBar extends View {
     }
 
     /**
-     * 当外部容器是可滑动的控件时，监听滑动调用该方法来实时修正偏移
+     * When BubbleSeekBar's parent view is scrollable, must listener to it's scrolling and call this
+     * method to correct the offsets.
      */
     public void correctOffsetWhenContainerOnScrolling() {
         locatePositionOnScreen();
@@ -864,16 +877,6 @@ public class BubbleSeekBar extends View {
         super.onRestoreInstanceState(state);
     }
 
-    private int dp2px(int dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                Resources.getSystem().getDisplayMetrics());
-    }
-
-    private int sp2px(int sp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
-                Resources.getSystem().getDisplayMetrics());
-    }
-
     private String float2String(float value) {
         return String.valueOf(formatFloat(value));
     }
@@ -884,7 +887,7 @@ public class BubbleSeekBar extends View {
     }
 
     /**
-     * progress改变监听器
+     * Listen to progress onChanged, onActionUp, onFinally
      */
     public interface OnProgressChangedListener {
 
@@ -896,9 +899,9 @@ public class BubbleSeekBar extends View {
     }
 
     /**
-     * progress改变监听
+     * Listener adapter
      * <br/>
-     * 用法同{@link AnimatorListenerAdapter}
+     * usage like {@link AnimatorListenerAdapter}
      */
     public static abstract class OnProgressChangedListenerAdapter implements OnProgressChangedListener {
 
@@ -916,7 +919,7 @@ public class BubbleSeekBar extends View {
     }
 
     /*******************************************************************************************
-     * ************************************  自定义气泡View  ************************************
+     * ************************************  custom bubble view  ************************************
      *******************************************************************************************/
     private class BubbleView extends View {
 

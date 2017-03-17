@@ -1,17 +1,15 @@
-/*
- * Copyright (c) 2016 Zhang Hai <Dreaming.in.Code.ZH@Gmail.com>
- * All Rights Reserved.
- */
 package com.xw.repo;
 
+import android.content.res.Resources;
 import android.os.Environment;
+import android.util.TypedValue;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-class BubbleBuildUtils {
+class BubbleUtils {
 
     private static final File BUILD_PROP_FILE = new File(Environment.getRootDirectory(), "build.prop");
     private static Properties sBuildProperties;
@@ -31,15 +29,17 @@ class BubbleBuildUtils {
         return sBuildProperties;
     }
 
-//    public static boolean isEmotionUi() {
-//        return getBuildProperties().containsKey("ro.build.version.emui");
-//    }
-
-//    public static String getEmotionUiVersion() {
-//        return getBuildProperties().getProperty("ro.build.version.emui");
-//    }
-
     static boolean isMIUI() {
         return getBuildProperties().containsKey("ro.miui.ui.version.name");
+    }
+
+    static int dp2px(int dp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+                Resources.getSystem().getDisplayMetrics());
+    }
+
+    static int sp2px(int sp) {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
+                Resources.getSystem().getDisplayMetrics());
     }
 }
