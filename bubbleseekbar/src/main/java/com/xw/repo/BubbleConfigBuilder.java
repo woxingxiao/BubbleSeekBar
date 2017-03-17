@@ -1,9 +1,10 @@
 package com.xw.repo;
 
-import android.content.res.Resources;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
-import android.util.TypedValue;
+
+import static com.xw.repo.BubbleUtils.dp2px;
+import static com.xw.repo.BubbleUtils.sp2px;
 
 /**
  * config BubbleSeekBar's attributes
@@ -307,15 +308,5 @@ public class BubbleConfigBuilder {
 
     public int getBubbleTextColor() {
         return bubbleTextColor;
-    }
-
-    private int dp2px(int dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                Resources.getSystem().getDisplayMetrics());
-    }
-
-    private int sp2px(int sp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, sp,
-                Resources.getSystem().getDisplayMetrics());
     }
 }

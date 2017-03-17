@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-def VERSION_NAME = "3.0"
+def VERSION_NAME = "3.1"
 
 android {
     compileSdkVersion 25
@@ -9,7 +9,7 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 16
+        versionCode 17
         versionName VERSION_NAME
     }
 
