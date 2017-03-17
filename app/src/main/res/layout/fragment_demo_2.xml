@@ -33,7 +33,7 @@
         android:layout_marginTop="8dp"
         app:bsb_bubble_color="@color/color_red_light"
         app:bsb_bubble_text_color="@color/colorPrimaryDark"
-        app:bsb_max="50"
+        app:bsb_max="50.0"
         app:bsb_min="-50"
         app:bsb_progress="0"
         app:bsb_second_track_color="@color/color_red"

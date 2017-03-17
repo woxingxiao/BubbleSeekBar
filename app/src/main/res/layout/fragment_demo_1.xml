@@ -47,8 +47,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:bsb_max="500"
-        app:bsb_min="100"
-        app:bsb_progress="200"
+        app:bsb_min="100.0"
+        app:bsb_progress="200.0"
         app:bsb_second_track_color="@color/color_blue"
         app:bsb_track_size="4dp"/>
 
