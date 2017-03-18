@@ -1,5 +1,5 @@
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.1)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.1-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.2)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.2-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
 [![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
   
 **自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**  
@@ -14,12 +14,12 @@
 The **LATEST_VERSION**：[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg)](https://bintray.com/woxingxiao/maven/bubbleseekbar/_latestVersion)
 ```groovy
   dependencies {
-     // lite version 轻量版
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.1-lite'
+     // lite version 轻量版（推荐）
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.2-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
      
      // enhanced version 增强版
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.0'
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.2'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
@@ -83,8 +83,7 @@ mBbubbleSeekBar.getConfigBuilder()
                .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
                .build();
 ```
-查看demo获知更多使用细节。  
-或者下载安装apk：[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
+查看demo获知更多使用细节。或者下载安装apk：[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
 
 ## Attentions
 - 下列是两个版本的差异对比：  
