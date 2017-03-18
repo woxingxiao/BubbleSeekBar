@@ -232,10 +232,15 @@ public class BubbleSeekBar extends View {
             isShowSectionText = true;
         }
         if (isShowSectionText) {
-            isShowSectionMark = true;
             if (mSectionTextPosition == NONE) {
                 mSectionTextPosition = TextPosition.SIDES;
             }
+            if (mSectionTextPosition == TextPosition.BELOW_SECTION_MARK) {
+                isShowSectionMark = true;
+            }
+        }
+        if (mSectionTextInterval < 1) {
+            mSectionTextInterval = 1;
         }
         if (isAutoAdjustSectionMark && !isShowSectionMark) {
             isAutoAdjustSectionMark = false;
