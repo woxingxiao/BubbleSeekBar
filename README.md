@@ -1,5 +1,5 @@
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.1)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.1-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.2)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.2-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
 [![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 [**中文说明**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/README_zh.md)
@@ -18,11 +18,11 @@ The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao
 ```groovy
   dependencies {
      // lite version (recommend)
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.1-lite'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.2-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
 
      // enhanced version
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.1'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.2'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
@@ -87,8 +87,7 @@ mBbubbleSeekBar.getConfigBuilder()
                .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
                .build();
 ```
-Check out the demo for more details.
-Or download the apk:[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
+Check out the demo for more details. Or download the apk: [**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
 ## Attentions
 - There are two versions of this library.The differences as follow:
 
