@@ -32,6 +32,7 @@ public class DemoFragment1 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_demo_1, container, false);
 
         final BubbleSeekBar bubbleSeekBar = (BubbleSeekBar) view.findViewById(R.id.demo_1_seek_bar);
+        bubbleSeekBar.setProgress(20);
         Button button = (Button) view.findViewById(R.id.demo_1_button);
 
         button.setOnClickListener(new View.OnClickListener() {

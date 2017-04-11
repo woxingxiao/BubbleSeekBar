@@ -32,6 +32,7 @@ public class DemoFragment4 extends Fragment {
         ObservableScrollView mObsScrollView = (ObservableScrollView) view.findViewById(R.id.demo_4_obs_scroll_view);
         final BubbleSeekBar bubbleSeekBar1 = (BubbleSeekBar) view.findViewById(R.id.demo_4_seek_bar_1);
         final BubbleSeekBar bubbleSeekBar2 = (BubbleSeekBar) view.findViewById(R.id.demo_4_seek_bar_2);
+        final BubbleSeekBar bubbleSeekBar3 = (BubbleSeekBar) view.findViewById(R.id.demo_4_seek_bar_3);
         final TextView progressText1 = (TextView) view.findViewById(R.id.demo_4_progress_text_1);
         final TextView progressText2 = (TextView) view.findViewById(R.id.demo_4_progress_text_2);
         final TextView progressText3 = (TextView) view.findViewById(R.id.demo_4_progress_text_3);
@@ -61,6 +62,9 @@ public class DemoFragment4 extends Fragment {
                 progressText3.setText(s);
             }
         });
+
+        // trigger by set progress or seek by finger
+        bubbleSeekBar3.setProgress(bubbleSeekBar3.getMax());
 
         return view;
     }
