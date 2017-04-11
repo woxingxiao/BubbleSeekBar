@@ -70,7 +70,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="4dp"
         android:text="listeners"
         android:textSize="12sp"/>
 
@@ -78,7 +78,6 @@
         android:id="@+id/demo_4_seek_bar_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         app:bsb_auto_adjust_section_mark="true"
         app:bsb_is_float_type="true"
         app:bsb_second_track_color="@color/color_blue"
@@ -107,4 +106,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="bubble shows all time"
+        android:textSize="12sp"/>
+
+    <com.xw.repo.BubbleSeekBar
+        android:id="@+id/demo_4_seek_bar_3"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        app:bsb_always_show_bubble="true"
+        app:bsb_auto_adjust_section_mark="true"
+        app:bsb_second_track_color="@color/color_red"
+        app:bsb_section_count="5"
+        app:bsb_section_text_position="below_section_mark"
+        app:bsb_show_section_mark="true"
+        app:bsb_show_section_text="true"
+        app:bsb_show_thumb_text="true"
+        app:bsb_touch_to_seek="true"
+        app:bsb_track_color="@color/color_red_light"/>
 </LinearLayout>
