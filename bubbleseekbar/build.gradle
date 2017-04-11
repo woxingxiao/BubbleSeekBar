@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-def VERSION_NAME = "3.2"
+def VERSION_NAME = "3.3"
 
 android {
     compileSdkVersion 25
@@ -9,7 +9,7 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 18
+        versionCode 19
         versionName VERSION_NAME
     }
 
@@ -23,7 +23,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    provided 'com.android.support:appcompat-v7:25.3.0'
+    provided 'com.android.support:appcompat-v7:25.3.1'
 }
 
 apply plugin: 'com.novoda.bintray-release'

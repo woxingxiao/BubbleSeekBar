@@ -42,6 +42,7 @@ public class BubbleConfigBuilder {
     int bubbleColor;
     int bubbleTextSize;
     int bubbleTextColor;
+    boolean alwaysShowBubble;
 
     private BubbleSeekBar mBubbleSeekBar;
 
@@ -198,6 +199,11 @@ public class BubbleConfigBuilder {
         return this;
     }
 
+    public BubbleConfigBuilder alwaysShowBubble() {
+        this.alwaysShowBubble = true;
+        return this;
+    }
+
     public float getMin() {
         return min;
     }
@@ -308,5 +314,9 @@ public class BubbleConfigBuilder {
 
     public int getBubbleTextColor() {
         return bubbleTextColor;
+    }
+
+    public boolean isAlwaysShowBubble() {
+        return alwaysShowBubble;
     }
 }
