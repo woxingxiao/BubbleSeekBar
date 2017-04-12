@@ -1,5 +1,5 @@
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.1)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.1-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.3)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.3-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
 [![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 **自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**
@@ -14,12 +14,12 @@
 The **LATEST_VERSION**：[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg)](https://bintray.com/woxingxiao/maven/bubbleseekbar/_latestVersion)
 ```groovy
   dependencies {
-     // lite version 轻量版
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.1-lite'
+     // lite version 轻量版（推荐）
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.3-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
 
      // enhanced version 增强版
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.0'
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.3'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
@@ -83,8 +83,7 @@ mBbubbleSeekBar.getConfigBuilder()
                .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
                .build();
 ```
-查看demo获知更多使用细节。
-或者下载安装apk：[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
+查看demo获知更多使用细节。或者下载安装apk：[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
 
 ## Attentions
 - 下列是两个版本的差异对比：
@@ -107,7 +106,8 @@ mBbubbleSeekBar.getConfigBuilder()
    });
 ```
 - 当设置`bsb_touch_to_seek`属性为`true`时， 最好不要点击**太快**去seek进度，否则动画可能没有足够时间播放。
-- 本库依赖`support:appcompat-v7`采用的 **`provided`** 方式，所以不必担心冗余的依赖引入。
+- 当设置`bsb_always_show_bubble`属性为`true`时， _Bubble_ 的显示必须在java代码中调用`BubbleSeekBar.setProgress()`方法或者用手指seek progress来触发。
+- 本库依赖`support:appcompat-v7`通过 **`provided`** 的方式，所以不必担心兼容性。
 
 ## Attributes
 ```xml
@@ -144,6 +144,7 @@ mBbubbleSeekBar.getConfigBuilder()
 <attr name="bsb_touch_to_seek" format="boolean"/> <!--touch anywhere on track to quickly seek, default: false-->
 <attr name="bsb_seek_by_section" format="boolean"/> <!--seek by section, the progress may not be linear, default: false-->
 <attr name="bsb_bubble_color" format="color|reference"/> <!--color of bubble, default: same as left-track's color-->
+<attr name="bsb_always_show_bubble" format="boolean"/> <!--bubble shows all time, default: false-->
 ```
 --------
 > **人生苦短，请选择科学上网。推荐一下本人正在使用的，稳定高速，便宜好用。[推介链接](https://portal.shadowsocks.com.hk/aff.php?aff=8881)**  
