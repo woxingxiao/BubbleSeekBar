@@ -1,5 +1,5 @@
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.2)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.2-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.3)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.3-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
 [![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 [**中文说明**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/README_zh.md)
@@ -18,11 +18,11 @@ The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao
 ```groovy
   dependencies {
      // lite version (recommend)
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.2-lite'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.3-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
 
      // enhanced version
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.2'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.3'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
@@ -109,7 +109,8 @@ Check out the demo for more details. Or download the apk: [**sample.apk**](https
    });
 ```
 - When set `bsb_touch_to_seek` attribute to be `true` , you better not to click **too fast** because the animation may not have enough time to play.
-- This library depends `support:appcompat-v7` is **`provided`**, so you don't need to worry about redundant `dependencies`.
+- When set `bsb_always_show_bubble` attribute to be `true` , the appearance of _Bubble_ must be triggered by `BubbleSeekBar.setProgress()` in java code or seek progress by finger.
+- This library depends `support:appcompat-v7` via **`provided`**, so you don't need to worry about compatibility.
 
 ## Attributes  
 ```xml
@@ -146,6 +147,7 @@ Check out the demo for more details. Or download the apk: [**sample.apk**](https
 <attr name="bsb_touch_to_seek" format="boolean"/> <!--touch anywhere on track to quickly seek, default: false-->
 <attr name="bsb_seek_by_section" format="boolean"/> <!--seek by section, the progress may not be linear, default: false-->
 <attr name="bsb_bubble_color" format="color|reference"/> <!--color of bubble, default: same as left-track's color-->
+<attr name="bsb_always_show_bubble" format="boolean"/> <!--bubble shows all time, default: false-->
 ```
 ## License
 ```
