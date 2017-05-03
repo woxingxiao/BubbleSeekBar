@@ -1,5 +1,5 @@
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.3)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.3-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.4)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.4-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
 [![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 [**中文说明**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/README_zh.md)
@@ -17,12 +17,12 @@
 The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg)](https://bintray.com/woxingxiao/maven/bubbleseekbar/_latestVersion)
 ```groovy
   dependencies {
-     // lite version (recommend)
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.3-lite'
+     // lite version (recommended)
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.4-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
 
      // enhanced version
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.3'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.4'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
@@ -109,7 +109,6 @@ Check out the demo for more details. Or download the apk: [**sample.apk**](https
    });
 ```
 - When set `bsb_touch_to_seek` attribute to be `true` , you better not to click **too fast** because the animation may not have enough time to play.
-- When set `bsb_always_show_bubble` attribute to be `true` , the appearance of _Bubble_ must be triggered by `BubbleSeekBar.setProgress()` in java code or seek progress by finger.
 - This library depends `support:appcompat-v7` via **`provided`**, so you don't need to worry about compatibility.
 
 ## Attributes  
