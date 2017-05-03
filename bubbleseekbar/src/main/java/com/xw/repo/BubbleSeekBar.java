@@ -97,6 +97,7 @@ public class BubbleSeekBar extends View {
     private boolean isThumbOnDragging; // is thumb on dragging or not
     private int mTextSpace; // space between text and track
     private boolean triggerBubbleShowing;
+    private boolean triggerSeekBySection;
 
     private OnProgressChangedListener mProgressListener; // progress changing listener
     private float mLeft; // space between left of track and left of the view
@@ -174,8 +175,6 @@ public class BubbleSeekBar extends View {
         isAlwaysShowBubble = a.getBoolean(R.styleable.BubbleSeekBar_bsb_always_show_bubble, false);
         a.recycle();
 
-        initConfigByPriority();
-
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -191,6 +190,7 @@ public class BubbleSeekBar extends View {
         mBubbleView.setProgressText(isShowProgressInFloat ?
                 String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
 
+        initConfigByPriority();
         calculateRadiusOfBubble();
     }
 
@@ -256,6 +256,9 @@ public class BubbleSeekBar extends View {
             isShowSectionMark = true;
             isAutoAdjustSectionMark = true;
             isTouchToSeek = false;
+        }
+        if (isAlwaysShowBubble) {
+            setProgress(mProgress);
         }
 
         mThumbTextSize = isFloatType || isSeekBySection || (isShowSectionText && mSectionTextPosition ==
@@ -549,7 +552,10 @@ public class BubbleSeekBar extends View {
             case MotionEvent.ACTION_DOWN:
                 isThumbOnDragging = isThumbTouched(event);
                 if (isThumbOnDragging) {
-                    if (isAlwaysShowBubble) {
+                    if (isSeekBySection && !triggerSeekBySection) {
+                        triggerSeekBySection = true;
+                    }
+                    if (isAlwaysShowBubble && !triggerBubbleShowing) {
                         triggerBubbleShowing = true;
                     }
                     showBubble();
@@ -879,14 +885,14 @@ public class BubbleSeekBar extends View {
                     showBubble();
                     triggerBubbleShowing = true;
                 }
-            }, location[0] == 0 && location[1] == 0 ? 300 : 0);
+            }, location[0] == 0 && location[1] == 0 ? 200 : 0);
         }
 
         postInvalidate();
     }
 
     public int getProgress() {
-        if (isSeekBySection) {
+        if (isSeekBySection && triggerSeekBySection) {
             float half = mSectionValue / 2;
 
             if (mProgress >= mPreSecValue) { // increasing
