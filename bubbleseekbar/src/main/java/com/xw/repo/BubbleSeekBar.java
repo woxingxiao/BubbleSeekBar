@@ -542,6 +542,7 @@ public class BubbleSeekBar extends View {
     @Override
     protected void onDetachedFromWindow() {
         hideBubble();
+        mBubbleView = null;
         super.onDetachedFromWindow();
     }
 
@@ -703,7 +704,7 @@ public class BubbleSeekBar extends View {
      * 原理是利用WindowManager动态添加一个与Toast相同类型的BubbleView，消失时再移除
      */
     private void showBubble() {
-        if (mBubbleView.getParent() != null) {
+        if (mBubbleView == null || mBubbleView.getParent() != null) {
             return;
         }
 
