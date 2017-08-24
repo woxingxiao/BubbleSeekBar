@@ -37,12 +37,15 @@ public class BubbleConfigBuilder {
     int thumbTextSize;
     int thumbTextColor;
     boolean showProgressInFloat;
+    long animDuration;
     boolean touchToSeek;
     boolean seekBySection;
     int bubbleColor;
     int bubbleTextSize;
     int bubbleTextColor;
     boolean alwaysShowBubble;
+    long alwaysShowBubbleDelay;
+    boolean hideBubble;
 
     private BubbleSeekBar mBubbleSeekBar;
 
@@ -174,6 +177,11 @@ public class BubbleConfigBuilder {
         return this;
     }
 
+    public BubbleConfigBuilder animDuration(long duration) {
+        animDuration = duration;
+        return this;
+    }
+
     public BubbleConfigBuilder touchToSeek() {
         this.touchToSeek = true;
         return this;
@@ -201,6 +209,16 @@ public class BubbleConfigBuilder {
 
     public BubbleConfigBuilder alwaysShowBubble() {
         this.alwaysShowBubble = true;
+        return this;
+    }
+
+    public BubbleConfigBuilder alwaysShowBubbleDelay(long delay) {
+        alwaysShowBubbleDelay = delay;
+        return this;
+    }
+
+    public BubbleConfigBuilder hideBubble() {
+        this.hideBubble = true;
         return this;
     }
 
@@ -296,6 +314,10 @@ public class BubbleConfigBuilder {
         return showProgressInFloat;
     }
 
+    public long getAnimDuration() {
+        return animDuration;
+    }
+
     public boolean isTouchToSeek() {
         return touchToSeek;
     }
@@ -318,5 +340,13 @@ public class BubbleConfigBuilder {
 
     public boolean isAlwaysShowBubble() {
         return alwaysShowBubble;
+    }
+
+    public long getAlwaysShowBubbleDelay() {
+        return alwaysShowBubbleDelay;
+    }
+
+    public boolean isHideBubble() {
+        return hideBubble;
     }
 }
