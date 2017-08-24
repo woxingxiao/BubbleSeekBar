@@ -1,8 +1,8 @@
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.4)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.4-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.6)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
+[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.6-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
 [![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
-
-**自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**
+  
+**自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**  
 ****
 ## Screenshot
 ![demo1](https://github.com/woxingxiao/BubbleSeekBar/blob/master/screenshot/demo1.gif)
@@ -15,16 +15,16 @@ The **LATEST_VERSION**：[![Download](https://api.bintray.com/packages/woxingxia
 ```groovy
   dependencies {
      // lite version 轻量版（推荐）
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.4-lite'
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.6-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
-
+     
      // enhanced version 增强版
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.4'
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.6'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
-## Usage
-### xml
+## Usage  
+### xml  
 ```xml
 <com.xw.repo.BubbleSeekBar
     android:layout_width="match_parent"
@@ -86,13 +86,13 @@ mBbubbleSeekBar.getConfigBuilder()
 查看demo获知更多使用细节。或者下载安装apk：[**sample.apk**](https://github.com/woxingxiao/BubbleSeekBar/raw/master/apk/sample.apk)
 
 ## Attentions
-- 下列是两个版本的差异对比：
+- 下列是两个版本的差异对比：  
 
   version | init | getter/setter
   -------- | ---|---
   lite|xml|min, max, progress
   enhanced|xml, java|all attrs
-
+  
   推荐使用 **_lite_** 版本。
 
 - 如果`BubbleSeekBar`的外部容器是可滑动的控件，需要设置滑动监听来修正气泡的偏移，否则滑动后气泡出现位置可能错乱。方法如下：
@@ -108,7 +108,7 @@ mBbubbleSeekBar.getConfigBuilder()
 - 当设置`bsb_touch_to_seek`属性为`true`时， 最好不要点击**太快**去seek进度，否则动画可能没有足够时间播放。
 - 本库依赖`support:appcompat-v7`通过 **`provided`** 的方式，所以不必担心兼容性。
 
-## Attributes
+## Attributes  
 ```xml
 <attr name="bsb_min" format="float|reference"/> <!--min < max, default: 0.0f-->
 <attr name="bsb_max" format="float|reference"/> <!--min < max, default: 100.0f-->
@@ -144,6 +144,8 @@ mBbubbleSeekBar.getConfigBuilder()
 <attr name="bsb_seek_by_section" format="boolean"/> <!--seek by section, the progress may not be linear, default: false-->
 <attr name="bsb_bubble_color" format="color|reference"/> <!--color of bubble, default: same as left-track's color-->
 <attr name="bsb_always_show_bubble" format="boolean"/> <!--bubble shows all time, default: false-->
+<attr name="bsb_always_show_bubble_delay" format="integer"/> <!--the delay duration before bubble shows all the time, default: 200ms-->
+<attr name="bsb_hide_bubble" format="boolean"/> <!--hide bubble, default: false-->
 ```
 --------
 > **人生苦短，请选择科学上网。推荐一下本人正在使用的，稳定高速，便宜好用。[推介链接](https://portal.shadowsocks.com.hk/aff.php?aff=8881)**  
