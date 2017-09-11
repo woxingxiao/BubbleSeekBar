@@ -45,19 +45,19 @@ public class DemoFragment3 extends Fragment {
         });
         bubbleSeekBar2.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListenerAdapter() {
             @Override
-            public void onProgressChanged(int progress, float progressFloat) {
+            public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
                 String s = String.format(Locale.CHINA, "onChanged int:%d, float:%.1f", progress, progressFloat);
                 progressText1.setText(s);
             }
 
             @Override
-            public void getProgressOnActionUp(int progress, float progressFloat) {
+            public void getProgressOnActionUp(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
                 String s = String.format(Locale.CHINA, "onActionUp int:%d, float:%.1f", progress, progressFloat);
                 progressText2.setText(s);
             }
 
             @Override
-            public void getProgressOnFinally(int progress, float progressFloat) {
+            public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
                 String s = String.format(Locale.CHINA, "onFinally int:%d, float:%.1f", progress, progressFloat);
                 progressText3.setText(s);
             }
