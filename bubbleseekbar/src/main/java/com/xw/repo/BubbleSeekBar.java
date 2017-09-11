@@ -370,6 +370,11 @@ public class BubbleSeekBar extends View {
             return;
 
         mBubbleView.measure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
 
         locatePositionOnScreen();
     }
@@ -583,6 +588,7 @@ public class BubbleSeekBar extends View {
 
                     invalidate();
                 } else if (isTouchToSeek && isTrackTouched(event)) {
+                    isThumbOnDragging = true;
                     if (isAlwaysShowBubble) {
                         hideBubble();
                         triggerBubbleShowing = true;
@@ -630,7 +636,7 @@ public class BubbleSeekBar extends View {
                     invalidate();
 
                     if (mProgressListener != null) {
-                        mProgressListener.onProgressChanged(getProgress(), getProgressFloat());
+                        mProgressListener.onProgressChanged(this, getProgress(), getProgressFloat());
                     }
                 }
 
@@ -663,8 +669,8 @@ public class BubbleSeekBar extends View {
                                         invalidate();
 
                                         if (mProgressListener != null) {
-                                            mProgressListener.onProgressChanged(getProgress(),
-                                                    getProgressFloat());
+                                            mProgressListener.onProgressChanged(BubbleSeekBar.this,
+                                                    getProgress(), getProgressFloat());
                                         }
                                     }
 
@@ -691,8 +697,8 @@ public class BubbleSeekBar extends View {
                                         invalidate();
 
                                         if (mProgressListener != null) {
-                                            mProgressListener.onProgressChanged(getProgress(),
-                                                    getProgressFloat());
+                                            mProgressListener.onProgressChanged(BubbleSeekBar.this,
+                                                    getProgress(), getProgressFloat());
                                         }
                                     }
 
@@ -712,7 +718,7 @@ public class BubbleSeekBar extends View {
                 }
 
                 if (mProgressListener != null) {
-                    mProgressListener.getProgressOnActionUp(getProgress(), getProgressFloat());
+                    mProgressListener.getProgressOnActionUp(this, getProgress(), getProgressFloat());
                 }
 
                 break;
@@ -738,11 +744,8 @@ public class BubbleSeekBar extends View {
      * Detect effective touch of track
      */
     private boolean isTrackTouched(MotionEvent event) {
-        if (!isEnabled())
-            return false;
-
-        return event.getX() >= getPaddingLeft() && event.getX() <= getMeasuredWidth() - getPaddingRight()
-                && event.getY() >= getPaddingTop() && event.getY() <= getPaddingTop() + mThumbRadiusOnDragging * 2;
+        return isEnabled() && event.getX() >= getPaddingLeft() && event.getX() <= getMeasuredWidth() - getPaddingRight()
+                && event.getY() >= getPaddingTop() && event.getY() <= getMeasuredHeight() - getPaddingBottom();
     }
 
     /**
@@ -834,7 +837,7 @@ public class BubbleSeekBar extends View {
                     invalidate();
 
                     if (mProgressListener != null) {
-                        mProgressListener.onProgressChanged(getProgress(), getProgressFloat());
+                        mProgressListener.onProgressChanged(BubbleSeekBar.this, getProgress(), getProgressFloat());
                     }
                 }
             });
@@ -865,7 +868,7 @@ public class BubbleSeekBar extends View {
                 invalidate();
 
                 if (mProgressListener != null) {
-                    mProgressListener.getProgressOnFinally(getProgress(), getProgressFloat());
+                    mProgressListener.getProgressOnFinally(BubbleSeekBar.this, getProgress(), getProgressFloat());
                 }
             }
 
@@ -932,8 +935,8 @@ public class BubbleSeekBar extends View {
         mProgress = progress;
 
         if (mProgressListener != null) {
-            mProgressListener.onProgressChanged(getProgress(), getProgressFloat());
-            mProgressListener.getProgressOnFinally(getProgress(), getProgressFloat());
+            mProgressListener.onProgressChanged(this, getProgress(), getProgressFloat());
+            mProgressListener.getProgressOnFinally(this, getProgress(), getProgressFloat());
         }
 
         if (isHideBubble) {
@@ -1031,8 +1034,8 @@ public class BubbleSeekBar extends View {
         calculateRadiusOfBubble();
 
         if (mProgressListener != null) {
-            mProgressListener.onProgressChanged(getProgress(), getProgressFloat());
-            mProgressListener.getProgressOnFinally(getProgress(), getProgressFloat());
+            mProgressListener.onProgressChanged(this, getProgress(), getProgressFloat());
+            mProgressListener.getProgressOnFinally(this, getProgress(), getProgressFloat());
         }
 
         mConfigBuilder = null;
@@ -1123,11 +1126,11 @@ public class BubbleSeekBar extends View {
      */
     public interface OnProgressChangedListener {
 
-        void onProgressChanged(int progress, float progressFloat);
+        void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat);
 
-        void getProgressOnActionUp(int progress, float progressFloat);
+        void getProgressOnActionUp(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat);
 
-        void getProgressOnFinally(int progress, float progressFloat);
+        void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat);
     }
 
     /**
@@ -1138,15 +1141,15 @@ public class BubbleSeekBar extends View {
     public static abstract class OnProgressChangedListenerAdapter implements OnProgressChangedListener {
 
         @Override
-        public void onProgressChanged(int progress, float progressFloat) {
+        public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
         }
 
         @Override
-        public void getProgressOnActionUp(int progress, float progressFloat) {
+        public void getProgressOnActionUp(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
         }
 
         @Override
-        public void getProgressOnFinally(int progress, float progressFloat) {
+        public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
         }
     }
 
