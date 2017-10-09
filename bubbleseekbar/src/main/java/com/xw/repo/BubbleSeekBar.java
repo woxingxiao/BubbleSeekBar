@@ -630,7 +630,9 @@ public class BubbleSeekBar extends View {
                     if (!isHideBubble) {
                         mBubbleCenterRawX = mBubbleCenterRawSolidX + mTrackLength * (mProgress - mMin) / mDelta;
                         mLayoutParams.x = (int) (mBubbleCenterRawX + 0.5f);
-                        mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
+                        if (mBubbleView.getParent() != null) {
+                            mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
+                        }
                         mBubbleView.setProgressText(isShowProgressInFloat ?
                                 String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
                     }
