@@ -40,5 +40,6 @@
         <attr name="bsb_always_show_bubble" format="boolean"/> <!--bubble shows all time, default: false-->
         <attr name="bsb_always_show_bubble_delay" format="integer"/> <!--the delay duration before bubble shows all the time, default: 200ms-->
         <attr name="bsb_hide_bubble" format="boolean"/> <!--hide bubble, default: false-->
+        <attr name="bsb_rtl" format="boolean"/> <!--right to left, default: false-->
     </declare-styleable>
 </resources>

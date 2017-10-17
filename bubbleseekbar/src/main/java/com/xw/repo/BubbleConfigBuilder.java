@@ -46,6 +46,7 @@ public class BubbleConfigBuilder {
     boolean alwaysShowBubble;
     long alwaysShowBubbleDelay;
     boolean hideBubble;
+    boolean rtl;
 
     private BubbleSeekBar mBubbleSeekBar;
 
@@ -222,6 +223,11 @@ public class BubbleConfigBuilder {
         return this;
     }
 
+    public BubbleConfigBuilder rtl() {
+        this.rtl = true;
+        return this;
+    }
+
     public float getMin() {
         return min;
     }
@@ -348,5 +354,9 @@ public class BubbleConfigBuilder {
 
     public boolean isHideBubble() {
         return hideBubble;
+    }
+
+    public boolean isRtl() {
+        return rtl;
     }
 }
