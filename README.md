@@ -1,5 +1,4 @@
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.6)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.6-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
+[![API](https://img.shields.io/badge/API-14%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=14)
 [![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 [**中文说明**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/README_zh.md)
@@ -18,11 +17,11 @@ The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao
 ```groovy
   dependencies {
      // lite version (recommended)
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.6-lite'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.8-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
 
      // enhanced version
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.6'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.8'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
@@ -149,7 +148,13 @@ Check out the demo for more details. Or download the apk: [**sample.apk**](https
 <attr name="bsb_always_show_bubble" format="boolean"/> <!--bubble shows all time, default: false-->
 <attr name="bsb_always_show_bubble_delay" format="integer"/> <!--the delay duration before bubble shows all the time, default: 200ms-->
 <attr name="bsb_hide_bubble" format="boolean"/> <!--hide bubble, default: false-->
+<attr name="bsb_rtl" format="boolean"/> <!--right to left, default: false-->
 ```
+## How to submit a valid issue
+- Describe the scenarios or operates when crash happened as much as possible(pictures would be better).
+- Paste your xml or java code.
+- Paste the crash log.
+
 ## License
 ```
    Copyright 2017 woxingxiao

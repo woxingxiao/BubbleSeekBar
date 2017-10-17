@@ -1,5 +1,4 @@
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.6)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0/link)
-[![Download](https://api.bintray.com/packages/woxingxiao/maven/bubbleseekbar/images/download.svg?version=3.6-lite)](https://bintray.com/woxingxiao/maven/bubbleseekbar/3.0-lite/link)
+[![API](https://img.shields.io/badge/API-14%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=14)
 [![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
   
 **自定义`SeekBar`，进度变化由可视化气泡样式呈现，定制化程度较高，适合大部分需求。欢迎`star` or `pull request`**  
@@ -15,11 +14,11 @@ The **LATEST_VERSION**：[![Download](https://api.bintray.com/packages/woxingxia
 ```groovy
   dependencies {
      // lite version 轻量版（推荐）
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.6-lite'
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.8-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
      
      // enhanced version 增强版
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.6'
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.8'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
@@ -146,9 +145,16 @@ mBbubbleSeekBar.getConfigBuilder()
 <attr name="bsb_always_show_bubble" format="boolean"/> <!--bubble shows all time, default: false-->
 <attr name="bsb_always_show_bubble_delay" format="integer"/> <!--the delay duration before bubble shows all the time, default: 200ms-->
 <attr name="bsb_hide_bubble" format="boolean"/> <!--hide bubble, default: false-->
+<attr name="bsb_rtl" format="boolean"/> <!--right to left, default: false-->
 ```
+## 怎样提出有效的issue
+- 尽可能详细的描述crash发生时的使用场景或者操作（有图片说明更好）；
+- 贴出你的xml或者java代码；
+- 贴出你的奔溃日志。
+- （吐槽国内部分开发者一来就是你怎样怎样，连“请问”基本的礼貌都省了）
+
 --------
-> **人生苦短，请选择科学上网。推荐一下本人正在使用的，稳定高速，便宜好用。[推介链接](https://portal.shadowsocks.com.hk/aff.php?aff=8881)**  
+> **人生苦短，请选择科学上网。推荐一下本人正在使用的，稳定高速，便宜好用。[推介链接](https://portal.shadowsocks.com.la/aff.php?aff=8881)**  
 
 ## License
 ```
