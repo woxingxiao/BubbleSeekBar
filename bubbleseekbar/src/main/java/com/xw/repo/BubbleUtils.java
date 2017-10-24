@@ -19,10 +19,20 @@ class BubbleUtils {
         synchronized (sBuildPropertiesLock) {
             if (sBuildProperties == null) {
                 sBuildProperties = new Properties();
+                FileInputStream fis = null;
                 try {
-                    sBuildProperties.load(new FileInputStream(BUILD_PROP_FILE));
+                    fis = new FileInputStream(BUILD_PROP_FILE);
+                    sBuildProperties.load(fis);
                 } catch (IOException e) {
                     e.printStackTrace();
+                } finally {
+                    if (fis != null) {
+                        try {
+                            fis.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         }

@@ -606,7 +606,6 @@ public class BubbleSeekBar extends View {
     @Override
     protected void onDetachedFromWindow() {
         hideBubble();
-        mBubbleView = null;
         super.onDetachedFromWindow();
     }
 
