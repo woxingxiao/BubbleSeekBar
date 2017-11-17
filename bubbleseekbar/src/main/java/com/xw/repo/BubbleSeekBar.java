@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -25,6 +27,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 
@@ -426,6 +429,19 @@ public class BubbleSeekBar extends View {
         mBubbleCenterRawSolidY -= dp2px(24);
         if (BubbleUtils.isMIUI()) {
             mBubbleCenterRawSolidY += dp2px(4);
+        }
+
+        Context context = getContext();
+        if (context instanceof Activity) {
+            Window window = ((Activity) context).getWindow();
+            if (window != null) {
+                int flags = window.getAttributes().flags;
+                if ((flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0) {
+                    Resources res = Resources.getSystem();
+                    int id = res.getIdentifier("status_bar_height", "dimen", "android");
+                    mBubbleCenterRawSolidY += res.getDimensionPixelSize(id);
+                }
+            }
         }
     }
 
