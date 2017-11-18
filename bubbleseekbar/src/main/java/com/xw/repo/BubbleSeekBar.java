@@ -19,10 +19,12 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -104,6 +106,7 @@ public class BubbleSeekBar extends View {
     private int mTextSpace; // space between text and track
     private boolean triggerBubbleShowing;
     private boolean triggerSeekBySection;
+    private SparseArray<String> mSectionTextArray = new SparseArray<>();
 
     private OnProgressChangedListener mProgressListener; // progress changing listener
     private float mLeft; // space between left of track and left of the view
@@ -275,6 +278,9 @@ public class BubbleSeekBar extends View {
         if (mSectionTextInterval < 1) {
             mSectionTextInterval = 1;
         }
+
+        initSectionTextArray();
+
         if (isAutoAdjustSectionMark && !isShowSectionMark) {
             isAutoAdjustSectionMark = false;
         }
@@ -309,7 +315,11 @@ public class BubbleSeekBar extends View {
         if (isShowProgressInFloat) {
             text = float2String(isRtl ? mMax : mMin);
         } else {
-            text = getLeftSectionText();
+            if (isRtl) {
+                text = isFloatType ? float2String(mMax) : String.valueOf((int) mMax);
+            } else {
+                text = isFloatType ? float2String(mMin) : String.valueOf((int) mMin);
+            }
         }
         mPaint.getTextBounds(text, 0, text.length(), mRectText);
         int w1 = (mRectText.width() + mTextSpace * 2) >> 1;
@@ -317,7 +327,11 @@ public class BubbleSeekBar extends View {
         if (isShowProgressInFloat) {
             text = float2String(isRtl ? mMin : mMax);
         } else {
-            text = getRightSectionText();
+            if (isRtl) {
+                text = isFloatType ? float2String(mMin) : String.valueOf((int) mMin);
+            } else {
+                text = isFloatType ? float2String(mMax) : String.valueOf((int) mMax);
+            }
         }
         mPaint.getTextBounds(text, 0, text.length(), mRectText);
         int w2 = (mRectText.width() + mTextSpace * 2) >> 1;
@@ -325,6 +339,31 @@ public class BubbleSeekBar extends View {
         mBubbleRadius = dp2px(14); // default 14dp
         int max = Math.max(mBubbleRadius, Math.max(w1, w2));
         mBubbleRadius = max + mTextSpace;
+    }
+
+    private void initSectionTextArray() {
+        boolean ifBelowSection = mSectionTextPosition == TextPosition.BELOW_SECTION_MARK;
+        boolean ifInterval = mSectionTextInterval > 1 && mSectionCount % 2 == 0;
+        float sectionValue;
+        for (int i = 0; i <= mSectionCount; i++) {
+            sectionValue = isRtl ? mMax - mSectionValue * i : mMin + mSectionValue * i;
+
+            if (ifBelowSection) {
+                if (ifInterval) {
+                    if (i % mSectionTextInterval == 0) {
+                        sectionValue = isRtl ? mMax - mSectionValue * i : mMin + mSectionValue * i;
+                    } else {
+                        continue;
+                    }
+                }
+            } else {
+                if (i != 0 && i != mSectionCount) {
+                    continue;
+                }
+            }
+
+            mSectionTextArray.put(i, isFloatType ? float2String(sectionValue) : (int) sectionValue + "");
+        }
     }
 
     @Override
@@ -335,14 +374,15 @@ public class BubbleSeekBar extends View {
         if (isShowThumbText) {
             mPaint.setTextSize(mThumbTextSize);
             mPaint.getTextBounds("j", 0, 1, mRectText); // j is the highest of all letters and numbers
-            height += mRectText.height() + mTextSpace; // 如果显示实时进度，则原来基础上加上进度文字高度和间隔
+            height += mRectText.height(); // 如果显示实时进度，则原来基础上加上进度文字高度和间隔
         }
         if (isShowSectionText && mSectionTextPosition >= TextPosition.BOTTOM_SIDES) { // 如果Section值在track之下显示，比较取较大值
             mPaint.setTextSize(mSectionTextSize);
             mPaint.getTextBounds("j", 0, 1, mRectText);
-            height = Math.max(height, mThumbRadiusOnDragging * 2 + mRectText.height() + mTextSpace);
+            height = Math.max(height, mThumbRadiusOnDragging * 2 + mRectText.height());
         }
-        setMeasuredDimension(resolveSize(dp2px(80), widthMeasureSpec), height);
+        height += mTextSpace * 2;
+        setMeasuredDimension(resolveSize(dp2px(180), widthMeasureSpec), height);
 
         mLeft = getPaddingLeft() + mThumbRadiusOnDragging;
         mRight = getMeasuredWidth() - getPaddingRight() - mThumbRadiusOnDragging;
@@ -351,20 +391,20 @@ public class BubbleSeekBar extends View {
             mPaint.setTextSize(mSectionTextSize);
 
             if (mSectionTextPosition == TextPosition.SIDES) {
-                String text = getLeftSectionText();
+                String text = mSectionTextArray.get(0);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
                 mLeft += (mRectText.width() + mTextSpace);
 
-                text = getRightSectionText();
+                text = mSectionTextArray.get(mSectionCount);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
                 mRight -= (mRectText.width() + mTextSpace);
             } else if (mSectionTextPosition >= TextPosition.BOTTOM_SIDES) {
-                String text = getLeftSectionText();
+                String text = mSectionTextArray.get(0);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
                 float max = Math.max(mThumbRadiusOnDragging, mRectText.width() / 2f);
                 mLeft = getPaddingLeft() + max + mTextSpace;
 
-                text = getRightSectionText();
+                text = mSectionTextArray.get(mSectionCount);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
                 max = Math.max(mThumbRadiusOnDragging, mRectText.width() / 2f);
                 mRight = getMeasuredWidth() - getPaddingRight() - max - mTextSpace;
@@ -372,12 +412,12 @@ public class BubbleSeekBar extends View {
         } else if (isShowThumbText && mSectionTextPosition == NONE) {
             mPaint.setTextSize(mThumbTextSize);
 
-            String text = getLeftSectionText();
+            String text = mSectionTextArray.get(0);
             mPaint.getTextBounds(text, 0, text.length(), mRectText);
             float max = Math.max(mThumbRadiusOnDragging, mRectText.width() / 2f);
             mLeft = getPaddingLeft() + max + mTextSpace;
 
-            text = getRightSectionText();
+            text = mSectionTextArray.get(mSectionCount);
             mPaint.getTextBounds(text, 0, text.length(), mRectText);
             max = Math.max(mThumbRadiusOnDragging, mRectText.width() / 2f);
             mRight = getMeasuredWidth() - getPaddingRight() - max - mTextSpace;
@@ -462,12 +502,12 @@ public class BubbleSeekBar extends View {
             if (mSectionTextPosition == TextPosition.SIDES) {
                 float y_ = yTop + mRectText.height() / 2f;
 
-                String text = getLeftSectionText();
+                String text = mSectionTextArray.get(0);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
                 canvas.drawText(text, xLeft + mRectText.width() / 2f, y_, mPaint);
                 xLeft += mRectText.width() + mTextSpace;
 
-                text = getRightSectionText();
+                text = mSectionTextArray.get(mSectionCount);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
                 canvas.drawText(text, xRight - (mRectText.width() + 0.5f) / 2f, y_, mPaint);
                 xRight -= (mRectText.width() + mTextSpace);
@@ -475,7 +515,7 @@ public class BubbleSeekBar extends View {
             } else if (mSectionTextPosition >= TextPosition.BOTTOM_SIDES) {
                 float y_ = yTop + mThumbRadiusOnDragging + mTextSpace;
 
-                String text = getLeftSectionText();
+                String text = mSectionTextArray.get(0);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
                 y_ += mRectText.height();
                 xLeft = mLeft;
@@ -483,7 +523,7 @@ public class BubbleSeekBar extends View {
                     canvas.drawText(text, xLeft, y_, mPaint);
                 }
 
-                text = getRightSectionText();
+                text = mSectionTextArray.get(mSectionCount);
                 mPaint.getTextBounds(text, 0, text.length(), mRectText);
                 xRight = mRight;
                 if (mSectionTextPosition == TextPosition.BOTTOM_SIDES) {
@@ -502,7 +542,6 @@ public class BubbleSeekBar extends View {
 
         boolean isShowTextBelowSectionMark = isShowSectionText && mSectionTextPosition ==
                 TextPosition.BELOW_SECTION_MARK;
-        boolean conditionInterval = mSectionCount % 2 == 0;
 
         // draw sectionMark & sectionText BELOW_SECTION_MARK
         if (isShowTextBelowSectionMark || isShowSectionMark) {
@@ -532,15 +571,8 @@ public class BubbleSeekBar extends View {
                 // sectionText belows section
                 if (isShowTextBelowSectionMark) {
                     mPaint.setColor(mSectionTextColor);
-
-                    if (mSectionTextInterval > 1) {
-                        if (conditionInterval && i % mSectionTextInterval == 0) {
-                            float m = isRtl ? mMax - mSectionValue * i : mMin + mSectionValue * i;
-                            canvas.drawText(isFloatType ? float2String(m) : (int) m + "", x_, y_, mPaint);
-                        }
-                    } else {
-                        float m = isRtl ? mMax - mSectionValue * i : mMin + mSectionValue * i;
-                        canvas.drawText(isFloatType ? float2String(m) : (int) m + "", x_, y_, mPaint);
+                    if (mSectionTextArray.get(i, null) != null) {
+                        canvas.drawText(mSectionTextArray.get(i), x_, y_, mPaint);
                     }
                 }
             }
@@ -625,12 +657,18 @@ public class BubbleSeekBar extends View {
         super.onDetachedFromWindow();
     }
 
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
     float dx;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                performClick();
                 getParent().requestDisallowInterceptTouchEvent(true);
 
                 isThumbOnDragging = isThumbTouched(event);
@@ -944,22 +982,6 @@ public class BubbleSeekBar extends View {
         }
     }
 
-    private String getLeftSectionText() {
-        if (isRtl) {
-            return isFloatType ? float2String(mMax) : String.valueOf((int) mMax);
-        } else {
-            return isFloatType ? float2String(mMin) : String.valueOf((int) mMin);
-        }
-    }
-
-    private String getRightSectionText() {
-        if (isRtl) {
-            return isFloatType ? float2String(mMin) : String.valueOf((int) mMin);
-        } else {
-            return isFloatType ? float2String(mMax) : String.valueOf((int) mMax);
-        }
-    }
-
     private String float2String(float value) {
         return String.valueOf(formatFloat(value));
     }
@@ -1073,6 +1095,49 @@ public class BubbleSeekBar extends View {
 
     public void setOnProgressChangedListener(OnProgressChangedListener onProgressChangedListener) {
         mProgressListener = onProgressChangedListener;
+    }
+
+    public void setTrackColor(@ColorInt int trackColor) {
+        if (mTrackColor != trackColor) {
+            mTrackColor = trackColor;
+            invalidate();
+        }
+    }
+
+    public void setSecondTrackColor(@ColorInt int secondTrackColor) {
+        if (mSecondTrackColor != secondTrackColor) {
+            mSecondTrackColor = secondTrackColor;
+            invalidate();
+        }
+    }
+
+    public void setThumbColor(@ColorInt int thumbColor) {
+        if (mThumbColor != thumbColor) {
+            mThumbColor = thumbColor;
+            invalidate();
+        }
+    }
+
+    public void setBubbleColor(@ColorInt int bubbleColor) {
+        if (mBubbleColor != bubbleColor) {
+            mBubbleColor = bubbleColor;
+            if (mBubbleView != null) {
+                mBubbleView.invalidate();
+            }
+        }
+    }
+
+    public void setCustomSectionTextArray(@NonNull CustomSectionTextArray customSectionTextArray) {
+        mSectionTextArray = customSectionTextArray.onCustomize(mSectionCount, mSectionTextArray);
+        for (int i = 0; i <= mSectionCount; i++) {
+            if (mSectionTextArray.get(i) == null) {
+                mSectionTextArray.put(i, "");
+            }
+        }
+
+        isShowThumbText = false;
+        requestLayout();
+        invalidate();
     }
     /////// Api ends ///////////////////////////////////////////////////////////////////////////////
 
@@ -1224,6 +1289,37 @@ public class BubbleSeekBar extends View {
         @Override
         public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
         }
+    }
+
+    /**
+     * Customize the section texts under the track according to your demands by
+     * call {@link #setCustomSectionTextArray(CustomSectionTextArray)}.
+     */
+    public interface CustomSectionTextArray {
+        /**
+         * <p>
+         * Customization goes here.
+         * </p>
+         * For example:
+         * <pre> public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+         *     array.clear();
+         *
+         *     array.put(0, "worst");
+         *     array.put(4, "bad");
+         *     array.put(6, "ok");
+         *     array.put(8, "good");
+         *     array.put(9, "great");
+         *     array.put(10, "excellent");
+         * }</pre>
+         *
+         * @param sectionCount The section count of the {@code BubbleSeekBar}.
+         * @param array        The section texts array which had been initialized already. Customize
+         *                     the section text by changing one element's value of the SparseArray.
+         *                     The index key ∈[0, sectionCount].
+         * @return The customized section texts array. Can not be {@code null}.
+         */
+        @NonNull
+        SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array);
     }
 
     /***********************************************************************************************
