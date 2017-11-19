@@ -3,6 +3,8 @@
 
 [**中文说明**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/README_zh.md)
 
+![logo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/res/mipmap-xxhdpi/ic_launcher.png)
+
 **A beautiful Android custom seek bar, which has a bubble view with progress appearing upon when seeking. Highly customizable, mostly demands has been considered. `star` or `pull request` will be welcomed**
 ****
 ## Screenshot
@@ -17,22 +19,21 @@ The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao
 ```groovy
   dependencies {
      // lite version (recommended)
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.8-lite'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.10-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
 
      // enhanced version
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.8'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.10'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
 
 ## Usage  
-### xml  
+### Init in xml
 ```xml
 <com.xw.repo.BubbleSeekBar
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
     app:bsb_bubble_color="@color/color_red_light"
     app:bsb_bubble_text_color="@color/colorPrimaryDark"
     app:bsb_max="50.0"
@@ -51,7 +52,6 @@ The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao
 <com.xw.repo.BubbleSeekBar
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
     app:bsb_auto_adjust_section_mark="true"
     app:bsb_second_track_color="@color/color_blue"
     app:bsb_section_count="5"
@@ -62,7 +62,7 @@ The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao
     app:bsb_thumb_text_size="18sp"
     app:bsb_touch_to_seek="true"/>
 ```
-### java (not for **_lite_** version)
+### Init in java (not for **_lite_** version)
 ```java
 mBbubbleSeekBar.getConfigBuilder()
                .min(0.0)
@@ -96,64 +96,45 @@ Check out the demo for more details. Or download the apk: [**sample.apk**](https
   enhanced|xml, java|all attrs
 
   **_lite_** version is recommended.
-
-- You must correct the offsets by setting `ScrollListener` when `BubbleSeekBar`'s parent view is scrollable, otherwise the position of bubble appears maybe be wrong. For example:
+- `RecyclerView`, `ListView` and `GridView` is not supported.
+- You must correct the offsets by setting `ScrollListener` when `BubbleSeekBar`'s parent view is scrollable
+(such as `ScrollView`, `ViewPager`), otherwise the position of bubble appears maybe be wrong. For example:
 ```java
    mContainer.setOnYourContainerScrollListener(new OnYourContainerScrollListener() {
        @Override
-       public void onScroll() {
+       public void onScroll() { // ViewPager -> onPageSelected();
            // call this method to correct offsets
            mBubbleSeekBar.correctOffsetWhenContainerOnScrolling();
        }
    });
 ```
-- When set `bsb_touch_to_seek` attribute to be `true` , you better not to click **too fast** because the animation may not have enough time to play.
-- This library depends `support:appcompat-v7` via **`provided`**, so you don't need to worry about compatibility.
+- When customize the section texts, you should make sure that the attr `bsb_section_text_position`
+has been set to `below_section_mark` at first, then follow the example below in your java code:
+```java
+   mBubbleSeekBar.setCustomSectionTextArray(new BubbleSeekBar.CustomSectionTextArray() {
+       @NonNull
+       @Override
+       public SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array) {
+           array.clear();
+           array.put(1, "bad");
+           array.put(4, "ok");
+           array.put(7, "good");
+           array.put(9, "great");
 
-## Attributes  
-```xml
-<attr name="bsb_min" format="float|reference"/> <!--min < max, default: 0.0f-->
-<attr name="bsb_max" format="float|reference"/> <!--min < max, default: 100.0f-->
-<attr name="bsb_progress" format="float|reference"/> <!--real time progress value, default: min-->
-<attr name="bsb_is_float_type" format="boolean"/> <!--support for float type-->
-<attr name="bsb_track_size" format="dimension|reference"/> <!--height of right-track(on the right of thumb), default: 2dp-->
-<!--height of left-track(on the left of thumb), default: 2dp higher than right-track's height-->
-<attr name="bsb_second_track_size" format="dimension|reference"/>
-<attr name="bsb_thumb_radius" format="dimension|reference"/> <!--radius of thumb, default: 2dp higher than left-track's height-->nce"/>
-<!--radius of thumb when be dragging, default: 2 times of left-track's height-->
-<attr name="bsb_thumb_radius_on_dragging" format="dimension|reference"/>
-<attr name="bsb_track_color" format="color|reference"/> <!--color of right-track, default: R.color.colorPrimary-->
-<attr name="bsb_second_track_color" format="color|reference"/> <!--color of left-track, default: R.color.colorAccent-->
-<attr name="bsb_thumb_color" format="color|reference"/> <!--color of thumb, default: same as left-track's color-->
-<attr name="bsb_section_count" format="integer|reference"/> <!--shares of whole progress(max - min), default: 10-->
-<attr name="bsb_show_section_mark" format="boolean"/> <!--show demarcation points or not, default: false-->
-<attr name="bsb_auto_adjust_section_mark" format="boolean"/> <!--auto scroll to the nearest section_mark or not, default: false-->
-<attr name="bsb_show_section_text" format="boolean"/> <!--show section-text or not, default: false-->
-<attr name="bsb_section_text_size" format="dimension|reference"/> <!--text size of section-text, default: 14sp-->
-<attr name="bsb_section_text_color" format="color|reference"/> <!--text color of section-text, default: same as right-track's color-->
-<!--text position of section-text relative to track, sides, bottom_sides, below_section_mark, default: sides-->
-<attr name="bsb_section_text_position">
-    <enum name="sides" value="0"/>
-    <enum name="bottom_sides" value="1"/>
-    <enum name="below_section_mark" value="2"/>
-</attr>
-<attr name="bsb_section_text_interval" format="integer"/> <!--the interval of two section-text, default: 1-->
-<attr name="bsb_show_thumb_text" format="boolean"/> <!--show real time progress-text under thumb or not, default: false-->
-<attr name="bsb_thumb_text_size" format="dimension|reference"/> <!--text size of progress-text, default: 14sp-->
-<attr name="bsb_thumb_text_color" format="color|reference"/> <!--text color of progress-text, default: same as left-track's color-->
-<attr name="bsb_show_progress_in_float" format="boolean"/> <!--show bubble-progress in float or not, default: false-->
-<attr name="bsb_touch_to_seek" format="boolean"/> <!--touch anywhere on track to quickly seek, default: false-->
-<attr name="bsb_seek_by_section" format="boolean"/> <!--seek by section, the progress may not be linear, default: false-->
-<attr name="bsb_bubble_color" format="color|reference"/> <!--color of bubble, default: same as left-track's color-->
-<attr name="bsb_always_show_bubble" format="boolean"/> <!--bubble shows all time, default: false-->
-<attr name="bsb_always_show_bubble_delay" format="integer"/> <!--the delay duration before bubble shows all the time, default: 200ms-->
-<attr name="bsb_hide_bubble" format="boolean"/> <!--hide bubble, default: false-->
-<attr name="bsb_rtl" format="boolean"/> <!--right to left, default: false-->
+           return array;
+       }
+   });
 ```
+BTW, the attr `bsb_show_thumb_text` will be set to `false` automatically for avoiding the text coverage display problems.
+## Attributes
+[attr.xml](https://github.com/woxingxiao/BubbleSeekBar/blob/master/bubbleseekbar/src/main/res/values/attr.xml)
 ## How to submit a valid issue
+- **Make sure you compiled the latest version.** If it still doesn't work out, don't hesitate to open a new issue.
 - Describe the scenarios or operates when crash happened as much as possible(pictures would be better).
+- Tell me your device type and Android OS version is very helpful.
 - Paste your xml or java code.
 - Paste the crash log.
+- Be polite.
 
 ## License
 ```
