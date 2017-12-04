@@ -291,7 +291,6 @@ public class BubbleSeekBar extends View {
             }
             isShowSectionMark = true;
             isAutoAdjustSectionMark = true;
-            isTouchToSeek = false;
         }
         if (isHideBubble) {
             isAlwaysShowBubble = false;
