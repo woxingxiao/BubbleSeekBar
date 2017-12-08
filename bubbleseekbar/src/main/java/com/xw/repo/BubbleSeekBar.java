@@ -105,7 +105,6 @@ public class BubbleSeekBar extends View {
     private boolean isThumbOnDragging; // is thumb on dragging or not
     private int mTextSpace; // space between text and track
     private boolean triggerBubbleShowing;
-    private boolean triggerSeekBySection;
     private SparseArray<String> mSectionTextArray = new SparseArray<>();
 
     private OnProgressChangedListener mProgressListener; // progress changing listener
@@ -672,9 +671,6 @@ public class BubbleSeekBar extends View {
 
                 isThumbOnDragging = isThumbTouched(event);
                 if (isThumbOnDragging) {
-                    if (isSeekBySection && !triggerSeekBySection) {
-                        triggerSeekBySection = true;
-                    }
                     if (isAlwaysShowBubble && !triggerBubbleShowing) {
                         triggerBubbleShowing = true;
                     }
@@ -770,7 +766,7 @@ public class BubbleSeekBar extends View {
                                         isThumbOnDragging = false;
                                         invalidate();
                                     }
-                                });
+                                }).start();
                     } else {
                         postDelayed(new Runnable() {
                             @Override
@@ -798,7 +794,7 @@ public class BubbleSeekBar extends View {
                                                 isThumbOnDragging = false;
                                                 invalidate();
                                             }
-                                        });
+                                        }).start();
                             }
                         }, mAnimDuration);
                     }
@@ -859,7 +855,7 @@ public class BubbleSeekBar extends View {
                     public void onAnimationStart(Animator animation) {
                         mWindowManager.addView(mBubbleView, mLayoutParams);
                     }
-                });
+                }).start();
         mBubbleView.setProgressText(isShowProgressInFloat ?
                 String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
     }
@@ -1049,7 +1045,7 @@ public class BubbleSeekBar extends View {
     }
 
     public int getProgress() {
-        if (isSeekBySection && triggerSeekBySection) {
+        if (isSeekBySection) {
             float half = mSectionValue / 2;
 
             if (mProgress >= mPreSecValue) { // increasing
