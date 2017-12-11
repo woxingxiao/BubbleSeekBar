@@ -105,6 +105,7 @@ public class BubbleSeekBar extends View {
     private boolean isThumbOnDragging; // is thumb on dragging or not
     private int mTextSpace; // space between text and track
     private boolean triggerBubbleShowing;
+    private boolean triggerSeekBySection;
     private SparseArray<String> mSectionTextArray = new SparseArray<>();
 
     private OnProgressChangedListener mProgressListener; // progress changing listener
@@ -124,6 +125,8 @@ public class BubbleSeekBar extends View {
     private boolean isTouchToSeekAnimEnd = true;
     private float mPreSecValue; // previous SectionValue
     private BubbleConfigBuilder mConfigBuilder; // config attributes
+
+    private BubbleValueToTextConverter mBubbleValueToTextConverter;
 
     public BubbleSeekBar(Context context) {
         this(context, null);
@@ -205,8 +208,8 @@ public class BubbleSeekBar extends View {
 
         // init BubbleView
         mBubbleView = new BubbleView(context);
-        mBubbleView.setProgressText(isShowProgressInFloat ?
-                String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
+        mBubbleValueToTextConverter = new DefaultBubbleValueToTextConverter();
+        mBubbleView.setProgressText(mBubbleValueToTextConverter.convertValueToText(this, getProgress(), getProgressFloat(), isShowProgressInFloat));
 
         mLayoutParams = new WindowManager.LayoutParams();
         mLayoutParams.gravity = Gravity.START | Gravity.TOP;
@@ -290,6 +293,7 @@ public class BubbleSeekBar extends View {
             }
             isShowSectionMark = true;
             isAutoAdjustSectionMark = true;
+            isTouchToSeek = false;
         }
         if (isHideBubble) {
             isAlwaysShowBubble = false;
@@ -671,6 +675,9 @@ public class BubbleSeekBar extends View {
 
                 isThumbOnDragging = isThumbTouched(event);
                 if (isThumbOnDragging) {
+                    if (isSeekBySection && !triggerSeekBySection) {
+                        triggerSeekBySection = true;
+                    }
                     if (isAlwaysShowBubble && !triggerBubbleShowing) {
                         triggerBubbleShowing = true;
                     }
@@ -721,8 +728,8 @@ public class BubbleSeekBar extends View {
                         mBubbleCenterRawX = calculateCenterRawXofBubbleView();
                         mLayoutParams.x = (int) (mBubbleCenterRawX + 0.5f);
                         mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
-                        mBubbleView.setProgressText(isShowProgressInFloat ?
-                                String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
+                        mBubbleView.setProgressText(mBubbleValueToTextConverter.convertValueToText(this, getProgress(), getProgressFloat(), isShowProgressInFloat));
+
                     }
 
                     invalidate();
@@ -766,7 +773,7 @@ public class BubbleSeekBar extends View {
                                         isThumbOnDragging = false;
                                         invalidate();
                                     }
-                                }).start();
+                                });
                     } else {
                         postDelayed(new Runnable() {
                             @Override
@@ -794,7 +801,7 @@ public class BubbleSeekBar extends View {
                                                 isThumbOnDragging = false;
                                                 invalidate();
                                             }
-                                        }).start();
+                                        });
                             }
                         }, mAnimDuration);
                     }
@@ -855,9 +862,15 @@ public class BubbleSeekBar extends View {
                     public void onAnimationStart(Animator animation) {
                         mWindowManager.addView(mBubbleView, mLayoutParams);
                     }
-                }).start();
+<<<<<<< Updated upstream
+                });
         mBubbleView.setProgressText(isShowProgressInFloat ?
                 String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
+=======
+                }).start();
+        mBubbleView.setProgressText(mBubbleValueToTextConverter.convertValueToText(this, getProgress(), getProgressFloat(), isShowProgressInFloat));
+
+>>>>>>> Stashed changes
     }
 
     /**
@@ -897,8 +910,7 @@ public class BubbleSeekBar extends View {
                         mBubbleCenterRawX = calculateCenterRawXofBubbleView();
                         mLayoutParams.x = (int) (mBubbleCenterRawX + 0.5f);
                         mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
-                        mBubbleView.setProgressText(isShowProgressInFloat ?
-                                String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
+                        mBubbleView.setProgressText(mBubbleValueToTextConverter.convertValueToText(BubbleSeekBar.this, getProgress(), getProgressFloat(), isShowProgressInFloat));
                     }
 
                     invalidate();
@@ -1045,7 +1057,7 @@ public class BubbleSeekBar extends View {
     }
 
     public int getProgress() {
-        if (isSeekBySection) {
+        if (isSeekBySection && triggerSeekBySection) {
             float half = mSectionValue / 2;
 
             if (mProgress >= mPreSecValue) { // increasing
@@ -1158,6 +1170,7 @@ public class BubbleSeekBar extends View {
         mAlwaysShowBubbleDelay = builder.alwaysShowBubbleDelay;
         isHideBubble = builder.hideBubble;
         isRtl = builder.rtl;
+        mBubbleValueToTextConverter = builder.bubbleValueToTextConverter;
 
         initConfigByPriority();
         calculateRadiusOfBubble();
@@ -1210,6 +1223,7 @@ public class BubbleSeekBar extends View {
         mConfigBuilder.alwaysShowBubbleDelay = mAlwaysShowBubbleDelay;
         mConfigBuilder.hideBubble = isHideBubble;
         mConfigBuilder.rtl = isRtl;
+        mConfigBuilder.bubbleValueToTextConverter = mBubbleValueToTextConverter;
 
         return mConfigBuilder;
     }
@@ -1303,6 +1317,13 @@ public class BubbleSeekBar extends View {
          */
         @NonNull
         SparseArray<String> onCustomize(int sectionCount, @NonNull SparseArray<String> array);
+    }
+
+    /**
+     * Customize the value text that is displayed inside the bubble. Works fine with maximal five characters
+     */
+    public interface BubbleValueToTextConverter {
+        String convertValueToText(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, Boolean isShowProgressInFloat);
     }
 
     /***********************************************************************************************
