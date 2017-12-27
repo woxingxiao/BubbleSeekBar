@@ -32,6 +32,7 @@
         <attr name="bsb_thumb_text_color" format="color|reference"/> <!--text color of progress-text, default: same as left-track's color-->
         <attr name="bsb_show_progress_in_float" format="boolean"/> <!--show bubble-progress in float or not, default: false-->
         <attr name="bsb_touch_to_seek" format="boolean"/> <!--touch anywhere on track to quickly seek, default: false-->
+        <attr name="bsb_seek_step_section" format="boolean"/> <!--seek one step by one section, the progress is discrete, default: false-->
         <attr name="bsb_seek_by_section" format="boolean"/> <!--seek by section, the progress may not be linear, default: false-->
         <attr name="bsb_bubble_color" format="color|reference"/> <!--color of bubble, default: same as left-track's color-->
         <attr name="bsb_bubble_text_size" format="dimension|reference"/> <!--text size of bubble-progress, default: 14sp-->
