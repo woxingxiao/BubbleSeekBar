@@ -108,6 +108,7 @@ public class BubbleSeekBar extends View {
     private boolean triggerBubbleShowing;
     private SparseArray<String> mSectionTextArray = new SparseArray<>();
     private float mPreThumbCenterX;
+    private boolean triggerSeekBySection;
 
     private OnProgressChangedListener mProgressListener; // progress changing listener
     private float mLeft; // space between left of track and left of the view
@@ -677,6 +678,9 @@ public class BubbleSeekBar extends View {
 
                 isThumbOnDragging = isThumbTouched(event);
                 if (isThumbOnDragging) {
+                    if (isSeekBySection && !triggerSeekBySection) {
+                        triggerSeekBySection = true;
+                    }
                     if (isAlwaysShowBubble && !triggerBubbleShowing) {
                         triggerBubbleShowing = true;
                     }
@@ -687,6 +691,9 @@ public class BubbleSeekBar extends View {
                     invalidate();
                 } else if (isTouchToSeek && isTrackTouched(event)) {
                     isThumbOnDragging = true;
+                    if (isSeekBySection && !triggerSeekBySection) {
+                        triggerSeekBySection = true;
+                    }
                     if (isAlwaysShowBubble) {
                         hideBubble();
                         triggerBubbleShowing = true;
@@ -1074,11 +1081,9 @@ public class BubbleSeekBar extends View {
             mProgressListener.onProgressChanged(this, getProgress(), getProgressFloat());
             mProgressListener.getProgressOnFinally(this, getProgress(), getProgressFloat());
         }
-
         if (!isHideBubble) {
             mBubbleCenterRawX = calculateCenterRawXofBubbleView();
         }
-
         if (isAlwaysShowBubble) {
             hideBubble();
 
@@ -1090,36 +1095,63 @@ public class BubbleSeekBar extends View {
                 }
             }, mAlwaysShowBubbleDelay);
         }
+        if (isSeekBySection) {
+            triggerSeekBySection = false;
+        }
 
         postInvalidate();
     }
 
     public int getProgress() {
-        if (isSeekBySection) {
+        return Math.round(processProgress());
+    }
+
+    public float getProgressFloat() {
+        return formatFloat(processProgress());
+    }
+
+    private float processProgress() {
+        final float progress = mProgress;
+
+        if (isSeekBySection && triggerSeekBySection) {
             float half = mSectionValue / 2;
 
-            if (mProgress >= mPreSecValue) { // increasing
-                if (mProgress >= mPreSecValue + half) {
+            if (isTouchToSeek) {
+                if (progress == mMin || progress == mMax) {
+                    return progress;
+                }
+
+                float secValue;
+                for (int i = 0; i <= mSectionCount; i++) {
+                    secValue = i * mSectionValue;
+                    if (secValue < progress && secValue + mSectionValue >= progress) {
+                        if (secValue + half > progress) {
+                            return secValue;
+                        } else {
+                            return secValue + mSectionValue;
+                        }
+                    }
+                }
+            }
+
+            if (progress >= mPreSecValue) { // increasing
+                if (progress >= mPreSecValue + half) {
                     mPreSecValue += mSectionValue;
-                    return Math.round(mPreSecValue);
+                    return mPreSecValue;
                 } else {
-                    return Math.round(mPreSecValue);
+                    return mPreSecValue;
                 }
             } else { // reducing
-                if (mProgress >= mPreSecValue - half) {
-                    return Math.round(mPreSecValue);
+                if (progress >= mPreSecValue - half) {
+                    return mPreSecValue;
                 } else {
                     mPreSecValue -= mSectionValue;
-                    return Math.round(mPreSecValue);
+                    return mPreSecValue;
                 }
             }
         }
 
-        return Math.round(mProgress);
-    }
-
-    public float getProgressFloat() {
-        return formatFloat(mProgress);
+        return progress;
     }
 
     public OnProgressChangedListener getOnProgressChangedListener() {
