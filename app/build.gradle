@@ -7,8 +7,8 @@ android {
         applicationId "com.xw.samlpe.bubbleseekbar"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 11
-        versionName "1.10"
+        versionCode 12
+        versionName "1.11"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 

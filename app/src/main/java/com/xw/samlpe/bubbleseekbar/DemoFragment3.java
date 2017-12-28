@@ -36,11 +36,12 @@ public class DemoFragment3 extends Fragment {
         BubbleSeekBar bubbleSeekBar2 = view.findViewById(R.id.demo_3_seek_bar_2);
         BubbleSeekBar bubbleSeekBar3 = view.findViewById(R.id.demo_3_seek_bar_3);
         BubbleSeekBar bubbleSeekBar4 = view.findViewById(R.id.demo_3_seek_bar_4);
+        BubbleSeekBar bubbleSeekBar5 = view.findViewById(R.id.demo_3_seek_bar_5);
 
         bubbleSeekBar1.getConfigBuilder()
                 .min(0)
-                .max(50)
-                .progress(20)
+                .max(5)
+                .progress(2)
                 .sectionCount(5)
                 .trackColor(ContextCompat.getColor(mActivity, R.color.color_gray))
                 .secondTrackColor(ContextCompat.getColor(mActivity, R.color.color_blue))
@@ -51,7 +52,30 @@ public class DemoFragment3 extends Fragment {
                 .showThumbText()
                 .thumbTextColor(ContextCompat.getColor(mActivity, R.color.color_red))
                 .thumbTextSize(18)
-                .bubbleColor(ContextCompat.getColor(mActivity, R.color.color_green))
+                .bubbleColor(ContextCompat.getColor(mActivity, R.color.color_red))
+                .bubbleTextSize(18)
+                .showSectionMark()
+                .seekStepSection()
+                .touchToSeek()
+                .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
+                .build();
+
+        bubbleSeekBar2.getConfigBuilder()
+                .min(0)
+                .max(5)
+                .progress(2)
+                .sectionCount(5)
+                .trackColor(ContextCompat.getColor(mActivity, R.color.color_gray))
+                .secondTrackColor(ContextCompat.getColor(mActivity, R.color.color_blue))
+                .thumbColor(ContextCompat.getColor(mActivity, R.color.color_blue))
+                .showSectionText()
+                .sectionTextColor(ContextCompat.getColor(mActivity, R.color.colorPrimary))
+                .sectionTextSize(18)
+                .showThumbText()
+                .touchToSeek()
+                .thumbTextColor(ContextCompat.getColor(mActivity, R.color.color_red))
+                .thumbTextSize(18)
+                .bubbleColor(ContextCompat.getColor(mActivity, R.color.color_red))
                 .bubbleTextSize(18)
                 .showSectionMark()
                 .seekBySection()
@@ -59,7 +83,7 @@ public class DemoFragment3 extends Fragment {
                 .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
                 .build();
 
-        bubbleSeekBar2.getConfigBuilder()
+        bubbleSeekBar3.getConfigBuilder()
                 .min(-50)
                 .max(50)
                 .sectionCount(10)
@@ -71,7 +95,7 @@ public class DemoFragment3 extends Fragment {
                 .sectionTextPosition(BubbleSeekBar.TextPosition.BELOW_SECTION_MARK)
                 .build();
 
-        bubbleSeekBar3.getConfigBuilder()
+        bubbleSeekBar4.getConfigBuilder()
                 .min(1)
                 .max(1.5f)
                 .floatType()
@@ -81,7 +105,7 @@ public class DemoFragment3 extends Fragment {
                 .showThumbText()
                 .build();
 
-        bubbleSeekBar4.getConfigBuilder()
+        bubbleSeekBar5.getConfigBuilder()
                 .min(-0.4f)
                 .max(0.4f)
                 .progress(0)
