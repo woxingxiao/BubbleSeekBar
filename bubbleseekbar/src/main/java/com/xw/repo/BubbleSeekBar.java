@@ -1062,7 +1062,12 @@ public class BubbleSeekBar extends View {
         locatePositionOnScreen();
 
         if (mBubbleView.getParent() != null) {
-            postInvalidate();
+            if (isAlwaysShowBubble) {
+                mLayoutParams.y = (int) (mBubbleCenterRawSolidY + 0.5f);
+                mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
+            } else {
+                postInvalidate();
+            }
         }
     }
 
