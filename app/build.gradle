@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.1"
+    buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.xw.samlpe.bubbleseekbar"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode 8
         versionName "1.7"
@@ -25,8 +25,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:27.0.1'
-    compile 'com.android.support:design:27.0.1'
+    compile 'com.android.support:appcompat-v7:27.0.2'
+    compile 'com.android.support:design:27.0.2'
     testCompile 'junit:junit:4.12'
     compile project(':bubbleseekbar')
 }

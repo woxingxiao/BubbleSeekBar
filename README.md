@@ -1,4 +1,4 @@
-[![API](https://img.shields.io/badge/API-14%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=14)
+[![API](https://img.shields.io/badge/API-14%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=16)
 [![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 [**中文说明**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/README_zh.md)
@@ -19,11 +19,11 @@ The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao
 ```groovy
   dependencies {
      // lite version (recommended)
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.10-lite'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.15-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
 
      // enhanced version
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.10'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.15'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
