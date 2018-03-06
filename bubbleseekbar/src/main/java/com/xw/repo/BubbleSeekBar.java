@@ -29,6 +29,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
@@ -464,6 +465,11 @@ public class BubbleSeekBar extends View {
      */
     private void locatePositionOnScreen() {
         getLocationOnScreen(mPoint);
+
+        ViewParent parent = getParent();
+        if (parent != null && parent instanceof View && ((View) parent).getMeasuredWidth() > 0) {
+            mPoint[0] %= ((View) parent).getMeasuredWidth();
+        }
 
         if (isRtl) {
             mBubbleCenterRawSolidX = mPoint[0] + mRight - mBubbleView.getMeasuredWidth() / 2f;
