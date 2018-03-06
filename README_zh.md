@@ -1,4 +1,4 @@
-[![API](https://img.shields.io/badge/API-14%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=14)
+[![API](https://img.shields.io/badge/API-16%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=16)
 [![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 ![logo](https://github.com/woxingxiao/BubbleSeekBar/blob/master/app/src/main/res/mipmap-xxhdpi/ic_launcher.png)
@@ -16,11 +16,11 @@ The **LATEST_VERSION**：[![Download](https://api.bintray.com/packages/woxingxia
 ```groovy
   dependencies {
      // lite version 轻量版（推荐）
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.10-lite'
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.16-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
      
      // enhanced version 增强版
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.10'
+     // 例如：compile 'com.xw.repo:bubbleseekbar:3.16'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
@@ -94,12 +94,12 @@ mBbubbleSeekBar.getConfigBuilder()
   
   推荐使用 **_lite_** 版本。
 
-- 如果`BubbleSeekBar`的外部容器是可滑动的控件（如：ScrollView，ViewPager），需要设置滑动监听来修正气泡的偏移，
+- 如果`BubbleSeekBar`的外部容器是可滑动的控件（如：`ScrollView`，但`ViewPager`除外），需要设置滑动监听来修正气泡的偏移，
 否则滑动后气泡出现位置可能错乱。方法如下：
 ```java
    mContainer.setOnYourContainerScrollListener(new OnYourContainerScrollListener() {
        @Override
-       public void onScroll() { // ViewPager -> onPageSelected();
+       public void onScroll() {
            // 调用修正偏移方法
            mBubbleSeekBar.correctOffsetWhenContainerOnScrolling();
        }
@@ -122,7 +122,9 @@ mBbubbleSeekBar.getConfigBuilder()
        }
    });
 ```
-顺便，为了防止文字覆盖显示问题，属性 `bsb_show_thumb_text` 将被自动置 `false`。
+顺便，为了防止文字覆盖显示问题，属性`bsb_show_thumb_text`将被自动置`false`。
+- 属性`bsb_always_show_bubble`在`RecyclerView`,`ListView`和`GridView`中不被支持。
+
 ## Attributes
 [attr.xml](https://github.com/woxingxiao/BubbleSeekBar/blob/master/bubbleseekbar/src/main/res/values/attr.xml)
 ## 怎样提出有效的issue

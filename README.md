@@ -1,4 +1,4 @@
-[![API](https://img.shields.io/badge/API-14%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=16)
+[![API](https://img.shields.io/badge/API-16%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=16)
 [![License](http://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 [**中文说明**](https://github.com/woxingxiao/BubbleSeekBar/blob/master/README_zh.md)
@@ -19,11 +19,11 @@ The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao
 ```groovy
   dependencies {
      // lite version (recommended)
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.15-lite'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.16-lite'
         compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
 
      // enhanced version
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.15'
+     // e.g. compile 'com.xw.repo:bubbleseekbar:3.16'
      // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
@@ -96,13 +96,12 @@ Check out the demo for more details. Or download the apk: [**sample.apk**](https
   enhanced|xml, java|all attrs
 
   **_lite_** version is recommended.
-- `RecyclerView`, `ListView` and `GridView` is not supported.
 - You must correct the offsets by setting `ScrollListener` when `BubbleSeekBar`'s parent view is scrollable
-(such as `ScrollView`, `ViewPager`), otherwise the position of bubble appears maybe be wrong. For example:
+(such as `ScrollView`, except `ViewPager`), otherwise, the appearing position of the bubble may be wrong. For example:
 ```java
    mContainer.setOnYourContainerScrollListener(new OnYourContainerScrollListener() {
        @Override
-       public void onScroll() { // ViewPager -> onPageSelected();
+       public void onScroll() {
            // call this method to correct offsets
            mBubbleSeekBar.correctOffsetWhenContainerOnScrolling();
        }
@@ -126,6 +125,8 @@ has been set to `below_section_mark` at first, then follow the example below in 
    });
 ```
 BTW, the attr `bsb_show_thumb_text` will be set to `false` automatically for avoiding the text coverage display problems.
+- The attr `bsb_always_show_bubble` is not supported in the `RecyclerView`, `ListView` and `GridView`.
+
 ## Attributes
 [attr.xml](https://github.com/woxingxiao/BubbleSeekBar/blob/master/bubbleseekbar/src/main/res/values/attr.xml)
 ## How to submit a valid issue
