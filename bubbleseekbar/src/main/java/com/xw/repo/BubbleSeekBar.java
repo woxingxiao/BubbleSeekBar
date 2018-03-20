@@ -1007,8 +1007,6 @@ public class BubbleSeekBar extends View {
                         mWindowManager.addView(mBubbleView, mLayoutParams);
                     }
                 }).start();
-        mBubbleView.setProgressText(isShowProgressInFloat ?
-                String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
     }
 
     /**
