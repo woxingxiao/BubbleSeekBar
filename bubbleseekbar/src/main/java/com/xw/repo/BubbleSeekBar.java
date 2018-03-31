@@ -765,7 +765,7 @@ public class BubbleSeekBar extends View {
                         invalidate();
 
                         if (mProgressListener != null) {
-                            mProgressListener.onProgressChanged(this, getProgress(), getProgressFloat());
+                            mProgressListener.onProgressChanged(this, getProgress(), getProgressFloat(), true);
                         }
                     }
                 }
@@ -839,7 +839,7 @@ public class BubbleSeekBar extends View {
                 }
 
                 if (mProgressListener != null) {
-                    mProgressListener.onProgressChanged(this, getProgress(), getProgressFloat());
+                    mProgressListener.onProgressChanged(this, getProgress(), getProgressFloat(), true);
                     mProgressListener.getProgressOnActionUp(this, getProgress(), getProgressFloat());
                 }
 
@@ -940,7 +940,8 @@ public class BubbleSeekBar extends View {
                     invalidate();
 
                     if (mProgressListener != null) {
-                        mProgressListener.onProgressChanged(BubbleSeekBar.this, getProgress(), getProgressFloat());
+                        mProgressListener.onProgressChanged(BubbleSeekBar.this, getProgress(),
+                                getProgressFloat(), true);
                     }
                 }
             });
@@ -971,7 +972,8 @@ public class BubbleSeekBar extends View {
                 invalidate();
 
                 if (mProgressListener != null) {
-                    mProgressListener.getProgressOnFinally(BubbleSeekBar.this, getProgress(), getProgressFloat());
+                    mProgressListener.getProgressOnFinally(BubbleSeekBar.this, getProgress(),
+                            getProgressFloat(), true);
                 }
             }
 
@@ -1089,8 +1091,8 @@ public class BubbleSeekBar extends View {
         mProgress = progress;
 
         if (mProgressListener != null) {
-            mProgressListener.onProgressChanged(this, getProgress(), getProgressFloat());
-            mProgressListener.getProgressOnFinally(this, getProgress(), getProgressFloat());
+            mProgressListener.onProgressChanged(this, getProgress(), getProgressFloat(), false);
+            mProgressListener.getProgressOnFinally(this, getProgress(), getProgressFloat(), false);
         }
         if (!isHideBubble) {
             mBubbleCenterRawX = calculateCenterRawXofBubbleView();
@@ -1250,11 +1252,11 @@ public class BubbleSeekBar extends View {
      */
     public interface OnProgressChangedListener {
 
-        void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat);
+        void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser);
 
         void getProgressOnActionUp(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat);
 
-        void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat);
+        void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser);
     }
 
     /**
@@ -1265,7 +1267,7 @@ public class BubbleSeekBar extends View {
     public static abstract class OnProgressChangedListenerAdapter implements OnProgressChangedListener {
 
         @Override
-        public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
+        public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
         }
 
         @Override
@@ -1273,7 +1275,7 @@ public class BubbleSeekBar extends View {
         }
 
         @Override
-        public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
+        public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
         }
     }
 
