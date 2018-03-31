@@ -229,8 +229,8 @@ public class BubbleConfigBuilder {
         return this;
     }
 
-    public BubbleConfigBuilder rtl() {
-        this.rtl = true;
+    public BubbleConfigBuilder rtl(boolean rtl) {
+        this.rtl = rtl;
         return this;
     }
 

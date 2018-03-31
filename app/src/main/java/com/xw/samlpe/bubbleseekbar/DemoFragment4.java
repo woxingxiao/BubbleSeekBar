@@ -53,7 +53,7 @@ public class DemoFragment4 extends Fragment {
         });
         bubbleSeekBar2.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListenerAdapter() {
             @Override
-            public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
+            public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
                 String s = String.format(Locale.CHINA, "onChanged int:%d, float:%.1f", progress, progressFloat);
                 progressText1.setText(s);
             }
@@ -65,7 +65,7 @@ public class DemoFragment4 extends Fragment {
             }
 
             @Override
-            public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
+            public void getProgressOnFinally(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
                 String s = String.format(Locale.CHINA, "onFinally int:%d, float:%.1f", progress, progressFloat);
                 progressText3.setText(s);
             }
@@ -90,7 +90,7 @@ public class DemoFragment4 extends Fragment {
         });
         bubbleSeekBar4.setOnProgressChangedListener(new BubbleSeekBar.OnProgressChangedListenerAdapter() {
             @Override
-            public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat) {
+            public void onProgressChanged(BubbleSeekBar bubbleSeekBar, int progress, float progressFloat, boolean fromUser) {
                 int color;
                 if (progress <= 10) {
                     color = ContextCompat.getColor(mActivity, R.color.color_red);
