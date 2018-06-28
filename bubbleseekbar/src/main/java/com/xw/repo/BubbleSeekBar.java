@@ -191,6 +191,7 @@ public class BubbleSeekBar extends View {
         mAlwaysShowBubbleDelay = duration < 0 ? 0 : duration;
         isHideBubble = a.getBoolean(R.styleable.BubbleSeekBar_bsb_hide_bubble, false);
         isRtl = a.getBoolean(R.styleable.BubbleSeekBar_bsb_rtl, false);
+        setEnabled(a.getBoolean(R.styleable.BubbleSeekBar_android_enabled, isEnabled()));
         a.recycle();
 
         mPaint = new Paint();
@@ -761,6 +762,8 @@ public class BubbleSeekBar extends View {
                             mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
                             mBubbleView.setProgressText(isShowProgressInFloat ?
                                     String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
+                        } else {
+                            processProgress();
                         }
 
                         invalidate();
@@ -934,6 +937,8 @@ public class BubbleSeekBar extends View {
                         mWindowManager.updateViewLayout(mBubbleView, mLayoutParams);
                         mBubbleView.setProgressText(isShowProgressInFloat ?
                                 String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
+                    } else {
+                        processProgress();
                     }
 
                     invalidate();
