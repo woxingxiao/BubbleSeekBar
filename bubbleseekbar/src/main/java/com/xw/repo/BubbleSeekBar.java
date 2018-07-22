@@ -479,9 +479,9 @@ public class BubbleSeekBar extends View {
         mBubbleCenterRawX = calculateCenterRawXofBubbleView();
         mBubbleCenterRawSolidY = mPoint[1] - mBubbleView.getMeasuredHeight();
         mBubbleCenterRawSolidY -= dp2px(24);
-        if (BubbleUtils.isMIUI()) {
-            mBubbleCenterRawSolidY += dp2px(4);
-        }
+//        if (BubbleUtils.isMIUI()) {
+//            mBubbleCenterRawSolidY += dp2px(4);
+//        }
 
         Context context = getContext();
         if (context instanceof Activity) {
