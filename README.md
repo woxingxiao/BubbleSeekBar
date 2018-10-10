@@ -20,7 +20,7 @@ The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao
   dependencies {
      // lite version (recommended)
      // e.g. compile 'com.xw.repo:bubbleseekbar:3.16-lite'
-        compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
+        implementation 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
 
      // enhanced version
      // e.g. compile 'com.xw.repo:bubbleseekbar:3.16'
