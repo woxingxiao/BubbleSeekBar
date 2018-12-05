@@ -10,6 +10,22 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="show section text (sides, by default)"
+        android:textSize="12sp" />
+
+    <com.xw.repo.BubbleSeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:bsb_show_section_mark="false"
+        app:bsb_show_section_text="true"
+        app:bsb_show_thumb_text="false"
+        app:bsb_thumb_stroke_color="#ff3300"
+        app:bsb_thumb_stroke_width="1dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="show section text (sides, by default), show thumb text"
         android:textSize="12sp"/>
 

@@ -73,6 +73,9 @@ public class BubbleSeekBar extends View {
     private int mTrackColor; // color of right-track
     private int mSecondTrackColor; // color of left-track
     private int mThumbColor; // color of thumb
+    @ColorInt
+    private int mThumbStrokeColor; // color of thumb stroke
+    private int mThumbStrokeWidth; // width of thumb stroke
     private int mSectionCount; // shares of whole progress(max - min)
     private boolean isShowSectionMark; // show demarcation points or not
     private boolean isAutoAdjustSectionMark; // auto scroll to the nearest section_mark or not
@@ -157,6 +160,8 @@ public class BubbleSeekBar extends View {
         mSecondTrackColor = a.getColor(R.styleable.BubbleSeekBar_bsb_second_track_color,
                 ContextCompat.getColor(context, R.color.colorAccent));
         mThumbColor = a.getColor(R.styleable.BubbleSeekBar_bsb_thumb_color, mSecondTrackColor);
+        mThumbStrokeColor = a.getColor(R.styleable.BubbleSeekBar_bsb_thumb_stroke_color, mSecondTrackColor);
+        mThumbStrokeWidth = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_thumb_stroke_width, mThumbStrokeWidth);
         isShowSectionText = a.getBoolean(R.styleable.BubbleSeekBar_bsb_show_section_text, false);
         mSectionTextSize = a.getDimensionPixelSize(R.styleable.BubbleSeekBar_bsb_section_text_size, sp2px(14));
         mSectionTextColor = a.getColor(R.styleable.BubbleSeekBar_bsb_section_text_color, mTrackColor);
@@ -505,6 +510,8 @@ public class BubbleSeekBar extends View {
         float xRight = getMeasuredWidth() - getPaddingRight();
         float yTop = getPaddingTop() + mThumbRadiusOnDragging;
 
+        mPaint.setStyle(Paint.Style.FILL);
+
         // draw sectionText SIDES or BOTTOM_SIDES
         if (isShowSectionText) {
             mPaint.setColor(mSectionTextColor);
@@ -633,6 +640,12 @@ public class BubbleSeekBar extends View {
 
         // draw thumb
         mPaint.setColor(mThumbColor);
+        canvas.drawCircle(mThumbCenterX, yTop, isThumbOnDragging ? mThumbRadiusOnDragging : mThumbRadius, mPaint);
+
+        // draw thumb stroke
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setColor(mThumbStrokeColor);
+        mPaint.setStrokeWidth(mThumbStrokeWidth);
         canvas.drawCircle(mThumbCenterX, yTop, isThumbOnDragging ? mThumbRadiusOnDragging : mThumbRadius, mPaint);
     }
 
@@ -1201,6 +1214,29 @@ public class BubbleSeekBar extends View {
         }
     }
 
+    @ColorInt
+    public int getThumbStrokeColor() {
+        return mThumbStrokeColor;
+    }
+
+    public void setThumbStrokeColor(@ColorInt int color) {
+        if (mThumbColor != color) {
+            mThumbStrokeColor = color;
+            invalidate();
+        }
+    }
+
+    public int getThumbStrokeWidth() {
+        return mThumbStrokeWidth;
+    }
+
+    public void setThumbStrokeWidth(int width) {
+        if (mThumbStrokeWidth != width) {
+            mThumbStrokeWidth = width;
+            invalidate();
+        }
+    }
+
     public void setBubbleColor(@ColorInt int bubbleColor) {
         if (mBubbleColor != bubbleColor) {
             mBubbleColor = bubbleColor;
@@ -1223,7 +1259,7 @@ public class BubbleSeekBar extends View {
         invalidate();
     }
     /////// Api ends ///////////////////////////////////////////////////////////////////////////////
-
+    
     @Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
