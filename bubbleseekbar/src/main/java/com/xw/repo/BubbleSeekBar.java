@@ -444,7 +444,7 @@ public class BubbleSeekBar extends View {
         super.onLayout(changed, left, top, right, bottom);
 
         if (!isHideBubble) {
-            locatePositionOnScreen();
+            locatePositionInWindow();
         }
     }
 
@@ -464,8 +464,8 @@ public class BubbleSeekBar extends View {
      * 先计算进度mProgress为mMin时BubbleView的中心坐标（mBubbleCenterRawSolidX，mBubbleCenterRawSolidY），
      * 然后根据进度来增量计算横坐标mBubbleCenterRawX，再动态设置LayoutParameter.x，就实现了气泡跟随滑动移动。
      */
-    private void locatePositionOnScreen() {
-        getLocationOnScreen(mPoint);
+    private void locatePositionInWindow() {
+        getLocationInWindow(mPoint);
 
         ViewParent parent = getParent();
         if (parent != null && parent instanceof View && ((View) parent).getMeasuredWidth() > 0) {
@@ -1071,7 +1071,7 @@ public class BubbleSeekBar extends View {
         if (isHideBubble)
             return;
 
-        locatePositionOnScreen();
+        locatePositionInWindow();
 
         if (mBubbleView.getParent() != null) {
             if (isAlwaysShowBubble) {
