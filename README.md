@@ -19,12 +19,12 @@ The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao
 ```groovy
   dependencies {
      // lite version (recommended)
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.16-lite'
-        compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
+     // e.g. implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
+        implementation 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
 
      // enhanced version
-     // e.g. compile 'com.xw.repo:bubbleseekbar:3.16'
-     // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
+     // e.g. implementation 'com.xw.repo:bubbleseekbar:3.20'
+     // implementation 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
 
@@ -135,7 +135,7 @@ BTW, the attr `bsb_show_thumb_text` will be set to `false` automatically for avo
 - Tell me your device type and Android OS version is very helpful.
 - Paste your xml or java code.
 - Paste the crash log.
-- Be polite.
+- Please be polite.
 
 ## License
 ```

@@ -16,12 +16,12 @@ The **LATEST_VERSION**：[![Download](https://api.bintray.com/packages/woxingxia
 ```groovy
   dependencies {
      // lite version 轻量版（推荐）
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.16-lite'
-        compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
+     // 例如：implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
+        implementation 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
      
      // enhanced version 增强版
-     // 例如：compile 'com.xw.repo:bubbleseekbar:3.16'
-     // compile 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
+     // 例如：implementation 'com.xw.repo:bubbleseekbar:3.20'
+     // implementation 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
   }
 ```
 ## Usage  
@@ -136,7 +136,7 @@ mBbubbleSeekBar.getConfigBuilder()
 - 礼貌。
 
 --------
-> **人生苦短，请选择科学上网。推荐一下本人正在使用的，稳定高速，便宜好用。[推介链接](https://portal.shadowsocks.com.la/aff.php?aff=8881)**  
+> **人生苦短，请选择科学上网。无限流量，节点多速度快。[电梯直达](https://my.holytech.tech/aff.php?aff=1016)**  
 
 ## License
 ```
