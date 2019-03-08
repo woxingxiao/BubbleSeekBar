@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-def VERSION_NAME = "3.20-dev"
+def VERSION_NAME = "3.20"
 
 android {
     compileSdkVersion 28
