@@ -35,6 +35,7 @@ import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 
 import com.xw.repo.bubbleseekbar.R;
+import com.xw.repo.exception.ProgressTextLengthException;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -1019,8 +1020,6 @@ public class BubbleSeekBar extends View {
                         mWindowManager.addView(mBubbleView, mLayoutParams);
                     }
                 }).start();
-        mBubbleView.setProgressText(isShowProgressInFloat ?
-                String.valueOf(getProgressFloat()) : String.valueOf(getProgress()));
     }
 
     /**
@@ -1169,6 +1168,19 @@ public class BubbleSeekBar extends View {
         }
 
         return progress;
+    }
+
+    public void setProgressText(@NonNull String text) throws ProgressTextLengthException {
+        if (text == null) {
+            throw new ProgressTextLengthException("Text can't be null");
+        }
+        if (text.length() == 0) {
+            throw new ProgressTextLengthException("Text must have a content");
+        }
+        if (text.length() > 5) {
+            throw new ProgressTextLengthException("The text is too long");
+        }
+        mBubbleView.setProgressText(text);
     }
 
     public OnProgressChangedListener getOnProgressChangedListener() {
