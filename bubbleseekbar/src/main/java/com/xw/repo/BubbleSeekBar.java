@@ -16,6 +16,7 @@ import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -23,6 +24,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.Gravity;
@@ -94,6 +96,7 @@ public class BubbleSeekBar extends View {
     private long mAlwaysShowBubbleDelay; // the delay duration before bubble shows all the time
     private boolean isHideBubble; // hide bubble
     private boolean isRtl; // right to left
+    private Typeface mTypeface; // font of text
 
     private int mBubbleColor;// color of bubble
     private int mBubbleTextSize; // text size of bubble-progress
@@ -192,12 +195,20 @@ public class BubbleSeekBar extends View {
         isHideBubble = a.getBoolean(R.styleable.BubbleSeekBar_bsb_hide_bubble, false);
         isRtl = a.getBoolean(R.styleable.BubbleSeekBar_bsb_rtl, false);
         setEnabled(a.getBoolean(R.styleable.BubbleSeekBar_android_enabled, isEnabled()));
+        String font =  a.getString(R.styleable.BubbleSeekBar_bsb_text_typeface);
+        if (!TextUtils.isEmpty(font)) {
+            Typeface typeface = Typeface.createFromAsset(getContext().getAssets(),font);
+            if (typeface != null) {
+                this.mTypeface=typeface;
+            }
+        }
         a.recycle();
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setTextAlign(Paint.Align.CENTER);
+        mPaint.setTypeface(mTypeface);
 
         mRectText = new Rect();
         mTextSpace = dp2px(2);
@@ -1475,6 +1486,7 @@ public class BubbleSeekBar extends View {
 
             mBubblePaint.setTextSize(mBubbleTextSize);
             mBubblePaint.setColor(mBubbleTextColor);
+            mBubblePaint.setTypeface(mTypeface);
             mBubblePaint.getTextBounds(mProgressText, 0, mProgressText.length(), mRect);
             Paint.FontMetrics fm = mBubblePaint.getFontMetrics();
             float baseline = mBubbleRadius + (fm.descent - fm.ascent) / 2f - fm.descent;
