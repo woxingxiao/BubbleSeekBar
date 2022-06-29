@@ -19,12 +19,12 @@ The **LATEST_VERSION**: [![Download](https://api.bintray.com/packages/woxingxiao
 ```groovy
   dependencies {
      // lite version (recommended)
-     // e.g. implementation 'com.xw.repo:bubbleseekbar:3.20-lite'
-        implementation 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}-lite'
+     // e.g.   implementation 'com.github.woxingxiao:BubbleSeekBar:3.20-lite'
+          implementation 'com.github.woxingxiao:BubbleSeekBar:${LATEST_VERSION}-lite'
 
      // enhanced version
-     // e.g. implementation 'com.xw.repo:bubbleseekbar:3.20'
-     // implementation 'com.xw.repo:bubbleseekbar:${LATEST_VERSION}'
+     // e.g.  implementation 'com.github.woxingxiao:BubbleSeekBar:3.20'
+      implementation 'com.github.woxingxiao:BubbleSeekBar:${LATEST_VERSION}'
   }
 ```
 
